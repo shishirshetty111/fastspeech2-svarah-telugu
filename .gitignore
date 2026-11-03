@@ -1,0 +1,31 @@
+# Environments / caches
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Upstream clone is reproduced by scripts/setup_upstream.py (pinned commit + patches/)
+third_party/
+
+# Large / licensed artifacts: never commit raw audio, datasets or downloaded weights
+pretrained/
+data/
+raw_data/
+preprocessed_data/
+outputs/
+*.wav
+*.flac
+*.mp3
+*.pth.tar
+*.pt
+*.ckpt
+*.zip
+# Final assignment deliverables are re-included explicitly once they exist:
+!project/Results/**/test_generated_audios/*.wav
+
+# Secrets
+.env
+*.token
+hf_token*
+kaggle.json

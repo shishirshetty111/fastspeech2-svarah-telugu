@@ -1,0 +1,101 @@
+{
+  "language": "telugu",
+  "source": {
+    "repo_id": "SPRINGLab/IndicTTS_Telugu",
+    "revision": "7ab3c18491bef3f5d4e820c2701b5f78f54031d6",
+    "license": "Indic TTS license (IIT Madras), https://www.iitm.ac.in/donlab/indictts/downloads/license.pdf"
+  },
+  "seed": 1234,
+  "targets_hours": {
+    "train": 5.0,
+    "val": 1.0
+  },
+  "qc_config": {
+    "min_duration_s": 1.0,
+    "max_duration_s": 15.0,
+    "min_rms_dbfs": -40.0,
+    "max_clip_fraction": 0.001,
+    "max_rate_robust_z": 4.0,
+    "min_speaker_utts_for_rate": 20,
+    "speakers": [
+      "te_male"
+    ],
+    "reject_text_regex": "[A-Za-z]",
+    "preferred_max_duration_s": 11.0,
+    "deprioritize_text_regex": ""
+  },
+  "inventory": {
+    "utterances": 8576,
+    "hours": 36.7123,
+    "speakers": 2
+  },
+  "qc_kept": {
+    "utterances": 3782,
+    "hours": 8.062
+  },
+  "qc_rejected": {
+    "clipping": {
+      "utterances": 1,
+      "hours": 0.0005
+    },
+    "speaker_not_selected": {
+      "utterances": 4043,
+      "hours": 23.921
+    },
+    "speaking_rate_outlier": {
+      "utterances": 12,
+      "hours": 0.0106
+    },
+    "too_long": {
+      "utterances": 717,
+      "hours": 4.6835
+    },
+    "too_short": {
+      "utterances": 10,
+      "hours": 0.0024
+    },
+    "unsupported_characters": {
+      "utterances": 11,
+      "hours": 0.0323
+    }
+  },
+  "splits": {
+    "train": {
+      "utterances": 2623,
+      "hours": 5.0,
+      "speakers": 1,
+      "per_speaker_hours": {
+        "te_male": 5.0
+      }
+    },
+    "val": {
+      "utterances": 524,
+      "hours": 1.0,
+      "speakers": 1,
+      "per_speaker_hours": {
+        "te_male": 1.0
+      }
+    },
+    "reserve": {
+      "utterances": 635,
+      "hours": 2.062,
+      "speakers": 1,
+      "per_speaker_hours": {
+        "te_male": 2.062
+      }
+    }
+  },
+  "priority_tiers_per_split": {
+    "train": {
+      "0": 2623
+    },
+    "val": {
+      "0": 524
+    },
+    "reserve": {
+      "0": 102,
+      "1": 533
+    }
+  },
+  "checks": "train/val/reserve pairwise disjoint on utt_id, audio_sha1 and normalised text: passed"
+}
