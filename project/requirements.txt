@@ -1,0 +1,27 @@
+# Verified 2026-11-02 on Windows 11 / Python 3.11.15 (CPU) with the patched
+# upstream ming024/FastSpeech2 @ d4e79eb (see patches/ and docs/UPSTREAM_NOTES.md).
+# torch is NOT pinned here: install the build for your platform first
+#   local CPU : pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+#   Colab/Kaggle: use the preinstalled CUDA torch (>=2.4 required for weights_only safe globals)
+numpy==1.26.4
+scipy==1.17.1
+librosa==0.10.2.post1
+soundfile==0.14.0
+pyworld==0.3.5
+tgt==1.5
+PyYAML==6.0.3
+matplotlib==3.11.2
+scikit-learn==1.9.1
+tqdm==4.70.1
+Unidecode==1.4.0
+inflect==7.6.0
+g2p-en==2.1.0
+pypinyin==0.55.0
+tensorboard==2.21.0
+gdown==6.5.1
+pytest==9.2.0
+# Phase 2: dataset access/inventory (pyarrow 26 requires numpy>=2; 17.0.0 verified with numpy 1.26)
+pyarrow==17.0.0
+huggingface_hub==2.4.0
+# test-only: verifies test sentences against the assignment PDF
+pymupdf==2.1

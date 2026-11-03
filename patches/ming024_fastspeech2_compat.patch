@@ -1,0 +1,125 @@
+diff --git a/audio/audio_processing.py b/audio/audio_processing.py
+index 07bef28..8a5f82b 100644
+--- a/audio/audio_processing.py
++++ b/audio/audio_processing.py
+@@ -54,7 +54,7 @@ def window_sumsquare(
+     # Compute the squared window at the desired length
+     win_sq = get_window(window, win_length, fftbins=True)
+     win_sq = librosa_util.normalize(win_sq, norm=norm) ** 2
+-    win_sq = librosa_util.pad_center(win_sq, n_fft)
++    win_sq = librosa_util.pad_center(win_sq, size=n_fft)
+ 
+     # Fill the envelope
+     for i in range(n_frames):
+diff --git a/audio/stft.py b/audio/stft.py
+index fcce29b..4b87b55 100644
+--- a/audio/stft.py
++++ b/audio/stft.py
+@@ -39,7 +39,7 @@ class STFT(torch.nn.Module):
+             assert filter_length >= win_length
+             # get window and zero center pad it to filter_length
+             fft_window = get_window(window, win_length, fftbins=True)
+-            fft_window = pad_center(fft_window, filter_length)
++            fft_window = pad_center(fft_window, size=filter_length)
+             fft_window = torch.from_numpy(fft_window).float()
+ 
+             # window the bases
+@@ -65,8 +65,8 @@ class STFT(torch.nn.Module):
+         input_data = input_data.squeeze(1)
+ 
+         forward_transform = F.conv1d(
+-            input_data.cuda(),
+-            torch.autograd.Variable(self.forward_basis, requires_grad=False).cuda(),
++            input_data,
++            self.forward_basis.to(input_data.device),
+             stride=self.hop_length,
+             padding=0,
+         ).cpu()
+@@ -143,7 +143,11 @@ class TacotronSTFT(torch.nn.Module):
+         self.sampling_rate = sampling_rate
+         self.stft_fn = STFT(filter_length, hop_length, win_length)
+         mel_basis = librosa_mel_fn(
+-            sampling_rate, filter_length, n_mel_channels, mel_fmin, mel_fmax
++            sr=sampling_rate,
++            n_fft=filter_length,
++            n_mels=n_mel_channels,
++            fmin=mel_fmin,
++            fmax=mel_fmax,
+         )
+         mel_basis = torch.from_numpy(mel_basis).float()
+         self.register_buffer("mel_basis", mel_basis)
+diff --git a/model/modules.py b/model/modules.py
+index 9933725..5adb2ca 100644
+--- a/model/modules.py
++++ b/model/modules.py
+@@ -121,7 +121,7 @@ class VarianceAdaptor(nn.Module):
+             x = x + pitch_embedding
+         if self.energy_feature_level == "phoneme_level":
+             energy_prediction, energy_embedding = self.get_energy_embedding(
+-                x, energy_target, src_mask, p_control
++                x, energy_target, src_mask, e_control
+             )
+             x = x + energy_embedding
+ 
+@@ -143,7 +143,7 @@ class VarianceAdaptor(nn.Module):
+             x = x + pitch_embedding
+         if self.energy_feature_level == "frame_level":
+             energy_prediction, energy_embedding = self.get_energy_embedding(
+-                x, energy_target, mel_mask, p_control
++                x, energy_target, mel_mask, e_control
+             )
+             x = x + energy_embedding
+ 
+diff --git a/utils/model.py b/utils/model.py
+index 45e1f41..3b37637 100644
+--- a/utils/model.py
++++ b/utils/model.py
+@@ -7,6 +7,17 @@ import numpy as np
+ import hifigan
+ from model import FastSpeech2, ScheduledOptim
+ 
++HIFIGAN_DIR = os.path.dirname(os.path.abspath(hifigan.__file__))
++
++
++def load_checkpoint(path, device):
++    # weights_only loading with the single numpy global used in the upstream
++    # optimizer state, instead of unrestricted pickle loading.
++    torch.serialization.add_safe_globals(
++        [np.core.multiarray.scalar, np.dtype, type(np.dtype("float64"))]
++    )
++    return torch.load(path, map_location=device, weights_only=True)
++
+ 
+ def get_model(args, configs, device, train=False):
+     (preprocess_config, model_config, train_config) = configs
+@@ -17,7 +28,7 @@ def get_model(args, configs, device, train=False):
+             train_config["path"]["ckpt_path"],
+             "{}.pth.tar".format(args.restore_step),
+         )
+-        ckpt = torch.load(ckpt_path)
++        ckpt = load_checkpoint(ckpt_path, device)
+         model.load_state_dict(ckpt["model"])
+ 
+     if train:
+@@ -55,14 +66,18 @@ def get_vocoder(config, device):
+         vocoder.mel2wav.eval()
+         vocoder.mel2wav.to(device)
+     elif name == "HiFi-GAN":
+-        with open("hifigan/config.json", "r") as f:
++        with open(os.path.join(HIFIGAN_DIR, "config.json"), "r") as f:
+             config = json.load(f)
+         config = hifigan.AttrDict(config)
+         vocoder = hifigan.Generator(config)
+         if speaker == "LJSpeech":
+-            ckpt = torch.load("hifigan/generator_LJSpeech.pth.tar")
++            ckpt = load_checkpoint(
++                os.path.join(HIFIGAN_DIR, "generator_LJSpeech.pth.tar"), device
++            )
+         elif speaker == "universal":
+-            ckpt = torch.load("hifigan/generator_universal.pth.tar")
++            ckpt = load_checkpoint(
++                os.path.join(HIFIGAN_DIR, "generator_universal.pth.tar"), device
++            )
+         vocoder.load_state_dict(ckpt["generator"])
+         vocoder.eval()
+         vocoder.remove_weight_norm()
