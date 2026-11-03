@@ -16,7 +16,7 @@ Constraint: **no paid compute by default**. Local machine for coding, CPU smoke 
 ## Version decision
 Upstream pins (`torch 1.7`, `numpy 1.19`, `librosa 0.7.2`, `numba 0.48`) cannot be installed on Python ≥3.9 or on current Colab/Kaggle images. We use a modern stack (`project/requirements.txt`: torch 2.5.1, numpy 1.26.4, librosa 0.10.2, pyworld 0.3.5, …) plus a minimal upstream patch (`patches/`). Verified on CPU with the pretrained checkpoint (see PROGRESS.md).
 
-Known risk: Colab/Kaggle images ship **numpy 2.x**; `project/requirements.txt` downgrades to 1.26.4 (pip will do it; restart the runtime after install). numpy 2 compatibility is not yet verified.
+numpy 2: the full local stack (preprocessing: librosa/pyworld/pyarrow) is pinned to numpy 1.26.4. **Training does not need it**: verified 2026-11-03 that `project/English/train.py --dry-run` runs and resumes under Python 3.12 + numpy 2.5.4 + torch 2.15 with only `Unidecode inflect` added (the Colab recipe below), and that a checkpoint written there loads under the local numpy 1.26 stack.
 
 ## Local setup (Windows PowerShell or bash, from repo root)
 ```bash
@@ -29,16 +29,14 @@ uv pip install --python .venv/Scripts/python.exe -r requirements.txt
 ```
 (Without uv: `py -3.11 -m venv .venv` then `pip install …` equivalently. On Linux/macOS use `.venv/bin/python`.)
 
-## Colab / Kaggle (planned; not yet executed)
-```bash
-!git clone <this-repo-url> fs2 && cd fs2
-!pip install -q -r requirements.txt          # keep the preinstalled CUDA torch
-# Runtime -> Restart session (numpy downgrade), then:
-!python scripts/setup_upstream.py --pretrained_ljspeech
-!python -m pytest tests -q
-!python scripts/baseline_inference.py --text "Hello, how are you?"
-```
-Data: `python scripts/data/download_datasets.py` (≈7.5 GB; set `FS2_DATA_ROOT` to a Drive path on Colab to keep it across sessions). Persist `preprocessed_data/`, checkpoints and logs to Google Drive (Colab) or `/kaggle/working` + dataset versions (Kaggle) so training can resume after disconnects. HF token via environment variable / Colab secrets only, never in tracked files.
+## Colab training (notebook written; not yet executed on a GPU)
+Training on Colab uses **only the preprocessed features** (no raw audio, MFA or HF token).
+1. Locally: `python scripts/package_features.py english` → `dist/english_features.tar` (555 MB, 16,696 `.npy` + train/val lists, train-only `stats.json`, `speakers.json`).
+2. Upload it to `MyDrive/fs2ra/`. Code: either push this repo to GitHub and set `REPO_URL` in the notebook, or `git archive -o dist/code.zip HEAD` and upload `code.zip` there too.
+3. Open `notebooks/train_colab.ipynb` (T4 GPU runtime), set `LANG`, run all. It mounts Drive, installs `Unidecode inflect`, runs `scripts/setup_upstream.py` (upstream clone + patch + HiFi-GAN), extracts the features to `/content/data` and runs `project/<Lang>/train.py` with `FS2_OUTPUT_ROOT=MyDrive/fs2ra/output`.
+4. After a disconnect / usage limit, re-run all cells: training resumes from the newest checkpoint (at most `save_step` = 2,000 steps lost).
+
+Drive space: features 555 MB + 2 full checkpoints (2 × 420 MB) + model-only milestones every 10k steps (140 MB each) ≈ 2.1 GB per language.
 
 ## Montreal Forced Aligner (MFA) — forced alignment for phone durations
 MFA needs Kaldi binaries from conda-forge (not pip). Verified locally 2026-11-03: **MFA 3.4.3** in a self-contained micromamba env (no system installer, no PATH changes; delete `D:\tools\mfa` to remove).
@@ -55,5 +53,5 @@ The preprocessing scripts call `$FS2_MFA_CMD` and strip `__PYVENV_LAUNCHER__`/`P
 Colab/Linux equivalent (not yet executed): `curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba`, then `bin/micromamba create -y -p /content/mfa -c conda-forge montreal-forced-aligner` and `FS2_MFA_CMD="/content/bin/micromamba run -p /content/mfa mfa"`. Alignment is CPU work and is planned locally; Colab only needs the preprocessed features.
 
 ## Still to discover
-- GPU type/memory and real steps/sec from a short training run on Colab/Kaggle.
+- GPU type/memory and real steps/sec on Colab (logged as `sec_per_step` in `train_loss.csv`).
 - Telugu alignment approach (no pretrained Telugu MFA model; see PROGRESS.md).

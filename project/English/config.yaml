@@ -85,11 +85,16 @@ train:
     grad_clip_thresh: 1.0
     grad_acc_step: 1
     warm_up_step: 4000
-    anneal_steps: [300000, 400000, 500000]   # PROVISIONAL: set in Phase 4 from measured GPU throughput
+    # Upstream (LJSpeech, 24 h): 900k steps, anneal at 300k/400k/500k. Here 5 h and a free
+    # Colab T4 budget: 50k steps (~235 epochs of 3,417 utts at batch 16), annealed in the last half.
+    anneal_steps: [25000, 35000, 45000]
     anneal_rate: 0.3
   step:
-    total_step: 900000                   # PROVISIONAL: set in Phase 4
+    total_step: 50000
     log_step: 100
     synth_step: 1000
     val_step: 1000
     save_step: 2000                      # frequent, resumable checkpoints for Colab
+  checkpoint:                            # fs2ra.training: disk use on Drive
+    keep_last: 2                         # full checkpoints (model + Adam), ~420 MB each
+    keep_every: 10000                    # model-only milestones (~140 MB) kept in ckpt/milestones

@@ -94,9 +94,24 @@ Findings:
 - Visual check (mel + phone boundaries + pitch/energy) on a val utterance: boundaries match spectral transitions.
 Result: train **5.000 h (3,417)**, val **1.000 h (757)**, 113 speakers; details in `docs/DATA.md`.
 
+### 2026-11-03 — Phase 4a: English training pipeline (CPU-verified; GPU run pending)
+Commands:
+```
+python project/English/train.py --dry-run --total_step 6     # CPU, 2 min: train/val/sample/ckpt/plot paths
+python project/English/train.py --dry-run --total_step 9     # resumes from 6; lr schedule continues, CSV rows not duplicated
+# Colab-like env (scratch venv: Python 3.12, numpy 2.5.4, torch 2.15 cpu + Unidecode inflect only):
+python project/English/train.py --dry-run --total_step 3 / 4 # runs + resumes; its ckpt loads under local numpy 1.26
+python scripts/package_features.py english                   # dist/english_features.tar, 555.3 MB, sha256 0c8e8da5...29ca4f
+python -m pytest tests -q                                    # 42 passed
+```
+- `fs2ra/training.py`: upstream Dataset/model/loss/ScheduledOptim unchanged; adds automatic resume from the newest checkpoint, atomic checkpoint writes, pruning (2 full + model-only milestone every 10k), CSV loss logs (train = mean over each 100 steps), loss-curve PNG, one teacher-forced val sample (wav+png) per 1k steps, and copies of train-only `stats.json`/`speakers.json`/config next to the checkpoints.
+- Checkpoint `lr` stored as float (upstream stores numpy float64, which would make Colab/numpy-2 checkpoints unloadable locally with `weights_only`).
+- Budget: `total_step 50000`, anneal at 25k/35k/45k (upstream 900k for 24 h LJSpeech). 35.4 M parameters. Evidence of the CPU runs is only that every code path executes; loss values after ≤9 steps mean nothing.
+- `notebooks/train_colab.ipynb` + Colab section in `docs/ENVIRONMENT.md`.
+
 ## Current blockers / open issues
 - Telugu alignment: no pretrained Telugu MFA model; needs a Telugu G2P/lexicon and an MFA model trained on the Telugu corpus (Phase 5).
-- Colab/Kaggle flow written but not yet executed; numpy-2 images need the documented downgrade + restart.
+- Colab notebook not yet executed on a GPU; steps/sec on T4 unknown (50k-step budget may need adjusting).
 - English val is all tier-0 (clean, ≤ 11 s) while train has 254 tier-1/2 utterances (11–15 s or digits); documented asymmetry.
 - English `max_seq_len` set to 1500 (longest utterance 1,272 frames).
 - English verbalisation of digits is heuristic (e.g. 4-digit numbers read as years); mismatches with what speakers said are only caught if they cause alignment outliers.
@@ -104,4 +119,4 @@ Result: train **5.000 h (3,417)**, val **1.000 h (757)**, 113 speakers; details 
 - Svarah speaker proxy may merge up to two speaker pairs (115 vs. 117).
 
 ## Next action (single task)
-Phase 4: English training on Colab — `project/English/train.py` (wrapping upstream train loop with resumable Drive checkpoints, CSV loss logging, train/val loss plots), a feature-package script for upload, a Colab notebook, and a short CPU dry run here before using GPU time.
+User: upload `dist/english_features.tar` (+ code) to `MyDrive/fs2ra/` and run `notebooks/train_colab.ipynb` (English). In parallel locally: Phase 5 — Telugu front end (G2P), MFA acoustic model trained on the Telugu corpus, features.
