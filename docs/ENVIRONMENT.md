@@ -40,6 +40,20 @@ uv pip install --python .venv/Scripts/python.exe -r requirements.txt
 ```
 Data: `python scripts/data/download_datasets.py` (≈7.5 GB; set `FS2_DATA_ROOT` to a Drive path on Colab to keep it across sessions). Persist `preprocessed_data/`, checkpoints and logs to Google Drive (Colab) or `/kaggle/working` + dataset versions (Kaggle) so training can resume after disconnects. HF token via environment variable / Colab secrets only, never in tracked files.
 
+## Montreal Forced Aligner (MFA) — forced alignment for phone durations
+MFA needs Kaldi binaries from conda-forge (not pip). Verified locally 2026-11-03: **MFA 3.4.3** in a self-contained micromamba env (no system installer, no PATH changes; delete `D:\tools\mfa` to remove).
+```bash
+mkdir -p /d/tools/mfa && cd /d/tools/mfa
+curl -sSL -o micromamba.exe https://github.com/mamba-org/micromamba-releases/releases/latest/download/micromamba-win-64
+MAMBA_ROOT_PREFIX=D:/tools/mfa/root ./micromamba.exe create -y -p D:/tools/mfa/env -c conda-forge montreal-forced-aligner
+export MAMBA_ROOT_PREFIX=D:/tools/mfa/root MFA_ROOT_DIR=D:/tools/mfa/mfa_root   # models live under D:/tools/mfa too
+export FS2_MFA_CMD="D:/tools/mfa/micromamba.exe run -p D:/tools/mfa/env mfa"
+D:/tools/mfa/micromamba.exe run -p D:/tools/mfa/env mfa model download acoustic english_us_arpa
+```
+The preprocessing scripts call `$FS2_MFA_CMD` and strip `__PYVENV_LAUNCHER__`/`PYTHONHOME`/`PYTHONPATH`/`VIRTUAL_ENV` from its environment (otherwise MFA's Python loads the project venv's stdlib on Windows: "SRE module mismatch").
+
+Colab/Linux equivalent (not yet executed): `curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba`, then `bin/micromamba create -y -p /content/mfa -c conda-forge montreal-forced-aligner` and `FS2_MFA_CMD="/content/bin/micromamba run -p /content/mfa mfa"`. Alignment is CPU work and is planned locally; Colab only needs the preprocessed features.
+
 ## Still to discover
 - GPU type/memory and real steps/sec from a short training run on Colab/Kaggle.
-- MFA installation path (conda is the supported route; not installed locally) and a Telugu alignment approach.
+- Telugu alignment approach (no pretrained Telugu MFA model; see PROGRESS.md).
