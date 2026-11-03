@@ -1,6 +1,6 @@
 # Implementation progress
 
-Status (2026-11-03): **Phases 0, 1 and 2 complete.** Nothing has been trained. The only audio produced is from the *upstream* pretrained LJSpeech model (not an assignment deliverable). Data decisions: `docs/DATA.md`.
+Status (2026-11-03): **Phases 0–2 complete; Phase 3 complete for English** (Telugu preprocessing is Phase 5). Nothing has been trained. The only audio produced is from the *upstream* pretrained LJSpeech model (not an assignment deliverable). Data decisions: `docs/DATA.md`.
 
 ## Phase 0 — repo and environment inspection ✅
 - [x] Read AGENTS.md, all docs, original PDF (visually, all 3 pages)
@@ -17,6 +17,12 @@ Status (2026-11-03): **Phases 0, 1 and 2 complete.** Nothing has been trained. T
 - [x] Speaker identity resolved for both datasets; QC with logged reasons; deterministic 5 h / 1 h / reserve splits
 - [x] Exact test sentences extracted and visually verified (`project/<Lang>/test_sentences.json`)
 - [x] Tests: disjointness, hours, bounds, speaker coverage, exact rebuild, test-sentence fidelity
+
+## Phase 3 — English preprocessing ✅
+- [x] MFA 3.4.3 installed (isolated micromamba env, `D:	ools\mfa`); `english_us_arpa` phones ⊆ upstream symbols
+- [x] Shared English front end (`fs2ra/text_en.py`) for alignment, training and inference
+- [x] 30+10 smoke test: export → align → features → upstream Dataset/model forward+backward on CPU
+- [x] Full run: train 5.000 h / val 1.000 h, train-only stats, every target validated
 
 ## Experiments log
 
@@ -69,15 +75,33 @@ Evidence (from `project/<Lang>/splits/split_report.json`):
 
 Files: `fs2ra/{hf,sources,inventory,splits,tables}.py`, `scripts/data/{download_datasets,build_inventory,make_splits}.py`, `project/{English,Telugu}/splits/*`, `project/{English,Telugu}/test_sentences.json`, `tests/{test_splits,test_manifests,test_test_sentences}.py`, `docs/DATA.md`.
 
+### 2026-11-03 — Phase 3: English preprocessing
+Commands (bash; `FS2_MFA_CMD`, `MAMBA_ROOT_PREFIX`, `MFA_ROOT_DIR` as in ENVIRONMENT.md):
+```
+mfa model download acoustic english_us_arpa
+python project/English/preprocess.py --smoke 30 10 --stage export align features --num_jobs 4   # 40/40 ok, MFA 31 s
+python -m pytest tests/test_features_smoke.py                                                   # upstream fwd/bwd OK
+python project/English/preprocess.py --stage export align features --num_jobs 7                # 18 min
+python project/English/preprocess.py --stage features                                          # after adding filters, 12.5 min
+python -m pytest tests -q                                                                        # 39 passed (183 s)
+```
+Findings:
+- **MFA 3 leaves silences unlabelled**; upstream (built for MFA 1.x) would silently drop every internal pause from the duration targets. Fixed by relabelling empty intervals `sp` before upstream feature extraction.
+- MFA's Python picked up the project venv's stdlib on Windows (`__PYVENV_LAUNCHER__`); scrubbed from the subprocess env.
+- Filled pauses absorbed into phones (up to 3.3 s `AH0`) → `max_phone_frames: 50` filter (437 rejects incl. reserve).
+- Reserve top-up initially leaked 4 sentences into both train and val; top-up is now text-disjoint and tested.
+- `row_index`/`sample_rate` were written as floats in the split CSVs; fixed (content unchanged).
+- Visual check (mel + phone boundaries + pitch/energy) on a val utterance: boundaries match spectral transitions.
+Result: train **5.000 h (3,417)**, val **1.000 h (757)**, 113 speakers; details in `docs/DATA.md`.
+
 ## Current blockers / open issues
-- MFA not installed (needs conda; plan to run on Colab/Kaggle or local Miniconda). Telugu alignment approach undecided.
-- Upstream preprocessing fits normalisation stats on train+val and splits by count; must be replaced (see UPSTREAM_NOTES.md "Known upstream issues").
-- Repository is not yet a git repo (`git init` not run).
+- Telugu alignment: no pretrained Telugu MFA model; needs a Telugu G2P/lexicon and an MFA model trained on the Telugu corpus (Phase 5).
 - Colab/Kaggle flow written but not yet executed; numpy-2 images need the documented downgrade + restart.
 - English val is all tier-0 (clean, ≤ 11 s) while train has 254 tier-1/2 utterances (11–15 s or digits); documented asymmetry.
-- English train includes clips up to 15 s → `max_seq_len` must be raised above 1000 (≈ 1,300 frames) in the English model config.
-- English digit transcripts (135 in train) need a verbalisation step consistent between MFA lexicon and training text; failures are replaced from reserve.
+- English `max_seq_len` set to 1500 (longest utterance 1,272 frames).
+- English verbalisation of digits is heuristic (e.g. 4-digit numbers read as years); mismatches with what speakers said are only caught if they cause alignment outliers.
+- Heteronyms: inference uses the lexicon's first pronunciation, so E2a/E2b `conduct` would get the same stress — to be addressed in Phase 4 inference.
 - Svarah speaker proxy may merge up to two speaker pairs (115 vs. 117).
 
 ## Next action (single task)
-Phase 3: English preprocessing smoke test on 10–50 train utterances — export audio (16 → 22.05 kHz) + text for MFA, align with the English MFA model (on Colab/Kaggle or local Miniconda), extract mel/duration/F0/energy with the upstream definitions, fit pitch/energy stats on train only, and verify duration sums = mel frames.
+Phase 4: English training on Colab — `project/English/train.py` (wrapping upstream train loop with resumable Drive checkpoints, CSV loss logging, train/val loss plots), a feature-package script for upload, a Colab notebook, and a short CPU dry run here before using GPU time.

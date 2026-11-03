@@ -70,6 +70,19 @@ index 9933725..5adb2ca 100644
              )
              x = x + energy_embedding
  
+diff --git a/preprocessor/preprocessor.py b/preprocessor/preprocessor.py
+index 0c2c118..1bd6f17 100644
+--- a/preprocessor/preprocessor.py
++++ b/preprocessor/preprocessor.py
+@@ -175,7 +175,7 @@ class Preprocessor:
+         ].astype(np.float32)
+ 
+         # Read raw text
+-        with open(text_path, "r") as f:
++        with open(text_path, "r", encoding="utf-8") as f:
+             raw_text = f.readline().strip("\n")
+ 
+         # Compute fundamental frequency
 diff --git a/utils/model.py b/utils/model.py
 index 45e1f41..3b37637 100644
 --- a/utils/model.py

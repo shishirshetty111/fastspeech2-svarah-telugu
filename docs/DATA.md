@@ -95,3 +95,29 @@ The rate filter catches real transcript/audio mismatches, e.g. `telugumale_02390
 All train/val clips are ≤ 11 s, so the upstream `max_seq_len: 1000` suffices for Telugu.
 
 **Transfer-learning caveat for later:** any pretrained Telugu acoustic model trained on IndicTTS (e.g. IIT Madras Fastspeech2_HS) has very likely seen these exact male recordings, including our validation set. If such weights are ever used, validation loss would be contaminated; this must be documented or avoided.
+
+## English — after alignment and feature extraction (Phase 3)
+Pipeline: `project/English/preprocess.py --stage export align features` (details in `docs/UPSTREAM_NOTES.md`).
+
+1. **Export** 4,996 QC-passed utterances (train + val + reserve): 16 → 22.05 kHz (soxr_hq), mono, peak 0.95, PCM16; transcripts converted to spoken form by `fs2ra/text_en.py::normalize_english` (times, AM/PM, digit strings read digit-by-digit, decades, ordinals, `%&+@`, abbreviations; upstream `normalize_numbers` for the rest). The same function is used at inference.
+2. **Dictionary** for the 7,469-word vocabulary: upstream LibriSpeech lexicon (all variants), g2p_en for 1,395 OOV words (2,698 tokens; mostly Indian names/places/brands). All-caps OOV tokens in the raw text (ESIC, AICTE, COVID) get both a spelled-out and a g2p_en variant so MFA picks what was said. `a_m`/`p_m` pseudo-words carry letter-name pronunciations.
+3. **MFA 3.4.3** `english_us_arpa` (speaker-adapted, per-speaker directories), 7 jobs: 4,988 / 4,996 aligned (18 min total incl. export/features).
+4. **Features** with upstream `process_utterance` after relabelling MFA's empty silence intervals as `sp`.
+
+| outcome (all 4,996) | utterances |
+|---|---|
+| ok | 4,550 |
+| `long_phone` (a non-silence phone > 50 frames = 0.58 s) | 437 |
+| no alignment from MFA | 8 |
+| rejected by upstream (≤ 1 voiced frame) | 1 |
+
+`long_phone` rejects are mostly filled pauses ("uhh") or untranscribed speech that the aligner absorbs into one phone (dominantly `AH0`, e.g. a 3.3 s `AH0` in "the … monologue"); such targets would teach the duration predictor hesitations. Rejected train/val utterances were replaced from `reserve` in reserve order, skipping reserve utterances whose transcript occurs in the other split (a first run without that rule put 4 sentences in both train and val; fixed and covered by `tests/test_features_full.py`).
+
+**Final English feature set**
+
+| split | utterances | hours | from reserve | speakers |
+|---|---|---|---|---|
+| train | 3,417 | 5.000 | 279 | 113 |
+| val | 757 | 1.000 | 57 | ⊆ train |
+
+Train-only statistics (Hz / STFT-magnitude units before z-scoring): pitch mean 176.3, std 55.3; energy mean 52.5, std 37.7. Longest utterance 1,272 frames (≤ `max_seq_len` 1500); 173 utterances exceed upstream's 1,000. Feature files ≈ 700 MB (mostly mel).

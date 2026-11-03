@@ -54,11 +54,21 @@ Audio front end: `sampling_rate 22050`, `filter_length (n_fft) 1024`, `hop 256`,
 | `utils/model.py` | HiFi-GAN paths relative to the `hifigan` package | upstream required CWD = repo root |
 | `model/modules.py` | energy embedding uses `e_control` (was `p_control`) | upstream bug: `--energy_control` was ignored and pitch control scaled energy |
 
+| `preprocessor/preprocessor.py` | read `.lab` as UTF-8 | platform default (cp1252 on Windows) breaks Telugu transcripts |
+
+## Project-level changes around upstream preprocessing (`fs2ra/features.py`, Phase 3)
+Upstream `Preprocessor.process_utterance` (mel, durations, F0, energy) is reused **unchanged**; the following are handled around it:
+- **MFA 3 silence labelling (silent-failure risk).** Upstream was written for MFA 1.x, which labelled pauses `sil`/`sp`. MFA 3.4.3 leaves pauses as *empty* intervals, which `tgt.io.read_textgrid` drops by default. Upstream `get_alignment` would then omit every internal pause from the duration sequence while the trimmed waveform still contains it, so all targets after the first pause would be misaligned with no error raised (English smoke set: 86 such pauses in 40 utterances, up to 3.1 s). We rewrite the TextGrids with empty intervals labelled `sp` before calling upstream; the tier is then contiguous and covers the whole clip.
+- Splits from our manifests (no `val_size`/`random.shuffle`); failed utterances replaced from `reserve`.
+- Pitch/energy mean/std **and** the min/max that define the 256 embedding bins are fitted on the final train set only.
+- Every utterance is validated (sum of durations = mel frames, one pitch/energy value per phone, finite) and logged in `feature_status.csv`.
+- `speakers.json` is sorted and built from train speakers only (upstream: `os.listdir` order); val utterances of unseen speakers are dropped and logged.
+
 ## Known upstream issues to fix in later phases (not patched yet)
 - `preprocessor/ljspeech.py` etc.: `librosa.load(path, sampling_rate)` positional `sr` breaks on librosa ≥0.10. We will write our own corpus loaders anyway.
 - `Preprocessor.process_utterance`: `librosa.load(wav_path)` silently resamples to librosa's default 22050 rather than the config value — fine for 22050 but a hidden coupling.
-- `Preprocessor.build_from_path`: pitch/energy scalers are fit on **all** utterances (train + val) and the val split is a random `val_size` count. This violates our "no stats fit on validation" rule and the 5 h/1 h duration-based split; must be replaced by manifest-driven splits with train-only stats.
-- `Preprocessor.build_from_path` also iterates `os.listdir` (order not deterministic across filesystems) and `random.shuffle` without a seed.
+- `Preprocessor.build_from_path`: fits stats on train + val and splits by a random `val_size` count. **Bypassed** by `fs2ra/features.py` (manifest splits, train-only stats).
+- `Preprocessor.build_from_path` also iterates `os.listdir` and `random.shuffle` without a seed. **Bypassed** (not used).
 - `train.py`: saves only every `save_step` (100k), uses tensorboard only (no CSV/PNG loss curves), `nn.DataParallel`, no data-loader resume. Need frequent resumable checkpoints for Colab/Kaggle and CSV loss logging for the required plots.
 - `synthesize.py` single mode uses the raw text (first 100 chars) as the output filename — invalid on Windows for `?`, `:`; we pass explicit utterance IDs.
 - `VariancePredictor` hard-codes `padding=1` in the second conv (only correct for `kernel_size: 3`).
