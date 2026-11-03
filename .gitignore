@@ -14,6 +14,9 @@ data/
 raw_data/
 preprocessed_data/
 outputs/
+output/
+dist/
+*.tar
 *.wav
 *.flac
 *.mp3
