@@ -41,7 +41,7 @@ def main():
     if "features" in args.stage:
         from fs2ra.features import stage_features
 
-        stage_features(cfg, dirs)
+        stage_features(cfg, dirs, args.num_jobs)
 
 
 if __name__ == "__main__":
