@@ -34,3 +34,43 @@ def build_english_dictionary(lexicon_path):
         return report
 
     return build
+
+
+def aligned_variant_counts(textgrid_dir, utt_ids):
+    """word -> Counter of the pronunciations MFA chose for it in these utterances
+    (words tier vs phones tier of the raw MFA TextGrids)."""
+    import glob
+
+    import tgt
+
+    counts = {}
+    for path in glob.glob(os.path.join(textgrid_dir, "*", "*.TextGrid")):
+        if os.path.basename(path)[: -len(".TextGrid")] not in utt_ids:
+            continue
+        tg = tgt.io.read_textgrid(path)
+        phones = tg.get_tier_by_name("phones").intervals
+        for w in tg.get_tier_by_name("words").intervals:
+            if w.text:
+                pron = " ".join(p.text for p in phones
+                                if p.start_time >= w.start_time - 1e-6 and p.end_time <= w.end_time + 1e-6)
+                counts.setdefault(w.text.lower(), Counter())[pron] += 1
+    return counts
+
+
+def build_variant_table(lexicon_path, textgrid_dir, train_ids, out_path):
+    """For words with several lexicon pronunciations, how often each was chosen by MFA in
+    the *training* alignments. Inference uses the most frequent one (the LibriSpeech
+    lexicon often lists a reduced form first, e.g. TWENTY "T W EH1 N IY0" before
+    "T W EH1 N T IY0", which training speakers used 96 vs 19 times)."""
+    import json
+
+    from fs2ra.text_en import read_lexicon
+
+    lexicon = read_lexicon(lexicon_path)
+    counts = aligned_variant_counts(textgrid_dir, set(train_ids))
+    table = {w: dict(c.most_common()) for w, c in sorted(counts.items())
+             if len(lexicon.get(w, [])) > 1}
+    with open(out_path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(table, f, indent=0, sort_keys=True)
+    print("variant table: %d multi-pronunciation words seen in training -> %s" % (len(table), out_path))
+    return table

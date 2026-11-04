@@ -22,7 +22,7 @@ def _sentences(lang):
 def english():
     from fs2ra.inference import EnglishFrontEnd, text_to_phones
 
-    fe = EnglishFrontEnd(LEXICON)
+    fe = EnglishFrontEnd(LEXICON, os.path.join(REPO_ROOT, "project", "English", "pronunciation_variants.json"))
     return {k: text_to_phones(v, fe) for k, v in _sentences("English").items()}
 
 
@@ -32,11 +32,18 @@ def _pron(result, word):
 
 def test_conduct_noun_vs_verb(english):
     assert _pron(english["E2a"], "conduct") == "K AA1 N D AH0 K T"  # noun: stress on 1st syllable
-    assert _pron(english["E2b"], "conduct") == "K AA0 N D AH1 K T"  # verb: stress on 2nd
+    assert _pron(english["E2b"], "conduct") == "K AH0 N D AH1 K T"  # verb: reduced 1st, stress on 2nd
+
+
+def test_variant_seen_in_training(english):
+    # the lexicon lists the T-less forms first; training speakers mostly used the T
+    assert _pron(english["E1"], "parliamentary") == "P AA2 R L AH0 M EH1 N T ER0 IY0"
+    assert _pron(english["E4"], "twenty") == "T W EH1 N T IY0"
 
 
 def test_e3_spacing_kept_and_e4_pause(english):
-    assert english["E3"][0] == ["the rhyth m of the orchestra changed unexpectedly"]  # not spell-corrected
+    # not spell-corrected; the double space is kept as a pause
+    assert english["E3"][0] == ["the rhyth", "m of the orchestra changed unexpectedly"]
     phrases, _, phones = english["E4"]
     assert phrases[0].startswith("the meeting will start at ten forty five a_m on twelve november twenty twenty six")
     assert phones.count("sp") == 1 and phones[-1] != "sp"  # comma -> pause; no trailing pause
@@ -49,7 +56,7 @@ def test_telugu_front_end():
     for sid, text in _sentences("Telugu").items():
         phrases, words, phones = text_to_phones(text, TeluguFrontEnd())
         assert set(phones) <= set(PHONES) | {"sp"}, sid
-    assert phones.count("sp") == 1  # T4: comma
+        assert phones.count("sp") == (1 if sid in ("T3", "T4") else 0), sid  # T3 double space, T4 comma
 
 
 E2E = r"""

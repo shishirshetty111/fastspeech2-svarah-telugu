@@ -24,26 +24,45 @@ from fs2ra.config import load_config, upstream_configs
 from fs2ra.symbols import check_phone_strings, register_language
 
 # Phrase-final punctuation becomes a pause ("sp"), as in upstream synthesize.py; "10:45"
-# and "3.5" are not split. No trailing "sp": training phone strings are trimmed of
-# leading/trailing silence by the upstream preprocessor.
-PHRASE_RE = re.compile(r"[,;.?!।]+(?=\s|$)")
+# and "3.5" are not split. A run of 2+ spaces between words (E3 "rhyth  m", T3 "అడ  విలో")
+# is kept as a pause too, so the given spacing is audible rather than silently merged.
+# No trailing "sp": training phone strings are trimmed of leading/trailing silence.
+PHRASE_RE = re.compile(r"[,;.?!।]+(?=\s|$)|(?<=\S)[ 	]{2,}(?=\S)")
+
+
+def _primary_stress(pron):
+    vowels = [p for p in pron if p[-1].isdigit()]
+    return next((i for i, v in enumerate(vowels) if v.endswith("1")), None)
 
 
 class EnglishFrontEnd:
     """normalize_english + LibriSpeech lexicon / g2p_en, as for the training dictionary.
-    Words in g2p_en's homograph table (e.g. "conduct": noun K AA1 N D AH0 K T, verb
-    K AA0 N D AH1 K T) are disambiguated by an NLTK part-of-speech tag, as g2p_en does;
-    other words take their first lexicon pronunciation."""
 
-    def __init__(self, lexicon_path):
+    Words with several lexicon pronunciations take the one MFA aligned most often in the
+    training split (pronunciation_variants.json; e.g. TWENTY with its T, PARLIAMENTARY
+    with its T), else the longest, as the lexicon often lists a reduced form first.
+    Words in g2p_en's homograph table (e.g. "conduct") are disambiguated by an NLTK
+    part-of-speech tag, as g2p_en does, then mapped to the lexicon variant with the same
+    primary-stress position (noun K AA1 N D AH0 K T, verb K AH0 N D AH1 K T)."""
+
+    def __init__(self, lexicon_path, variants_path=None):
         from fs2ra.text_en import EnglishG2P
 
         self.g2p = EnglishG2P(lexicon_path)
+        self.variants = {}
+        if variants_path and os.path.exists(variants_path):
+            with open(variants_path, encoding="utf-8") as f:
+                self.variants = json.load(f)
 
     def normalize(self, text):
         from fs2ra.text_en import normalize_english
 
         return normalize_english(text)
+
+    def _choose(self, word, prons):
+        seen = self.variants.get(word, {})
+        best = max(prons, key=lambda p: (seen.get(" ".join(p), 0), len(p)))  # max: first on ties
+        return best, "lexicon:train-aligned" if seen.get(" ".join(best)) else "lexicon:longest"
 
     def words(self, words):
         from nltk import pos_tag
@@ -52,12 +71,17 @@ class EnglishFrontEnd:
 
         out = []
         for word, tag in pos_tag(words):
+            prons, source = self.g2p.pronunciations(word)
             homograph = self.g2p._g2p.homograph2features.get(word)
             if homograph and word not in EXTRA_PRONUNCIATIONS:
                 pron1, pron2, pos1 = homograph
-                out.append((word, pron1 if tag.startswith(pos1) else pron2, "homograph(%s)" % tag))
+                target = pron1 if tag.startswith(pos1) else pron2
+                same = [p for p in prons if source == "lexicon" and _primary_stress(p) == _primary_stress(target)]
+                pron = self._choose(word, same)[0] if same else target
+                out.append((word, pron, "homograph(%s)" % tag))
+            elif source == "lexicon" and len(prons) > 1:
+                out.append((word, *self._choose(word, prons)))
             else:
-                prons, source = self.g2p.pronunciations(word)
                 out.append((word, prons[0], source))
         return out
 
@@ -76,9 +100,12 @@ class TeluguFrontEnd:
         return [(w, g2p(w), "rules") for w in words]
 
 
-def front_end_for(cfg):
+def front_end_for(cfg, inference_cfg=None):
+    """inference_cfg: the project config's `inference` section (the checkpoint's config
+    snapshot may predate it)."""
     if cfg["language"] == "english":
-        return EnglishFrontEnd(cfg["preprocess"]["path"]["lexicon_path"])
+        return EnglishFrontEnd(cfg["preprocess"]["path"]["lexicon_path"],
+                               (inference_cfg or {}).get("pronunciation_variants"))
     if cfg["language"] == "telugu":
         return TeluguFrontEnd()
     raise ValueError(cfg["language"])
@@ -187,7 +214,7 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
     sr, hop = audio_cfg["audio"]["sampling_rate"], audio_cfg["stft"]["hop_length"]
     _, _, p_mean, p_std = stats["pitch"]
     _, _, e_mean, e_std = stats["energy"]
-    front_end = front_end_for(cfg)
+    front_end = front_end_for(cfg, project_cfg.get("inference"))
 
     from text import text_to_sequence  # upstream, after register_language
 
