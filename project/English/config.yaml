@@ -103,3 +103,5 @@ inference:                               # fs2ra.inference (text-only synthesis)
   # Multi-speaker model: the voice used for the test sentences. en_edfd2580 has the most
   # training audio (10.6 min of the 5 h; median speaker 1.9 min).
   speaker: en_edfd2580
+  # Lexicon variant MFA aligned most often in the training split (scripts/pronunciation_variants.py)
+  pronunciation_variants: "$REPO/project/English/pronunciation_variants.json"

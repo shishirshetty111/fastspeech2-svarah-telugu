@@ -1,0 +1,3338 @@
+{
+"a": {
+"AH0": 602,
+"EY1": 113
+},
+"ab": {
+"EY1 B IY1": 1
+},
+"abstract": {
+"AE1 B S T R AE2 K T": 1
+},
+"abuse": {
+"AH0 B Y UW1 S": 1
+},
+"accent": {
+"AE1 K S EH2 N T": 1,
+"AH0 K S EH1 N T": 2
+},
+"accept": {
+"AE0 K S EH1 P T": 3
+},
+"acceptable": {
+"AE0 K S EH1 P T AH0 B AH0 L": 1
+},
+"acceptance": {
+"AE0 K S EH1 P T AH0 N S": 1
+},
+"accepted": {
+"AE0 K S EH1 P T IH0 D": 2,
+"AH0 K S EH1 P T AH0 D": 1
+},
+"accidentally": {
+"AE2 K S AH0 D EH1 N T AH0 L IY0": 1
+},
+"acknowledging": {
+"AE0 K N AA1 L IH0 JH IH0 NG": 1
+},
+"acquiring": {
+"AH0 K W AY1 ER0 IH0 NG": 2
+},
+"acted": {
+"AE1 K T AH0 D": 1,
+"AE1 K T IH0 D": 1
+},
+"activities": {
+"AE0 K T IH1 V AH0 T IY0 Z": 2,
+"AE0 K T IH1 V IH0 T IY0 Z": 12
+},
+"activity": {
+"AE0 K T IH1 V AH0 T IY0": 1,
+"AE0 K T IH1 V IH0 T IY0": 4
+},
+"acts": {
+"AE1 K T S": 1
+},
+"actually": {
+"AE1 K CH L IY0": 6,
+"AE1 K CH UW2 AH0 L IY0": 12,
+"AE1 K SH AH0 L IY0": 4
+},
+"adapted": {
+"AH0 D AE1 P T AH0 D": 1,
+"AH0 D AE1 P T IH0 D": 2
+},
+"added": {
+"AE1 D AH0 D": 2,
+"AE1 D IH0 D": 2
+},
+"additionally": {
+"AH0 D IH1 SH N AH0 L IY0": 1
+},
+"address": {
+"AE1 D R EH2 S": 1,
+"AH0 D R EH1 S": 3
+},
+"addresses": {
+"AE1 D R EH1 S IH0 Z": 1,
+"AH0 D R EH1 S IH0 Z": 2
+},
+"adhesive": {
+"AE0 D HH IY1 S IH0 V": 1
+},
+"admission": {
+"AE0 D M IH1 SH AH0 N": 1
+},
+"admissions": {
+"AE0 D M IH1 SH AH0 N Z": 1
+},
+"adult": {
+"AE1 D AH0 L T": 2,
+"AH0 D AH1 L T": 1
+},
+"advantage": {
+"AE0 D V AE1 N T IH0 JH": 1
+},
+"adventure": {
+"AE0 D V EH1 N CH ER0": 2,
+"AH0 D V EH1 N CH ER0": 2
+},
+"adventures": {
+"AH0 D V EH1 N CH ER0 Z": 1
+},
+"adventurous": {
+"AE0 D V EH1 N CH ER0 AH0 S": 1,
+"AH0 D V EH1 N CH ER0 AH0 S": 2
+},
+"advice": {
+"AE0 D V AY1 S": 2
+},
+"advise": {
+"AE0 D V AY1 Z": 1
+},
+"affected": {
+"AH0 F EH1 K T AH0 D": 2,
+"AH0 F EH1 K T IH0 D": 3
+},
+"africa": {
+"AE1 F R IH0 K AH0": 2
+},
+"african": {
+"AE1 F R IH0 K AH0 N": 1
+},
+"again": {
+"AH0 G EH1 N": 4,
+"AH0 G EY1 N": 14
+},
+"against": {
+"AH0 G EH1 N S T": 1,
+"AH0 G EY1 N S T": 5
+},
+"aged": {
+"EY1 JH D": 1
+},
+"agricultural": {
+"AE2 G R AH0 K AH1 L CH ER0 AH0 L": 2
+},
+"ahmed": {
+"AA1 M AH0 D": 3
+},
+"ai": {
+"EY1 AY1": 3
+},
+"aided": {
+"EY1 D AH0 D": 1
+},
+"akbar": {
+"AE1 K B ER0": 2
+},
+"alchemist": {
+"AA1 L K AH0 M IH0 S T": 1,
+"AE1 L CH AH0 M IH0 S T": 1
+},
+"alice": {
+"AE1 L AH0 S": 1,
+"AE1 L IH0 S": 1
+},
+"already": {
+"AO0 L R EH1 D IY0": 1,
+"AO0 R EH1 D IY0": 2
+},
+"always": {
+"AO1 L W EY2 Z": 4,
+"AO1 L W IY0 Z": 11
+},
+"am": {
+"AE1 M": 35,
+"EY1 EH1 M": 8
+},
+"amateur": {
+"AE1 M AH0 CH ER2": 1
+},
+"amenities": {
+"AH0 M EH1 N IH0 T IY0 Z": 1
+},
+"america": {
+"AH0 M EH1 R IH0 K AH0": 2
+},
+"american": {
+"AH0 M EH1 R IH0 K AH0 N": 5
+},
+"an": {
+"AE1 N": 48,
+"AH0 N": 50
+},
+"ancient": {
+"EY1 N CH AH0 N T": 2,
+"EY1 N SH AH0 N T": 4
+},
+"and": {
+"AE1 N D": 873,
+"AH0 N D": 323
+},
+"anti": {
+"AE1 N T IY0": 1
+},
+"anticipated": {
+"AE0 N T IH1 S AH0 P EY2 T IH0 D": 1
+},
+"anyone": {
+"EH1 N IY0 W AH0 N": 2
+},
+"anywhere": {
+"EH1 N IY0 W EH2 R": 1
+},
+"arabic": {
+"AE1 R AH0 B IH0 K": 1,
+"EH1 R AH0 B IH0 K": 1
+},
+"are": {
+"AA1 R": 349,
+"ER0": 119
+},
+"aren't": {
+"AA1 R N T": 1
+},
+"arid": {
+"AE1 R AH0 D": 1
+},
+"around": {
+"ER0 AW1 N": 15,
+"ER0 AW1 N D": 17
+},
+"arthritis": {
+"AA0 R TH R AY1 T IH0 S": 1
+},
+"article": {
+"AA1 R T IH0 K AH0 L": 1
+},
+"articles": {
+"AA1 R T AH0 K AH0 L Z": 2,
+"AA1 R T IH0 K AH0 L Z": 2
+},
+"artist": {
+"AA1 R T AH0 S T": 1,
+"AA1 R T IH0 S T": 5
+},
+"as": {
+"AE1 Z": 146,
+"EH1 Z": 84
+},
+"asked": {
+"AE1 S T": 2
+},
+"associate": {
+"AH0 S OW1 S IY0 AH0 T": 1
+},
+"associated": {
+"AH0 S OW1 S IY0 EY2 T AH0 D": 1,
+"AH0 S OW1 SH IY0 EY2 T AH0 D": 1
+},
+"association": {
+"AH0 S OW2 S IY0 EY1 SH AH0 N": 3
+},
+"audience": {
+"AA1 D IY0 AH0 N S": 3,
+"AO1 D IY0 AH0 N S": 1
+},
+"august": {
+"AA1 G AH0 S T": 1
+},
+"automatic": {
+"AO2 T OW0 M AE1 T IH0 K": 1
+},
+"automatically": {
+"AO2 T AH0 M AE1 T IH0 K L IY0": 3,
+"AO2 T OW0 M AE1 T IH0 K L IY0": 1
+},
+"automobiles": {
+"AO1 T AH0 M OW0 B IY2 L Z": 1
+},
+"availability": {
+"AH0 V EY2 L AH0 B IH1 L IH0 T IY0": 6
+},
+"average": {
+"AE1 V ER0 IH0 JH": 1
+},
+"avoided": {
+"AH0 V OY1 D IH0 D": 1
+},
+"awesome": {
+"AA1 S AH0 M": 1
+},
+"baba": {
+"B AA1 B AH0": 1
+},
+"balm": {
+"B AA1 M": 1
+},
+"bandages": {
+"B AE1 N D IH0 JH IH0 Z": 1
+},
+"bangkok": {
+"B AE0 NG K AA1 K": 1,
+"B AE1 NG K AA0 K": 1
+},
+"barrier": {
+"B EH1 R IY0 ER0": 2
+},
+"barriers": {
+"B AE1 R IY0 ER0 Z": 2,
+"B EH1 R IY0 ER0 Z": 1
+},
+"basis": {
+"B EY1 S IH0 S": 5
+},
+"be": {
+"B IY0": 109,
+"B IY1": 30
+},
+"beaches": {
+"B IY1 CH IH0 Z": 8
+},
+"became": {
+"B IH0 K EY1 M": 5,
+"B IY0 K EY1 M": 3
+},
+"because": {
+"B IH0 K AA1 Z": 23,
+"B IH0 K AH0 Z": 24,
+"B IH0 K AH1 Z": 8,
+"B IH0 K AO1 Z": 14
+},
+"been": {
+"B AH0 N": 5,
+"B IH0 N": 18,
+"B IH1 N": 40
+},
+"before": {
+"B IH0 F AO1 R": 6,
+"B IY2 F AO1 R": 14
+},
+"began": {
+"B IH0 G AE1 N": 1,
+"B IY0 G AE1 N": 1
+},
+"begun": {
+"B IH0 G AH1 N": 1
+},
+"below": {
+"B IH0 L OW1": 1,
+"B IY0 L OW1": 2
+},
+"beside": {
+"B IY2 S AY1 D": 1
+},
+"besides": {
+"B IH0 S AY1 D Z": 2
+},
+"between": {
+"B IH0 T W IY1 N": 17,
+"B IY0 T W IY1 N": 14
+},
+"beyond": {
+"B IH0 AA1 N D": 1,
+"B IH0 AO1 N D": 1,
+"B IY2 AO1 N D": 4
+},
+"bhutan": {
+"B AH0 T AA1 N": 2
+},
+"bihari": {
+"B IH0 HH AA1 R IY0": 1,
+"B IY0 HH AA1 R IY0": 1
+},
+"boston": {
+"B AA1 S T AH0 N": 1,
+"B AO1 S T AH0 N": 1
+},
+"boundary": {
+"B AW1 N D ER0 IY0": 1
+},
+"bouquets": {
+"B OW0 K EY1 Z": 1
+},
+"boxes": {
+"B AA1 K S AH0 Z": 1,
+"B AA1 K S IH0 Z": 1
+},
+"branches": {
+"B R AE1 N CH AH0 Z": 1,
+"B R AE1 N CH IH0 Z": 1
+},
+"brokerage": {
+"B R OW1 K R IH0 JH": 1
+},
+"bunches": {
+"B AH1 N CH IH0 Z": 1
+},
+"business": {
+"B IH1 Z N AH0 S": 4,
+"B IH1 Z N IH0 S": 4
+},
+"businesses": {
+"B IH1 Z N AH0 S AH0 Z": 3,
+"B IH1 Z N IH0 S IH0 Z": 1
+},
+"calamity": {
+"K AH0 L AE1 M IH0 T IY0": 1
+},
+"calculated": {
+"K AE1 L K Y AH0 L EY2 T IH0 D": 1
+},
+"calm": {
+"K AA1 M": 1
+},
+"can": {
+"K AE1 N": 193,
+"K AH0 N": 52
+},
+"candid": {
+"K AE1 N D IH0 D": 1
+},
+"cannot": {
+"K AE1 N AA0 T": 3,
+"K AH0 N AA1 T": 2
+},
+"capacity": {
+"K AH0 P AE1 S AH0 T IY0": 4
+},
+"capital": {
+"K AE1 P AH0 T AH0 L": 10,
+"K AE1 P IH0 T AH0 L": 4
+},
+"caribbean": {
+"K EH2 R IH0 B IY1 AH0 N": 1
+},
+"carried": {
+"K AE1 R IY0 D": 1,
+"K EH1 R IY0 D": 1
+},
+"carry": {
+"K AE1 R IY0": 2,
+"K EH1 R IY0": 1
+},
+"carrying": {
+"K EH1 R IY0 IH0 NG": 3
+},
+"cars": {
+"K AA1 Z": 1
+},
+"casualties": {
+"K AE1 ZH AH0 L T IY0 Z": 1
+},
+"cause": {
+"K AA1 Z": 2,
+"K AO1 Z": 1
+},
+"caused": {
+"K AA1 Z D": 3,
+"K AO1 Z D": 1
+},
+"causes": {
+"K AO1 Z IH0 Z": 2
+},
+"ceded": {
+"S IY1 D IH0 D": 1
+},
+"celebrated": {
+"S EH1 L AH0 B R EY2 T AH0 D": 10,
+"S EH1 L AH0 B R EY2 T IH0 D": 10
+},
+"center": {
+"S EH1 N T ER0": 26
+},
+"centers": {
+"S EH1 N T ER0 Z": 9
+},
+"chances": {
+"CH AE1 N S AH0 Z": 1,
+"CH AE1 N S IH0 Z": 2
+},
+"changes": {
+"CH EY1 N JH AH0 Z": 4,
+"CH EY1 N JH IH0 Z": 9
+},
+"characters": {
+"K AE1 R IH0 K T ER0 Z": 1
+},
+"charges": {
+"CH AA1 R JH AH0 Z": 1
+},
+"charitable": {
+"CH AE1 R AH0 T AH0 B AH0 L": 1,
+"CH EH1 R AH0 T AH0 B AH0 L": 1
+},
+"charities": {
+"CH EH1 R AH0 T IY0 Z": 1
+},
+"charles": {
+"CH AA1 R AH0 L Z": 1
+},
+"chemical": {
+"K EH1 M IH0 K AH0 L": 2
+},
+"chemistry": {
+"K EH1 M IH0 S T R IY0": 2
+},
+"christian": {
+"K R IH1 S CH AH0 N": 1
+},
+"christians": {
+"K R IH1 S CH AH0 N Z": 2,
+"K R IH1 S CH IH0 N Z": 3
+},
+"churches": {
+"CH ER1 CH AH0 Z": 1,
+"CH ER1 CH IH0 Z": 3
+},
+"circumstances": {
+"S ER1 K AH0 M S T AE2 N S IH0 Z": 2
+},
+"citizen": {
+"S IH1 T AH0 Z AH0 N": 1,
+"S IH1 T IH0 Z AH0 N": 3
+},
+"citizens": {
+"S IH1 T AH0 Z AH0 N Z": 1,
+"S IH1 T IH0 Z AH0 N Z": 3
+},
+"clara": {
+"K L AE1 R AH0": 1
+},
+"classes": {
+"K L AE1 S AH0 Z": 2,
+"K L AE1 S IH0 Z": 2
+},
+"climate": {
+"K L AY1 M AH0 T": 1,
+"K L AY1 M IH0 T": 6
+},
+"close": {
+"K L OW1 S": 1,
+"K L OW1 Z": 3
+},
+"closer": {
+"K L OW1 Z ER0": 2
+},
+"clothes": {
+"K L OW1 Z": 1
+},
+"coffee": {
+"K AA1 F IY0": 3,
+"K AO1 F IY0": 2
+},
+"color": {
+"K AH1 L ER0": 3
+},
+"communities": {
+"K AH0 M Y UW1 N AH0 T IY0 Z": 3,
+"K AH0 M Y UW1 N IH0 T IY0 Z": 7
+},
+"community": {
+"K AH0 M Y UW1 N AH0 T IY0": 9,
+"K AH0 M Y UW1 N IH0 T IY0": 13
+},
+"competitive": {
+"K AH0 M P EH1 T AH0 T IH0 V": 1
+},
+"completed": {
+"K AH0 M P L IY1 T IH0 D": 2
+},
+"complex": {
+"K AA1 M P L EH0 K S": 2
+},
+"composite": {
+"K AA0 M P AA1 Z AH0 T": 2
+},
+"concepts": {
+"K AA1 N S EH0 P S": 1
+},
+"concert": {
+"K AA1 N S ER0 T": 1
+},
+"concerts": {
+"K AA1 N S ER0 T S": 1,
+"K AH0 N S ER1 T S": 1
+},
+"concrete": {
+"K AA1 N K R IY0 T": 2
+},
+"conduct": {
+"K AA1 N D AH0 K T": 1
+},
+"confidential": {
+"K AA2 N F AH0 D EH1 N SH AH0 L": 1
+},
+"connected": {
+"K AH0 N EH1 K T IH0 D": 1
+},
+"constructed": {
+"K AH0 N S T R AH1 K T AH0 D": 1
+},
+"consumption": {
+"K AH0 N S AH1 M P SH AH0 N": 1
+},
+"contacts": {
+"K AA1 N T AE2 K S": 2,
+"K AA1 N T AE2 K T S": 5
+},
+"content": {
+"K AA1 N T EH0 N T": 2,
+"K AH0 N T EH1 N T": 1
+},
+"contents": {
+"K AA1 N T EH0 N T S": 1,
+"K AH0 N T EH1 N T S": 1
+},
+"converse": {
+"K AA1 N V ER0 S": 1,
+"K AH0 N V ER1 S": 1
+},
+"corporate": {
+"K AO1 R P ER0 AH0 T": 1
+},
+"corrected": {
+"K ER0 EH1 K T AH0 D": 1,
+"K ER0 EH1 K T IH0 D": 1
+},
+"cost": {
+"K AA1 S T": 2,
+"K AO1 S T": 4
+},
+"costly": {
+"K AO1 S T L IY0": 1
+},
+"costs": {
+"K AO1 S T S": 1
+},
+"costumes": {
+"K AA0 S T UW1 M Z": 1
+},
+"cotton": {
+"K AA1 T AH0 N": 1
+},
+"cough": {
+"K AA1 F": 2
+},
+"couldn't": {
+"K UH1 D AH0 N": 2,
+"K UH1 D AH0 N T": 2
+},
+"courses": {
+"K AO1 R S AH0 Z": 6,
+"K AO1 R S IH0 Z": 8
+},
+"coverage": {
+"K AH1 V ER0 IH0 JH": 3
+},
+"covering": {
+"K AH1 V ER0 IH0 NG": 2
+},
+"crafts": {
+"K R AE1 F S": 3,
+"K R AE1 F T S": 2
+},
+"created": {
+"K R IY0 EY1 T AH0 D": 2,
+"K R IY0 EY1 T IH0 D": 2
+},
+"credit": {
+"K R EH1 D AH0 T": 1,
+"K R EH1 D IH0 T": 4
+},
+"credited": {
+"K R EH1 D AH0 T AH0 D": 1,
+"K R EH1 D IH0 T IH0 D": 2
+},
+"cricket": {
+"K R IH1 K AH0 T": 3,
+"K R IH1 K IH0 T": 1
+},
+"current": {
+"K AA1 R AH0 N T": 14,
+"K ER1 AH0 N T": 10,
+"K ER1 N T": 1
+},
+"curry": {
+"K AH1 R IY0": 1
+},
+"cycling": {
+"S AY1 K L IH0 NG": 2
+},
+"cyclists": {
+"S AY1 K L IH0 S T S": 1
+},
+"cylinder": {
+"S IH1 L IH0 N D ER0": 2
+},
+"damaged": {
+"D AE1 M IH0 JH D": 2
+},
+"dangling": {
+"D AE1 NG G L IH0 NG": 1
+},
+"darjeeling": {
+"D AA2 R JH IY1 L IH0 NG": 2
+},
+"data": {
+"D EY1 T AH0": 2
+},
+"davis": {
+"D EY1 V IH0 S": 1
+},
+"de": {
+"D EY1": 1,
+"D IY1": 1
+},
+"debut": {
+"D EY0 B Y UW1": 1
+},
+"decade": {
+"D EH0 K EY1 D": 1
+},
+"decorated": {
+"D EH1 K ER0 EY2 T AH0 D": 1
+},
+"decrease": {
+"D IY1 K R IY2 S": 1
+},
+"decreasing": {
+"D IH0 K R IY1 S IH0 NG": 1
+},
+"defeated": {
+"D IH0 F IY1 T AH0 D": 1
+},
+"delicacy": {
+"D EH1 L IH0 K AH0 S IY0": 1
+},
+"depicts": {
+"D IH0 P IH1 K S": 1,
+"D IH0 P IH1 K T S": 1
+},
+"deposit": {
+"D AH0 P AA1 Z IH0 T": 1
+},
+"deposits": {
+"D AH0 P AA1 Z IH0 T S": 1,
+"D IH0 P AA1 Z AH0 T S": 1
+},
+"desert": {
+"D EH1 Z ER0 T": 2
+},
+"desperate": {
+"D EH1 S P ER0 IH0 T": 1
+},
+"destination": {
+"D EH2 S T AH0 N EY1 SH AH0 N": 1
+},
+"details": {
+"D IH0 T EY1 L Z": 2,
+"D IY1 T EY0 L Z": 5
+},
+"determine": {
+"D IH0 T ER1 M AH0 N": 2
+},
+"did": {
+"D IH0 D": 14,
+"D IH1 D": 9
+},
+"didn't": {
+"D IH1 D AH0 N": 1,
+"D IH1 D AH0 N T": 1,
+"D IH1 N T": 1
+},
+"difference": {
+"D IH1 F ER0 AH0 N S": 1,
+"D IH1 F R AH0 N S": 1
+},
+"differences": {
+"D IH1 F ER0 AH0 N S IH0 Z": 2,
+"D IH1 F R AH0 N S AH0 Z": 2
+},
+"different": {
+"D IH1 F ER0 AH0 N T": 33,
+"D IH1 F R AH0 N T": 43
+},
+"differentiate": {
+"D IH2 F ER0 EH1 N SH IY0 EY2 T": 2
+},
+"differentiates": {
+"D IH0 F ER0 EH1 N SH IY0 EY2 T S": 1
+},
+"difficulties": {
+"D IH1 F IH0 K AH2 L T IY0 Z": 1
+},
+"digit": {
+"D IH1 JH IH0 T": 1
+},
+"digital": {
+"D IH1 JH AH0 T AH0 L": 4,
+"D IH1 JH IH0 T AH0 L": 2
+},
+"direct": {
+"D AY0 R EH1 K T": 1
+},
+"directed": {
+"D IH0 R EH1 K T IH0 D": 1
+},
+"direction": {
+"D ER0 EH1 K SH AH0 N": 2
+},
+"directly": {
+"D AY0 R EH1 K L IY0": 1
+},
+"director": {
+"D AY0 R EH1 K T ER0": 1
+},
+"disabilities": {
+"D IH0 S AH0 B IH1 L IH0 T IY0 Z": 2
+},
+"disability": {
+"D IH2 S AH0 B IH1 L IH0 T IY0": 2
+},
+"disadvantaged": {
+"D IH0 S AH0 D V AE1 N T IH0 JH D": 1
+},
+"discount": {
+"D IH0 S K AW1 N T": 4,
+"D IH1 S K AW0 N T": 2
+},
+"discounted": {
+"D IH1 S K AW2 N T IH0 D": 4
+},
+"discounts": {
+"D IH0 S K AW1 N T S": 4,
+"D IH1 S K AW2 N T S": 1
+},
+"diseases": {
+"D IH0 Z IY1 Z IH0 Z": 3
+},
+"dishes": {
+"D IH1 SH AH0 Z": 3,
+"D IH1 SH IH0 Z": 1
+},
+"dispensary": {
+"D IH0 S P EH1 N S ER0 IY0": 1
+},
+"diverse": {
+"D AY0 V ER1 S": 4
+},
+"diversion": {
+"D AY0 V ER1 ZH AH0 N": 1
+},
+"diversity": {
+"D AY0 V ER1 S AH0 T IY0": 4,
+"D AY0 V ER1 S IH0 T IY0": 1
+},
+"doctor": {
+"D AA1 K T ER0": 1
+},
+"document": {
+"D AA1 K Y AH0 M EH0 N T": 1
+},
+"documented": {
+"D AA1 K Y AH0 M EH2 N T AH0 D": 1
+},
+"documents": {
+"D AA1 K Y AH0 M AH0 N T S": 2,
+"D AA1 K Y UW0 M AH0 N T S": 1
+},
+"does": {
+"D AH1 Z": 11,
+"D IH0 Z": 5
+},
+"dollar": {
+"D AA1 L ER0": 1
+},
+"dollars": {
+"D AA1 L ER0 Z": 1
+},
+"don't": {
+"D OW1 N": 15,
+"D OW1 N T": 16
+},
+"drop": {
+"D R AA1 P": 2
+},
+"due": {
+"D UW1": 15,
+"D Y UW1": 10
+},
+"during": {
+"D ER1 IH0 NG": 2,
+"D UH1 R IH0 NG": 7,
+"D Y UH1 R IH0 NG": 15
+},
+"duty": {
+"D UW1 T IY0": 2
+},
+"eco": {
+"EH1 K OW0": 2
+},
+"economic": {
+"EH2 K AH0 N AA1 M IH0 K": 2,
+"IY2 K AH0 N AA1 M IH0 K": 3
+},
+"economically": {
+"EH2 K AH0 N AA1 M IH0 K L IY0": 1
+},
+"economy": {
+"IH0 K AA1 N AH0 M IY0": 5,
+"IY0 K AA1 N AH0 M IY0": 4
+},
+"educate": {
+"EH1 JH AH0 K EY2 T": 1
+},
+"educated": {
+"EH1 JH AH0 K EY2 T AH0 D": 3
+},
+"educating": {
+"EH1 JH AH0 K EY2 T IH0 NG": 1
+},
+"education": {
+"EH2 JH AH0 K EY1 SH AH0 N": 61,
+"EH2 JH Y UW0 K EY1 SH AH0 N": 13
+},
+"educational": {
+"EH2 JH AH0 K EY1 SH AH0 N AH0 L": 4,
+"EH2 JH Y UW0 K EY1 SH AH0 N AH0 L": 1
+},
+"educators": {
+"EH1 JH AH0 K EY2 T ER0 Z": 1
+},
+"effect": {
+"IY1 F EH0 K T": 1
+},
+"effective": {
+"IY1 F EH0 K T IH0 V": 1
+},
+"effectively": {
+"IH0 F EH1 K T IH0 V L IY0": 2
+},
+"effects": {
+"IH0 F EH1 K S": 1
+},
+"egypt": {
+"IY1 JH IH0 P T": 1
+},
+"eighteen": {
+"EY0 T IY1 N": 1,
+"EY1 T IY1 N": 14
+},
+"eighteenth": {
+"EY0 T IY1 N TH": 1
+},
+"eighth": {
+"EY1 T TH": 2,
+"EY1 TH": 1
+},
+"either": {
+"AY1 DH ER0": 2,
+"IY1 DH ER0": 1
+},
+"elected": {
+"IH0 L EH1 K T IH0 D": 2
+},
+"elementary": {
+"EH2 L AH0 M EH1 N T R IY0": 1
+},
+"eleven": {
+"IH0 L EH1 V AH0 N": 4
+},
+"eleventh": {
+"IH0 L EH1 V AH0 N TH": 1
+},
+"elite": {
+"IH0 L IY1 T": 2
+},
+"emerge": {
+"IY1 M ER0 JH": 2
+},
+"emergencies": {
+"IH0 M ER1 JH AH0 N S IY0 Z": 2
+},
+"emergency": {
+"IH0 M ER1 JH AH0 N S IY0": 1
+},
+"emerging": {
+"IH0 M ER1 JH IH0 NG": 1,
+"IY1 M ER0 JH IH0 NG": 1
+},
+"emotional": {
+"IH0 M OW1 SH AH0 N AH0 L": 1
+},
+"emotions": {
+"IH0 M OW1 SH AH0 N Z": 1,
+"IY1 M OW0 SH AH0 N Z": 1
+},
+"emphasis": {
+"EH1 M F AH0 S IH0 S": 2
+},
+"employ": {
+"IH0 M P L OY1": 1
+},
+"employed": {
+"EH0 M P L OY1 D": 1
+},
+"employee": {
+"IH0 M P L OY1 IY0": 1
+},
+"employees": {
+"EH0 M P L OY1 IY0 Z": 1,
+"IH0 M P L OY1 IY0 Z": 1
+},
+"employment": {
+"EH0 M P L OY1 M AH0 N T": 1,
+"IH0 M P L OY1 M AH0 N T": 6
+},
+"employs": {
+"IH0 M P L OY1 Z": 1
+},
+"enable": {
+"IH0 N EY1 B AH0 L": 3
+},
+"enabled": {
+"IH0 N EY1 B AH0 L D": 2
+},
+"encounter": {
+"IH0 N K AW1 N T ER0": 2
+},
+"encountered": {
+"IH0 N K AW1 N T ER0 D": 1
+},
+"encouraged": {
+"EH0 N K ER1 IH0 JH D": 2
+},
+"encourages": {
+"EH0 N K ER1 IH0 JH IH0 Z": 3
+},
+"ended": {
+"EH1 N D IH0 D": 1
+},
+"english": {
+"IH1 NG G L IH0 SH": 118,
+"IH1 NG L IH0 SH": 53
+},
+"enhanced": {
+"IH0 N HH AE1 N S T": 2
+},
+"enjoy": {
+"EH0 N JH OY1": 4,
+"IH0 N JH OY1": 8
+},
+"enjoyed": {
+"EH0 N JH OY1 D": 3,
+"IH0 N JH OY1 D": 1
+},
+"enjoying": {
+"EH0 N JH OY1 IH0 NG": 1,
+"IH0 N JH OY1 IH0 NG": 1
+},
+"enjoys": {
+"EH0 N JH OY1 Z": 1
+},
+"enmity": {
+"EH1 N M IH0 T IY0": 1
+},
+"enough": {
+"IH0 N AH1 F": 4,
+"IY0 N AH1 F": 1
+},
+"enroll": {
+"IH0 N R OW1 L": 1
+},
+"ensure": {
+"EH0 N SH UH1 R": 1,
+"IH0 N SH UH1 R": 2
+},
+"ensured": {
+"IH0 N SH UH1 R D": 1
+},
+"enter": {
+"EH1 N T ER0": 6
+},
+"entertainer": {
+"EH2 N T ER0 T EY1 N ER0": 1
+},
+"entertaining": {
+"EH2 N T ER0 T EY1 N IH0 NG": 1
+},
+"entertainment": {
+"EH2 N T ER0 T EY1 N M AH0 N T": 7
+},
+"environmental": {
+"IH0 N V AY2 R AH0 N M EH1 N T AH0 L": 7
+},
+"episode": {
+"EH1 P AH0 S OW2 D": 2,
+"EH1 P IH0 S OW2 D": 1
+},
+"era": {
+"EH1 R AH0": 1,
+"IH1 R AH0": 2
+},
+"erected": {
+"IH0 R EH1 K T AH0 D": 1
+},
+"erroneous": {
+"EH0 R OW1 N IY0 AH0 S": 1
+},
+"especially": {
+"AH0 S P EH1 SH AH0 L IY0": 2,
+"AH0 S P EH1 SH L IY0": 6
+},
+"essay": {
+"EH1 S EY2": 1
+},
+"essential": {
+"IH0 S EH1 N SH AH0 L": 2
+},
+"essentially": {
+"IH0 S EH1 N SH AH0 L IY0": 2
+},
+"establish": {
+"IY0 S T AE1 B L IH0 SH": 1
+},
+"established": {
+"IH0 S T AE1 B L IH0 SH T": 7,
+"IY0 S T AE1 B L IH0 SH T": 1
+},
+"estimated": {
+"EH1 S T AH0 M EY2 T AH0 D": 1,
+"EH1 S T AH0 M EY2 T IH0 D": 2
+},
+"event": {
+"IH0 V EH1 N T": 2,
+"IY0 V EH1 N T": 8
+},
+"events": {
+"IH0 V EH1 N T S": 7,
+"IY0 V EH1 N T S": 14
+},
+"eventually": {
+"IH0 V EH1 N SH AH0 L IY0": 2
+},
+"every": {
+"EH1 V ER0 IY0": 1,
+"EH1 V R IY0": 44
+},
+"everywhere": {
+"EH1 V R IY0 HH W EH2 R": 2,
+"EH1 V R IY0 W EH2 R": 2
+},
+"evolved": {
+"IH0 V AA1 L V D": 1,
+"IY0 V AA1 L V D": 4
+},
+"excess": {
+"IH0 K S EH1 S": 2
+},
+"exchanges": {
+"IH0 K S CH EY1 N JH IH0 Z": 1
+},
+"excited": {
+"IH0 K S AY1 T AH0 D": 1
+},
+"excuse": {
+"IH0 K S K Y UW1 Z": 2
+},
+"exercises": {
+"EH1 K S ER0 S AY2 Z IH0 Z": 1
+},
+"existence": {
+"EH0 G Z IH1 S T AH0 N S": 2,
+"IH0 G Z IH1 S T AH0 N S": 1
+},
+"expected": {
+"IH0 K S P EH1 K T AH0 D": 1,
+"IH0 K S P EH1 K T IH0 D": 4
+},
+"expenses": {
+"IH0 K S P EH1 N S IH0 Z": 1
+},
+"faces": {
+"F EY1 S AH0 Z": 1
+},
+"facilities": {
+"F AH0 S IH1 L AH0 T IY0 Z": 1,
+"F AH0 S IH1 L IH0 T IY0 Z": 8
+},
+"fall": {
+"F AA1 L": 3
+},
+"families": {
+"F AE1 M AH0 L IY0 Z": 1,
+"F AE1 M L IY0 Z": 2
+},
+"family": {
+"F AE1 M AH0 L IY0": 3,
+"F AE1 M L IY0": 7
+},
+"favorable": {
+"F EY1 V ER0 AH0 B AH0 L": 1
+},
+"favorite": {
+"F EY1 V ER0 IH0 T": 24,
+"F EY1 V R AH0 T": 5
+},
+"february": {
+"F EH1 B R UW0 EH2 R IY0": 2
+},
+"federal": {
+"F EH1 D ER0 AH0 L": 1,
+"F EH1 D R AH0 L": 2
+},
+"fertility": {
+"F ER0 T IH1 L AH0 T IY0": 1,
+"F ER0 T IH1 L IH0 T IY0": 1
+},
+"festival": {
+"F EH1 S T AH0 V AH0 L": 1,
+"F EH1 S T IH0 V AH0 L": 25
+},
+"festivals": {
+"F EH1 S T IH0 V AH0 L Z": 8
+},
+"fifteen": {
+"F IH0 F T IY1 N": 9,
+"F IH1 F T IY1 N": 5
+},
+"fifth": {
+"F IH1 F TH": 1
+},
+"finance": {
+"F AY1 N AE2 N S": 16,
+"F IH0 N AE1 N S": 5
+},
+"financial": {
+"F AH0 N AE1 N SH AH0 L": 4,
+"F AY2 N AE1 N SH AH0 L": 5,
+"F IH0 N AE1 N SH AH0 L": 2
+},
+"financially": {
+"F AY2 N AE1 N SH AH0 L IY0": 1
+},
+"fire": {
+"F AY1 ER0": 1
+},
+"flour": {
+"F L AW1 ER0": 2,
+"F L AW1 R": 9
+},
+"focus": {
+"F OW1 K AH0 S": 8,
+"F OW1 K IH0 S": 1
+},
+"focused": {
+"F OW1 K AH0 S T": 5
+},
+"focuses": {
+"F OW1 K AH0 S IH0 Z": 1
+},
+"focusing": {
+"F OW1 K AH0 S IH0 NG": 1
+},
+"for": {
+"F AO1 R": 252,
+"F ER0": 39,
+"F R ER0": 109
+},
+"forbidden": {
+"F ER0 R B IH1 D AH0 N": 1
+},
+"foreign": {
+"F AA1 R AH0 N": 5,
+"F AO1 R AH0 N": 5
+},
+"forest": {
+"F AO1 R AH0 S T": 4,
+"F AO1 R IH0 S T": 1
+},
+"forget": {
+"F AO0 R G EH1 T": 1,
+"F ER0 G EH1 T": 2
+},
+"forgot": {
+"F AO0 R G AA1 T": 2
+},
+"formidable": {
+"F AO1 R M AH0 D AH0 B AH0 L": 1,
+"F AO2 R M IH1 D AH0 B AH0 L": 1
+},
+"fortunately": {
+"F AO1 R CH AH0 N AH0 T L IY0": 1
+},
+"fortune": {
+"F AO1 R CH UW0 N": 1
+},
+"founded": {
+"F AW1 N D AH0 D": 1,
+"F AW1 N D IH0 D": 3
+},
+"fourteen": {
+"F AO1 R T IY1 N": 1
+},
+"fourteenth": {
+"F AO1 R T IY1 N TH": 3
+},
+"fraternity": {
+"F R AH0 T ER1 N AH0 T IY0": 2
+},
+"friday": {
+"F R AY1 D EY2": 1,
+"F R AY1 D IY0": 2
+},
+"fried": {
+"F R AY1 D": 2
+},
+"friendly": {
+"F R EH1 N D L IY0": 5,
+"F R EH1 N L IY0": 1
+},
+"friends": {
+"F R EH1 N D Z": 7
+},
+"from": {
+"F ER0 M": 40,
+"F R AH1 M": 146
+},
+"funded": {
+"F AH1 N D AH0 D": 1,
+"F AH1 N D IH0 D": 1
+},
+"gardening": {
+"G AA1 R D AH0 N IH0 NG": 3,
+"G AA1 R D N IH0 NG": 1
+},
+"general": {
+"JH EH1 N R AH0 L": 1
+},
+"general's": {
+"JH EH1 N ER0 AH0 L Z": 1
+},
+"generally": {
+"JH EH1 N ER0 AH0 L IY0": 4,
+"JH EH1 N R AH0 L IY0": 3
+},
+"get": {
+"G EH1 T": 33,
+"G IH1 T": 36
+},
+"gets": {
+"G IH1 T S": 2
+},
+"getting": {
+"G EH1 T IH0 NG": 3,
+"G IH1 T IH0 NG": 4
+},
+"gifts": {
+"G IH1 F T S": 2
+},
+"given": {
+"G IH1 V AH0 N": 10,
+"G IH1 V IH0 N": 2
+},
+"going": {
+"G OW1 IH0 N": 3,
+"G OW1 IH0 NG": 14
+},
+"good": {
+"G IH0 D": 2,
+"G UH1 D": 54
+},
+"gotten": {
+"G AA1 T AH0 N": 1
+},
+"government": {
+"G AH1 V ER0 M AH0 N T": 36,
+"G AH1 V ER0 N M AH0 N T": 17
+},
+"governments": {
+"G AH1 V ER0 M AH0 N T S": 1,
+"G AH1 V ER0 N M AH0 N T S": 1
+},
+"gradually": {
+"G R AE1 JH UW0 AH0 L IY0": 4,
+"G R AE1 JH UW0 L IY0": 5
+},
+"graduate": {
+"G R AE1 JH UW0 W AH0 T": 1
+},
+"graduation": {
+"G R AE2 JH UW0 EY1 SH AH0 N": 2
+},
+"grandfather's": {
+"G R AE1 N F AA2 DH ER0 Z": 1
+},
+"grandson": {
+"G R AE1 N D S AH2 N": 1
+},
+"groceries": {
+"G R OW1 S R IY0 Z": 1
+},
+"handmade": {
+"HH AE1 N M EY1 D": 2
+},
+"hands": {
+"HH AE1 N D Z": 1
+},
+"hanging": {
+"HH AE1 NG G IH0 NG": 1
+},
+"happening": {
+"HH AE1 P AH0 N IH0 NG": 7,
+"HH AE1 P N IH0 NG": 2
+},
+"happenings": {
+"HH AE1 P AH0 N IH0 NG Z": 4
+},
+"has": {
+"HH AE1 Z": 139,
+"HH AH0 Z": 8
+},
+"haven't": {
+"HH AE1 V AH0 N": 2,
+"HH AE1 V AH0 N T": 6
+},
+"headed": {
+"HH EH1 D IH0 D": 2
+},
+"headquarters": {
+"HH EH1 D K AO2 R T ER0 Z": 1,
+"HH EH1 D K W AO2 R T ER0 Z": 1
+},
+"heated": {
+"HH IY1 T AH0 D": 1
+},
+"hello": {
+"HH EH0 L OW1": 1
+},
+"her": {
+"HH ER0": 3,
+"HH ER1": 10
+},
+"herb": {
+"HH ER1 B": 1
+},
+"herbal": {
+"HH ER1 B AH0 L": 1
+},
+"heritage": {
+"HH EH1 R IH0 T IH0 JH": 5
+},
+"him": {
+"HH IH1 M": 3
+},
+"himalayan": {
+"HH IH2 M AH0 L AY1 AH0 N": 4,
+"HH IH2 M AH0 L EY1 AH0 N": 3
+},
+"himalayas": {
+"HH IH2 M AH0 L AY1 AH0 S": 3,
+"HH IH2 M AH0 L EY1 AH0 S": 4
+},
+"his": {
+"HH IH0 Z": 10,
+"HH IH1 Z": 20
+},
+"histories": {
+"HH IH1 S T ER0 IY0 Z": 1
+},
+"history": {
+"HH IH1 S T ER0 IY0": 4,
+"HH IH1 S T R IY0": 9
+},
+"holiday": {
+"HH AA1 L IH0 D EY2": 5
+},
+"honestly": {
+"AA1 N AH0 S T L IY0": 1
+},
+"hours": {
+"AW1 ER0 Z": 5,
+"AW1 R Z": 5
+},
+"houses": {
+"HH AW1 S AH0 Z": 2,
+"HH AW1 S IH0 Z": 4
+},
+"huge": {
+"HH Y UW1 JH": 3,
+"Y UW1 JH": 1
+},
+"human": {
+"HH Y UW1 M AH0 N": 8,
+"Y UW1 M AH0 N": 2
+},
+"humanity": {
+"HH Y UW0 M AE1 N IH0 T IY0": 1
+},
+"humans": {
+"HH Y UW1 M AH0 N Z": 1,
+"Y UW1 M AH0 N Z": 1
+},
+"humid": {
+"HH Y UW1 M IH0 D": 1
+},
+"hundred": {
+"HH AH1 N D ER0 D": 26,
+"HH AH1 N D R AH0 D": 8,
+"HH AH1 N D R IH0 D": 4,
+"HH AH1 N ER0 D": 11
+},
+"hundreds": {
+"HH AH1 N D R AH0 D Z": 1
+},
+"hyderabad": {
+"HH AY1 D ER0 AH0 B AE2 D": 2
+},
+"i'm": {
+"AH0 M": 6,
+"AY1 M": 11
+},
+"id": {
+"AY1 D IY1": 9
+},
+"identification": {
+"AY0 D EH2 N T AH0 F AH0 K EY1 SH AH0 N": 1
+},
+"identity": {
+"AY0 D EH1 N T IH0 T IY0": 3
+},
+"if": {
+"IH0 F": 17,
+"IH1 F": 30
+},
+"imagery": {
+"IH1 M AH0 JH R IY0": 1
+},
+"impact": {
+"IH0 M P AE1 K T": 5,
+"IH1 M P AE0 K T": 2
+},
+"impacted": {
+"IH0 M P AE1 K T IH0 D": 1,
+"IH1 M P AE2 K T IH0 D": 5
+},
+"impacts": {
+"IH0 M P AE1 K S": 3,
+"IH0 M P AE1 K T S": 1,
+"IH1 M P AE0 K T S": 1
+},
+"implemented": {
+"IH1 M P L AH0 M EH2 N T AH0 D": 2
+},
+"implementing": {
+"IH1 M P L AH0 M EH2 N T IH0 NG": 1
+},
+"improvise": {
+"IH2 M P R AH0 V AY1 Z": 1
+},
+"in": {
+"IH0 N": 611,
+"IH1 N": 391
+},
+"inadequate": {
+"IH0 N AE1 D AH0 K W AH0 T": 3
+},
+"increase": {
+"IH0 N K R IY1 S": 2,
+"IH1 N K R IY2 S": 2
+},
+"increased": {
+"IH0 N K R IY1 S T": 3,
+"IH1 N K R IY2 S T": 1
+},
+"increasingly": {
+"IH0 N K R IY1 S IH0 NG L IY0": 1
+},
+"individually": {
+"IH2 N D IH0 V IH1 JH UW0 AH0 L IY0": 1
+},
+"inequality": {
+"IH1 N IY0 K W AA1 L AH0 T IY0": 3
+},
+"information": {
+"IH0 N F AO1 R M EY1 SH AH0 N": 1,
+"IH2 N F ER0 M EY1 SH AH0 N": 5
+},
+"inhabitants": {
+"IH0 N HH AE1 B AH0 T AH0 N T S": 1
+},
+"initiative": {
+"IH0 N IH1 SH Y AH0 T IH0 V": 1
+},
+"initiatives": {
+"IH0 N IH1 SH Y AH0 T IH0 V Z": 4
+},
+"innovation": {
+"IH2 N OW0 V EY1 SH AH0 N": 1
+},
+"innovations": {
+"IH2 N OW0 V EY1 SH AH0 N Z": 1
+},
+"innovative": {
+"IH1 N OW0 V EY2 T IH0 V": 1
+},
+"inside": {
+"IH0 N S AY1 D": 2,
+"IH1 N S AY2 D": 1
+},
+"inspiring": {
+"IH0 N S P AY1 ER0 IH0 NG": 1
+},
+"instances": {
+"IH1 N S T AH0 N S IH0 Z": 1
+},
+"integral": {
+"IH1 N T AH0 G R AH0 L": 1
+},
+"intellectual": {
+"IH2 N T AH0 L EH1 K CH UW0 AH0 L": 2
+},
+"intellectually": {
+"IH2 N T AH0 L EH1 K CH UW0 AH0 L IY0": 1,
+"IH2 N T AH0 L EH1 K CH UW0 L IY0": 1
+},
+"intensity": {
+"IH0 N T EH1 N S IH0 T IY0": 1
+},
+"interact": {
+"IH2 N T ER0 AE1 K T": 2
+},
+"interacting": {
+"IH2 N T ER0 AE1 K T IH0 NG": 1
+},
+"interest": {
+"IH1 N T ER0 AH0 S T": 2,
+"IH1 N T R AH0 S T": 3
+},
+"interested": {
+"IH1 N T ER0 AH0 S T AH0 D": 4,
+"IH1 N T ER0 IH0 S T IH0 D": 3
+},
+"interesting": {
+"IH1 N T ER0 AH0 S T IH0 NG": 6,
+"IH1 N T ER0 IH0 S T IH0 NG": 1,
+"IH1 N T R AH0 S T IH0 NG": 1,
+"IH1 N T R IH0 S T IH0 NG": 2
+},
+"interests": {
+"IH1 N T R AH0 S T S": 1,
+"IH1 N T R IH0 S T S": 1
+},
+"international": {
+"IH2 N T ER0 N AE1 SH AH0 N AH0 L": 17
+},
+"intervention": {
+"IH2 N T ER0 V EH1 N CH AH0 N": 1
+},
+"intimate": {
+"IH1 N T AH0 M EY2 T": 1
+},
+"into": {
+"IH0 N T AH0": 11,
+"IH0 N T UW1": 16,
+"IH1 N T UW0": 4
+},
+"introduced": {
+"IH2 N T R AH0 D UW1 S T": 3
+},
+"introducing": {
+"IH2 N T R AH0 D UW1 S IH0 NG": 2
+},
+"invalid": {
+"IH0 N V AE1 L AH0 D": 1
+},
+"investment": {
+"IH0 N V EH1 S T M AH0 N T": 3
+},
+"investments": {
+"IH0 N V EH1 S T M AH0 N T S": 1
+},
+"invited": {
+"IH0 N V AY1 T AH0 D": 1,
+"IH0 N V AY1 T IH0 D": 1
+},
+"involuntarily": {
+"IH2 N V AA2 L AH0 N T ER1 AH0 L IY0": 1
+},
+"iranian": {
+"AY0 R EY1 N IY0 AH0 N": 1
+},
+"ireland": {
+"AY1 ER0 L AH0 N D": 2
+},
+"is": {
+"IH0 Z": 227,
+"IH1 Z": 511
+},
+"islam": {
+"IH1 S L AA2 M": 5,
+"IH1 Z L AH0 M": 2
+},
+"it": {
+"IH0 T": 183,
+"IH1 T": 182
+},
+"it's": {
+"IH0 T S": 17,
+"IH1 T S": 27
+},
+"its": {
+"IH0 T S": 18,
+"IH1 T S": 25
+},
+"janeiro": {
+"JH AH0 N EH1 R OW2": 1
+},
+"jewelry": {
+"JH UW1 L R IY0": 1
+},
+"job": {
+"JH OW1 B": 1
+},
+"judaism": {
+"JH UW1 D EY0 IH2 Z AH0 M": 1
+},
+"juices": {
+"JH UW1 S AH0 Z": 1
+},
+"july": {
+"JH AH0 L AY1": 2,
+"JH UW2 L AY1": 2
+},
+"just": {
+"JH AH1 S T": 16,
+"JH IH0 S T": 10
+},
+"justice": {
+"JH AH1 S T IH0 S": 1
+},
+"kashmir": {
+"K AE1 SH M IY0 R": 6
+},
+"kept": {
+"K EH1 P T": 1
+},
+"kilometers": {
+"K IH1 L AH0 M IY2 T ER0 Z": 1
+},
+"kinds": {
+"K AY1 N D Z": 3,
+"K AY1 N Z": 2
+},
+"knowledge": {
+"N AA1 L IH0 JH": 11
+},
+"krishna": {
+"K R IH1 SH N AH0": 3
+},
+"language": {
+"L AE1 NG G W AH0 JH": 36,
+"L AE1 NG G W IH0 JH": 87
+},
+"languages": {
+"L AE1 NG G W AH0 JH AH0 Z": 2,
+"L AE1 NG G W IH0 JH IH0 Z": 19
+},
+"last": {
+"L AE1 S": 11,
+"L AE1 S T": 37
+},
+"lead": {
+"L IY1 D": 2
+},
+"learned": {
+"L ER1 N D": 3,
+"L ER1 N IH0 D": 1
+},
+"length": {
+"L EH1 NG K TH": 1
+},
+"lighted": {
+"L AY1 T IH0 D": 1
+},
+"limited": {
+"L IH1 M AH0 T AH0 D": 2,
+"L IH1 M IH0 T IH0 D": 3
+},
+"limits": {
+"L IH1 M AH0 T S": 1
+},
+"liquid": {
+"L IH1 K W AH0 D": 1,
+"L IH1 K W IH0 D": 1
+},
+"listed": {
+"L IH1 S T IH0 D": 1
+},
+"listener": {
+"L IH1 S N ER0": 1
+},
+"literally": {
+"L IH1 T ER0 AH0 L IY0": 1,
+"L IH1 T R AH0 L IY0": 2
+},
+"live": {
+"L AY1 V": 3,
+"L IH1 V": 15
+},
+"lived": {
+"L IH1 V D": 3
+},
+"lives": {
+"L AY1 V Z": 8,
+"L IH1 V Z": 3
+},
+"loaded": {
+"L OW1 D IH0 D": 1
+},
+"located": {
+"L OW1 K EY2 D": 1,
+"L OW1 K EY2 T AH0 D": 18
+},
+"longest": {
+"L AO1 NG G AH0 S T": 1
+},
+"los": {
+"L AO1 S": 1
+},
+"losses": {
+"L AO1 S AH0 Z": 1
+},
+"lot": {
+"L AA1 T": 34,
+"L AO1 T": 15
+},
+"magnificent": {
+"M AE0 G N IH1 F IH0 S AH0 N T": 1
+},
+"mahmud": {
+"M AA0 M UW1 D": 1
+},
+"maintenance": {
+"M EY1 N T AH0 N AH0 N S": 1
+},
+"manage": {
+"M AE1 N IH0 JH": 3
+},
+"managed": {
+"M AE1 N IH0 JH D": 6
+},
+"management": {
+"M AE1 N IH0 JH M AH0 N T": 5
+},
+"market": {
+"M AA1 R K AH0 T": 5,
+"M AA1 R K IH0 T": 4
+},
+"markets": {
+"M AA1 R K AH0 T S": 2
+},
+"masterpieces": {
+"M AE1 S T ER0 P IY2 S IH0 Z": 1
+},
+"medical": {
+"M EH1 D IH0 K AH0 L": 25
+},
+"menstrual": {
+"M EH1 N S T R AH0 L": 1
+},
+"mentality": {
+"M EH0 N T AE1 L IH0 T IY0": 1
+},
+"message": {
+"M EH1 S IH0 JH": 1
+},
+"messages": {
+"M EH1 S IH0 JH IH0 Z": 1
+},
+"messenger": {
+"M EH1 S IH0 N JH ER0": 1
+},
+"military": {
+"M IH1 L IH0 T EH2 R IY0": 2
+},
+"minded": {
+"M AY1 N D AH0 D": 1
+},
+"minister": {
+"M IH1 N IH0 S T ER0": 3
+},
+"ministers": {
+"M IH1 N IH0 S T ER0 Z": 1
+},
+"minorities": {
+"M AY0 N AO1 R AH0 T IY0 Z": 1
+},
+"minority": {
+"M AH0 N AO1 R AH0 T IY0": 1,
+"M AY0 N AO1 R AH0 T IY0": 3
+},
+"miserable": {
+"M IH1 Z ER0 AH0 B AH0 L": 1
+},
+"moderate": {
+"M AA1 D ER0 AH0 T": 1
+},
+"monuments": {
+"M AA1 N Y UW0 M AH0 N T S": 1
+},
+"mosques": {
+"M AA1 S K S": 1
+},
+"most": {
+"M OW1 S": 6,
+"M OW1 S T": 43
+},
+"mostly": {
+"M OW1 S L IY0": 2,
+"M OW1 S T L IY0": 14
+},
+"museum": {
+"M Y UW0 Z IY1 AH0 M": 1,
+"M Y UW1 Z IY0 AH0 M": 5
+},
+"museums": {
+"M Y UW1 Z IY0 AH0 M Z": 2
+},
+"muslim": {
+"M AH1 Z L AH0 M": 1,
+"M AH1 Z L IH0 M": 5
+},
+"muslims": {
+"M AH1 Z L AH0 M Z": 1,
+"M AH1 Z L IH0 M Z": 5
+},
+"national": {
+"N AE1 SH AH0 N AH0 L": 2,
+"N AE1 SH N AH0 L": 19
+},
+"nationalist": {
+"N AE1 SH N AH0 L IH0 S T": 1
+},
+"natural": {
+"N AE1 CH ER0 AH0 L": 7,
+"N AE1 CH R AH0 L": 5
+},
+"naturally": {
+"N AE1 CH ER0 AH0 L IY0": 1
+},
+"necessity": {
+"N AH0 S EH1 S AH0 T IY0": 1
+},
+"needed": {
+"N IY1 D AH0 D": 1,
+"N IY1 D IH0 D": 2
+},
+"negligence": {
+"N EH1 G L IH0 JH AH0 N S": 1
+},
+"nestle": {
+"N EH1 S L IY1": 2
+},
+"new": {
+"N UW1": 9,
+"N Y UW1": 37
+},
+"news": {
+"N UW1 Z": 3,
+"N Y UW1 Z": 17
+},
+"next": {
+"N EH1 K S": 3,
+"N EH1 K S T": 11
+},
+"nice": {
+"N AY1 S": 6
+},
+"nirvana": {
+"N ER0 V AA1 N AH0": 1
+},
+"nobody": {
+"N OW1 B AA2 D IY2": 1,
+"N OW1 B AH0 D IY0": 2
+},
+"normally": {
+"N AO1 R M L IY0": 1
+},
+"noted": {
+"N OW1 T IH0 D": 1
+},
+"occasionally": {
+"AH0 K EY1 ZH AH0 N AH0 L IY0": 1
+},
+"of": {
+"AH0 V": 290,
+"AH1 V": 799
+},
+"offering": {
+"AO1 F ER0 IH0 NG": 10,
+"AO1 F R IH0 NG": 9
+},
+"offerings": {
+"AO1 F ER0 IH0 NG Z": 1
+},
+"officers": {
+"AO1 F AH0 S ER0 Z": 1
+},
+"offices": {
+"AO1 F AH0 S IH0 Z": 1
+},
+"often": {
+"AO1 F AH0 N": 6
+},
+"on": {
+"AA1 N": 183,
+"AO1 N": 38
+},
+"one": {
+"HH W AH1 N": 69,
+"W AH1 N": 169
+},
+"oneness": {
+"W AH1 N N AH0 S": 1
+},
+"ongoing": {
+"AO1 N G OW2 IH0 NG": 1
+},
+"onset": {
+"AA1 N S EH2 T": 1
+},
+"operate": {
+"AO1 P ER0 EY2 T": 2
+},
+"opposite": {
+"AA1 P AH0 Z AH0 T": 1
+},
+"option": {
+"AA1 P SH AH0 N": 6
+},
+"options": {
+"AA1 P SH AH0 N Z": 2,
+"AO1 P SH AH0 N Z": 2
+},
+"or": {
+"AO1 R": 197,
+"ER0": 48
+},
+"orange": {
+"AO1 R IH0 N JH": 2
+},
+"our": {
+"AA1 R": 42,
+"AW1 ER0": 35,
+"AW1 R": 28
+},
+"ours": {
+"AW1 ER0 Z": 1
+},
+"ourselves": {
+"AA0 R S EH1 L V Z": 2,
+"AW0 ER0 S EH1 L V Z": 1
+},
+"oxygen": {
+"AA1 K S IH0 JH AH0 N": 1
+},
+"package": {
+"P AE1 K IH0 JH": 1
+},
+"packet": {
+"P AE1 K IH0 T": 1
+},
+"pages": {
+"P EY1 JH IH0 Z": 1
+},
+"painting": {
+"P EY1 N T IH0 NG": 7
+},
+"paintings": {
+"P EY1 N T IH0 NG Z": 1
+},
+"palaces": {
+"P AE1 L AH0 S IH0 Z": 1
+},
+"palm": {
+"P AA1 M": 1
+},
+"paragraphs": {
+"P EH1 R AH0 G R AE2 F S": 1
+},
+"paris": {
+"P AE1 R IH0 S": 3,
+"P EH1 R IH0 S": 2
+},
+"parliamentary": {
+"P AA2 R L AH0 M EH1 N T ER0 IY0": 1
+},
+"partially": {
+"P AA1 R SH AH0 L IY0": 1
+},
+"participated": {
+"P AA0 R T IH1 S AH0 P EY2 T IH0 D": 1
+},
+"particular": {
+"P AA2 T IH1 K Y AH0 L ER0": 2,
+"P ER0 T IH1 K Y AH0 L ER0": 7
+},
+"particularly": {
+"P AA2 R T IH1 K Y AH0 L ER0 L IY0": 1,
+"P ER0 T IH1 K Y AH0 L ER0 L IY0": 5
+},
+"passes": {
+"P AE1 S IH0 Z": 3
+},
+"patches": {
+"P AE1 CH IH0 Z": 2
+},
+"patronage": {
+"P AE1 T R AH0 N IH0 JH": 2
+},
+"peanuts": {
+"P IY1 N AH0 T S": 2
+},
+"percentages": {
+"P ER0 S EH1 N T IH0 JH IH0 Z": 2
+},
+"perfect": {
+"P ER0 F EH1 K T": 2
+},
+"performances": {
+"P ER0 F AO1 R M AH0 N S IH0 Z": 1
+},
+"personally": {
+"P ER1 S AH0 N AH0 L IY0": 1,
+"P ER1 S N AH0 L IY0": 3
+},
+"persuaded": {
+"P ER0 S W EY1 D AH0 D": 1
+},
+"phrases": {
+"F R EY1 Z AH0 Z": 1,
+"F R EY1 Z IH0 Z": 5
+},
+"pieces": {
+"P IY1 S AH0 Z": 1,
+"P IY1 S IH0 Z": 1
+},
+"places": {
+"P L EY1 S AH0 Z": 3,
+"P L EY1 S IH0 Z": 17
+},
+"planted": {
+"P L AE1 N T IH0 D": 1
+},
+"plentiful": {
+"P L EH1 N T IH0 F AH0 L": 1
+},
+"plenty": {
+"P L EH1 N T IY0": 2
+},
+"plethora": {
+"P L AH0 TH AO1 R AH0": 1,
+"P L EH1 TH ER0 AH0": 1
+},
+"polish": {
+"P AA1 L IH0 SH": 1
+},
+"political": {
+"P AH0 L IH1 T AH0 K AH0 L": 5,
+"P AH0 L IH1 T IH0 K AH0 L": 5
+},
+"polluted": {
+"P AH0 L UW1 T AH0 D": 1
+},
+"potential": {
+"P AH0 T EH1 N CH AH0 L": 1,
+"P AH0 T EH1 N SH AH0 L": 2
+},
+"practical": {
+"P R AE1 K T AH0 K AH0 L": 1,
+"P R AE1 K T IH0 K AH0 L": 1
+},
+"practically": {
+"P R AE1 K T AH0 K AH0 L IY0": 1
+},
+"practice": {
+"P R AE1 K T AH0 S": 2,
+"P R AE1 K T IH0 S": 11
+},
+"practiced": {
+"P R AE1 K T AH0 S T": 1
+},
+"practices": {
+"P R AE1 K T AH0 S AH0 Z": 1
+},
+"practitioners": {
+"P R AE0 K T IH1 SH N ER0 Z": 2
+},
+"prayer": {
+"P R EY1 ER0": 1
+},
+"precise": {
+"P R IH0 S AY1 S": 1
+},
+"predictive": {
+"P R IH0 D IH1 K T IH0 V": 1
+},
+"prefer": {
+"P R AH0 F ER1": 1,
+"P R IH0 F ER1": 3,
+"P R IY0 F ER1": 2
+},
+"preferences": {
+"P R EH1 F ER0 AH0 N S IH0 Z": 1
+},
+"preferential": {
+"P R EH2 F ER0 EH1 N SH AH0 L": 1
+},
+"preferred": {
+"P R AH0 F ER1 D": 1,
+"P R IH0 F ER1 D": 1
+},
+"present": {
+"P ER0 Z EH1 N T": 1,
+"P R EH1 Z AH0 N T": 4
+},
+"presented": {
+"P R IY0 Z EH1 N T AH0 D": 1
+},
+"presents": {
+"P R IY0 Z EH1 N T S": 2
+},
+"preserve": {
+"P R IY0 Z ER1 V": 2
+},
+"presumptions": {
+"P R IY0 Z AH1 M P SH AH0 N Z": 1
+},
+"prevent": {
+"P R IH0 V EH1 N T": 1
+},
+"prices": {
+"P R AY1 S AH0 Z": 1,
+"P R AY1 S IH0 Z": 2
+},
+"printing": {
+"P R IH1 N T IH0 NG": 1
+},
+"prizes": {
+"P R AY1 Z IH0 Z": 2
+},
+"probably": {
+"P R AA1 B AH0 B L IY0": 3,
+"P R AA1 B L IY0": 3
+},
+"procedure": {
+"P R AH0 S IY1 JH ER0": 2,
+"P R OW0 S IY1 JH ER0": 1
+},
+"procedures": {
+"P R AH0 S IY1 JH ER0 Z": 1
+},
+"proceed": {
+"P R OW0 S IY1 D": 1
+},
+"process": {
+"P R AA1 S EH2 S": 4,
+"P R AO1 S EH2 S": 1
+},
+"produce": {
+"P R AH0 D UW1 S": 1
+},
+"production": {
+"P ER0 D AH1 K SH AH0 N": 3
+},
+"products": {
+"P R AA1 D AH0 K S": 3,
+"P R AA1 D AH0 K T S": 15
+},
+"progress": {
+"P R AA1 G R EH2 S": 2,
+"P R OW0 G R EH1 S": 3
+},
+"project": {
+"P R AA1 JH EH0 K T": 1,
+"P R AH0 JH EH1 K T": 1
+},
+"projects": {
+"P R AA1 JH EH0 K T S": 1,
+"P R AH0 JH EH1 K S": 1
+},
+"promotion": {
+"P R AH0 M OW1 SH AH0 N": 3
+},
+"pronunciation": {
+"P R AH0 N AH2 N S IY0 EY1 SH AH0 N": 2,
+"P R OW0 N AH2 N S IY0 EY1 SH AH0 N": 1
+},
+"pronunciations": {
+"P R AH0 N AH2 N S IY0 EY1 SH AH0 N Z": 1
+},
+"protect": {
+"P R AH0 T EH1 K T": 1
+},
+"protected": {
+"P ER0 T EH1 K T IH0 D": 1
+},
+"protection": {
+"P ER0 T EH1 K SH AH0 N": 3,
+"P R AH0 T EH1 K SH AH0 N": 1
+},
+"provided": {
+"P R AH0 V AY1 D AH0 D": 4
+},
+"province": {
+"P R AA1 V IH0 N S": 1
+},
+"punjab": {
+"P AH0 N JH AA1 B": 4,
+"P AH1 N JH AE2 B": 2
+},
+"putting": {
+"P AH1 T IH0 NG": 1
+},
+"quantities": {
+"K W AA1 N T AH0 T IY0 Z": 4
+},
+"quantity": {
+"K W AA1 N T AH0 T IY0": 6
+},
+"question": {
+"K W EH1 S CH AH0 N": 5,
+"K W EH1 SH AH0 N": 1
+},
+"rabbani": {
+"R AH0 B AA1 N IY0": 1
+},
+"races": {
+"R EY1 S AH0 Z": 1
+},
+"raj": {
+"R AA1 JH": 1
+},
+"ranges": {
+"R EY1 N JH IH0 Z": 2
+},
+"rapid": {
+"R AE1 P AH0 D": 1,
+"R AE1 P IH0 D": 1
+},
+"rated": {
+"R EY1 T AH0 D": 1,
+"R EY1 T IH0 D": 3
+},
+"rather": {
+"R AE1 DH ER0": 3,
+"R AH1 DH ER0": 3
+},
+"rational": {
+"R AE1 SH N AH0 L": 1
+},
+"read": {
+"R EH1 D": 16,
+"R IY1 D": 16
+},
+"reading": {
+"R EH1 D IH0 NG": 3,
+"R IY1 D IH0 NG": 10
+},
+"readings": {
+"R IY1 D IH0 NG Z": 1
+},
+"really": {
+"R IH1 L IY0": 8,
+"R IY1 L IY0": 22
+},
+"receipt": {
+"R IH0 S IY1 T": 1
+},
+"receive": {
+"R IH0 S IY1 V": 2,
+"R IY0 S IY1 V": 2
+},
+"received": {
+"R AH0 S IY1 V D": 1,
+"R IH0 S IY1 V D": 2,
+"R IY0 S IY1 V D": 6
+},
+"recently": {
+"R IY1 S AH0 N L IY0": 1,
+"R IY1 S AH0 N T L IY0": 8
+},
+"receptive": {
+"R IH0 S EH1 P T IH0 V": 1
+},
+"recipient": {
+"R AH0 S IH1 P IY0 AH0 N T": 1
+},
+"recommended": {
+"R EH2 K AH0 M EH1 N D IH0 D": 1
+},
+"record": {
+"R AH0 K AO1 R D": 1
+},
+"recorded": {
+"R AH0 K AO1 R D AH0 D": 1,
+"R IH0 K AO1 R D IH0 D": 1
+},
+"recording": {
+"R AH0 K AO1 R D IH0 NG": 1
+},
+"records": {
+"R AH0 K AO1 R D Z": 1
+},
+"recovery": {
+"R IH0 K AH1 V ER0 IY0": 2
+},
+"recurrence": {
+"R IH0 K ER1 AH0 N S": 1
+},
+"recurring": {
+"R IH0 K ER1 IH0 NG": 2,
+"R IY0 K ER1 IH0 NG": 1
+},
+"reduce": {
+"R AH0 D UW1 S": 1,
+"R IY0 D UW1 S": 1
+},
+"reduction": {
+"R AH0 D AH1 K SH AH0 N": 1,
+"R IY0 D AH1 K SH AH0 N": 3
+},
+"refer": {
+"R AH0 F ER1": 1,
+"R IH0 F ER1": 2
+},
+"reference": {
+"R EH1 F ER0 AH0 N S": 2
+},
+"referred": {
+"R AH0 F ER1 D": 1
+},
+"reflect": {
+"R IH0 F L EH1 K T": 1
+},
+"reflecting": {
+"R IH0 F L EH1 K T IH0 NG": 1
+},
+"reflection": {
+"R AH0 F L EH1 K SH AH0 N": 1,
+"R IH0 F L EH1 K SH AH0 N": 1
+},
+"reforms": {
+"R IH0 F AO1 R M Z": 1
+},
+"refund": {
+"R IH0 F AH1 N D": 1,
+"R IY1 F AH2 N D": 6
+},
+"regard": {
+"R IH0 G AA1 R D": 2
+},
+"regarded": {
+"R IH0 G AA1 R D IH0 D": 3
+},
+"regarding": {
+"R AH0 G AA1 R D IH0 NG": 1,
+"R IH0 G AA1 R D IH0 NG": 4
+},
+"regular": {
+"R EH1 G Y AH0 L ER0": 5
+},
+"regulated": {
+"R EH1 G Y AH0 L EY2 T AH0 D": 1
+},
+"rehabilitation": {
+"R IY2 HH AH0 B IH2 L AH0 T EY1 SH AH0 N": 1
+},
+"rejected": {
+"R IH0 JH EH1 K T IH0 D": 1
+},
+"relate": {
+"R IY0 L EY1 T": 1
+},
+"related": {
+"R IH0 L EY1 T IH0 D": 1,
+"R IY0 L EY1 T AH0 D": 3,
+"R IY0 L EY1 T IH0 D": 2
+},
+"relating": {
+"R IY0 L EY1 T IH0 NG": 1
+},
+"relax": {
+"R IY0 L AE1 K S": 1
+},
+"reliable": {
+"R IY0 L AY1 AH0 B AH0 L": 1
+},
+"relied": {
+"R IY0 L AY1 D": 1
+},
+"religion": {
+"R IH0 L IH1 JH AH0 N": 7,
+"R IY0 L IH1 JH AH0 N": 8
+},
+"religious": {
+"R IH0 L IH1 JH AH0 S": 2,
+"R IY0 L IH1 JH AH0 S": 7
+},
+"rely": {
+"R IY0 L AY1": 2
+},
+"remain": {
+"R IH0 M EY1 N": 2,
+"R IY0 M EY1 N": 2
+},
+"remained": {
+"R IH0 M EY1 N D": 1
+},
+"remaining": {
+"R IY0 M EY1 N IH0 NG": 4
+},
+"remains": {
+"R IH0 M EY1 N Z": 2,
+"R IY0 M EY1 N Z": 1
+},
+"remark": {
+"R IH0 M AA1 R K": 2
+},
+"remarkable": {
+"R IY0 M AA1 R K AH0 B AH0 L": 1
+},
+"remember": {
+"R IH0 M EH1 M B ER0": 5,
+"R IY0 M EH1 M B ER0": 2
+},
+"remembered": {
+"R IY0 M EH1 M B ER0 D": 1
+},
+"remote": {
+"R IH0 M OW1 T": 1,
+"R IY0 M OW1 T": 4
+},
+"repairs": {
+"R IH0 P EH1 R Z": 1
+},
+"repeat": {
+"R IH0 P IY1 T": 2,
+"R IY0 P IY1 T": 5
+},
+"replace": {
+"R IY2 P L EY1 S": 1
+},
+"reply": {
+"R IY0 P L AY1": 1
+},
+"report": {
+"R IH0 P AO1 R T": 1,
+"R IY0 P AO1 R T": 1
+},
+"reported": {
+"R IH0 P AO1 R T AH0 D": 3
+},
+"reports": {
+"R IH0 P AO1 R T S": 2
+},
+"represent": {
+"R EH2 P R AH0 Z EH1 N T": 1,
+"R EH2 P R IH0 Z EH1 N T": 2
+},
+"represented": {
+"R EH2 P R IH0 Z EH1 N T IH0 D": 5
+},
+"represents": {
+"R EH2 P R AH0 Z EH1 N T S": 1
+},
+"reputed": {
+"R IH0 P Y UW1 T IH0 D": 1
+},
+"requested": {
+"R IH0 K W EH1 S T IH0 D": 1
+},
+"required": {
+"R IY0 K W AY1 ER0 D": 1
+},
+"requires": {
+"R IY0 K W AY1 ER0 Z": 3
+},
+"research": {
+"R IY0 S ER1 CH": 3
+},
+"reserve": {
+"R IH0 Z ER1 V": 1
+},
+"reset": {
+"R IY0 S EH1 T": 3,
+"R IY1 S EH0 T": 2
+},
+"respect": {
+"R IH0 S P EH1 K T": 4
+},
+"respective": {
+"R IH0 S P EH1 K T IH0 V": 1
+},
+"respond": {
+"R IH0 S P AA1 N D": 2
+},
+"response": {
+"R IH0 S P AA1 N S": 1
+},
+"restaurants": {
+"R EH1 S T ER0 AA2 N T S": 1,
+"R EH1 S T R AA2 N T S": 2
+},
+"result": {
+"R IH0 Z AH1 L T": 3
+},
+"results": {
+"R IH0 Z AH1 L T S": 3,
+"R IY0 Z AH1 L T S": 1
+},
+"retain": {
+"R IY0 T EY1 N": 1
+},
+"retained": {
+"R IY0 T EY1 N D": 1
+},
+"retaining": {
+"R IY0 T EY1 N IH0 NG": 1
+},
+"retirement": {
+"R IH0 T AY1 ER0 M AH0 N T": 1
+},
+"return": {
+"R IH0 T ER1 N": 2,
+"R IY0 T ER1 N": 12
+},
+"reveal": {
+"R IH0 V IY1 L": 1,
+"R IY0 V IY1 L": 2
+},
+"revealed": {
+"R IH0 V IY1 L D": 1
+},
+"revise": {
+"R IH0 V AY1 Z": 1,
+"R IY0 V AY1 Z": 1
+},
+"revival": {
+"R IY0 V AY1 V AH0 L": 1
+},
+"reward": {
+"R IH0 W AO1 R D": 3,
+"R IY0 W AO1 R D": 8
+},
+"rewarding": {
+"R IY0 W AO1 R D IH0 NG": 1
+},
+"rewards": {
+"R IH0 W AO1 R D Z": 3,
+"R IY0 W AO1 R D Z": 5
+},
+"roasted": {
+"R OW1 S T AH0 D": 2
+},
+"rooted": {
+"R UW1 T AH0 D": 3
+},
+"route": {
+"R AW1 T": 1,
+"R UW1 T": 3
+},
+"rupees": {
+"R UW0 P IY1 Z": 1,
+"R UW1 P IY0 Z": 11
+},
+"sacred": {
+"S EY1 K R AH0 D": 2,
+"S EY1 K R IH0 D": 2
+},
+"salim": {
+"S AA0 L IY0 M": 1
+},
+"sandwich": {
+"S AE1 N D W IH0 CH": 1
+},
+"sanitation": {
+"S AE2 N IH0 T EY1 SH AH0 N": 1
+},
+"satirical": {
+"S AH0 T IH1 R AH0 K AH0 L": 1
+},
+"saudi": {
+"S AO1 D IY0": 3,
+"S AW1 D IY0": 1
+},
+"says": {
+"S IH1 Z": 2
+},
+"schedule": {
+"S K EH1 JH UW0 L": 1
+},
+"schedules": {
+"S K EH1 JH UW0 L Z": 1
+},
+"scientists": {
+"S AY1 N T IH0 S T S": 2
+},
+"second": {
+"S EH1 K AH0 N": 6,
+"S EH1 K AH0 N D": 11
+},
+"secondly": {
+"S EH1 K AH0 N D L IY0": 2,
+"S EH1 K AH0 N L IY0": 2
+},
+"secret": {
+"S IY1 K R IH0 T": 1
+},
+"segment": {
+"S EH2 G M EH1 N T": 1
+},
+"selected": {
+"S AH0 L EH1 K T AH0 D": 2
+},
+"semi": {
+"S EH1 M IY0": 1
+},
+"sentences": {
+"S EH1 N T AH0 N S IH0 Z": 1
+},
+"separate": {
+"S EH1 P R AH0 T": 2
+},
+"separated": {
+"S EH1 P ER0 EY2 T IH0 D": 1
+},
+"separately": {
+"S EH1 P R AH0 T L IY0": 1
+},
+"service": {
+"S ER1 V AH0 S": 1,
+"S ER1 V IH0 S": 5
+},
+"services": {
+"S ER1 V AH0 S AH0 Z": 14,
+"S ER1 V IH0 S IH0 Z": 13
+},
+"seventy": {
+"S EH1 V AH0 N IY0": 3,
+"S EH1 V AH0 N T IY0": 5
+},
+"several": {
+"S EH1 V ER0 AH0 L": 6,
+"S EH1 V R AH0 L": 3
+},
+"shifted": {
+"SH IH1 F T IH0 D": 2
+},
+"sighted": {
+"S AY1 T IH0 D": 1
+},
+"significance": {
+"S IH0 G N IH1 F IH0 K AH0 N S": 1
+},
+"significant": {
+"S AH0 G N IH1 F IH0 K AH0 N T": 2,
+"S IH0 G N IH1 F IH0 K AH0 N T": 1
+},
+"simplicity": {
+"S IH0 M P L IH1 S AH0 T IY0": 1
+},
+"sixteen": {
+"S IH0 K S T IY1 N": 3,
+"S IH1 K S T IY1 N": 2
+},
+"sixteenth": {
+"S IH0 K S T IY1 N TH": 1
+},
+"soft": {
+"S AA1 F T": 2,
+"S AO1 F T": 2
+},
+"software": {
+"S AO1 F T W EH2 R": 1
+},
+"somebody": {
+"S AH1 M B AA2 D IY0": 1,
+"S AH1 M B AH0 D IY0": 3
+},
+"sometimes": {
+"S AH0 M T AY1 M Z": 5,
+"S AH1 M T AY2 M Z": 10
+},
+"somewhat": {
+"S AH1 M W AH1 T": 1
+},
+"sophisticated": {
+"S AH0 F IH1 S T IH0 K EY2 T AH0 D": 2
+},
+"sow": {
+"S OW1": 2
+},
+"specially": {
+"S P EH1 SH AH0 L IY0": 1
+},
+"specialty": {
+"S P EH1 SH AH0 L T IY0": 1
+},
+"specific": {
+"S P AH0 S IH1 F IH0 K": 3,
+"S P IH0 S IH1 F IH0 K": 4
+},
+"spices": {
+"S P AY1 S AH0 Z": 1,
+"S P AY1 S IH0 Z": 4
+},
+"spirit": {
+"S P IH1 R AH0 T": 1,
+"S P IH1 R IH0 T": 2
+},
+"spirits": {
+"S P IH1 R IH0 T S": 2
+},
+"spiritual": {
+"S P IH1 R IH0 CH AH0 W AH0 L": 1,
+"S P IH1 R IH0 CH W AH0 L": 3
+},
+"spring": {
+"S P R IH1 NG": 2
+},
+"sri": {
+"S R IY1": 1,
+"SH R IY1": 5
+},
+"srinagar": {
+"SH R IY1 N AH0 G AA2 R": 3
+},
+"started": {
+"S T AA1 R T AH0 D": 9,
+"S T AA1 R T IH0 D": 13
+},
+"status": {
+"S T AE1 T AH0 S": 3,
+"S T EY1 T AH0 S": 6
+},
+"storage": {
+"S T AO1 R IH0 JH": 1
+},
+"strength": {
+"S T R EH1 NG K TH": 1
+},
+"struggling": {
+"S T R AH1 G L IH0 NG": 1
+},
+"subject": {
+"S AH0 B JH EH1 K T": 1,
+"S AH1 B JH IH0 K T": 3
+},
+"subjects": {
+"S AH1 B JH IH0 K T S": 4
+},
+"subsidies": {
+"S AH1 B S IH0 D IY0 Z": 1
+},
+"suffering": {
+"S AH1 F ER0 IH0 NG": 1
+},
+"suggested": {
+"S AH0 G JH EH1 S T IH0 D": 2
+},
+"summit": {
+"S AH1 M IH0 T": 2
+},
+"sunday": {
+"S AH1 N D EY2": 1
+},
+"supplement": {
+"S AH1 P L AH0 M EH1 N T": 1
+},
+"supplemental": {
+"S AH2 P L AH0 M EH1 N T AH0 L": 4
+},
+"supported": {
+"S AH0 P AO1 R T AH0 D": 1
+},
+"supreme": {
+"S AH0 P R IY1 M": 1
+},
+"surrounded": {
+"S ER0 AW1 N D IH0 D": 1
+},
+"symbolically": {
+"S IH0 M B AA1 L IH0 K L IY0": 1
+},
+"tamil": {
+"T AE1 M IH0 L": 4,
+"T AH0 M IH1 L": 2
+},
+"teaches": {
+"T IY1 CH AH0 Z": 1,
+"T IY1 CH IH0 Z": 1
+},
+"tearing": {
+"T EH1 R IH0 NG": 1
+},
+"temperature": {
+"T EH1 M P ER0 AH0 CH ER0": 1,
+"T EH1 M P R AH0 CH ER0": 1
+},
+"temperatures": {
+"T EH1 M P R AH0 CH ER0 Z": 1
+},
+"tennis": {
+"T EH1 N AH0 S": 1
+},
+"than": {
+"DH AE1 N": 29,
+"DH AH0 N": 8
+},
+"that": {
+"DH AE1 T": 308,
+"DH AH0 T": 35
+},
+"the": {
+"DH AH0": 1357,
+"DH AH1": 219,
+"DH IY0": 338
+},
+"them": {
+"DH AH0 M": 3,
+"DH EH1 M": 52
+},
+"themselves": {
+"DH AH0 M S EH1 L V Z": 1,
+"DH EH0 M S EH1 L V Z": 4
+},
+"theory": {
+"TH IH1 R IY0": 1
+},
+"thirty": {
+"TH ER1 D IY0": 9,
+"TH ER1 T IY2": 5
+},
+"this": {
+"DH IH0 S": 16,
+"DH IH1 S": 153
+},
+"thousand": {
+"TH AW1 Z AH0 N": 19,
+"TH AW1 Z AH0 N D": 18
+},
+"thousands": {
+"TH AW1 Z AH0 N D Z": 2
+},
+"thursday": {
+"TH ER1 Z D EY2": 1
+},
+"ticket": {
+"T IH1 K AH0 T": 1
+},
+"to": {
+"T AH0": 311,
+"T IH0": 43,
+"T UW1": 538
+},
+"today": {
+"T AH0 D EY1": 3,
+"T UW0 D EY1": 21
+},
+"today's": {
+"T AH0 D EY1 Z": 1
+},
+"tomato": {
+"T AH0 M EY1 T OW2": 1
+},
+"tomatoes": {
+"T AH0 M EY1 T OW0 Z": 1
+},
+"tomorrow": {
+"T AH0 M AA1 R OW2": 2,
+"T UW0 M AA1 R OW2": 4
+},
+"tomorrows": {
+"T AH0 M AA1 R OW2 Z": 1
+},
+"tonight": {
+"T UW0 N AY1 T": 1
+},
+"top": {
+"T AA1 P": 3,
+"T AO1 P": 3
+},
+"toronto": {
+"T AO0 R AA1 N T OW0": 2
+},
+"tourist": {
+"T UH1 R AH0 S T": 3,
+"T UH1 R IH0 S T": 3
+},
+"tourists": {
+"T UH1 R AH0 S T S": 2,
+"T UH1 R IH0 S T S": 7
+},
+"tours": {
+"T AO1 R Z": 1,
+"T UH1 R Z": 1
+},
+"towards": {
+"T AH0 W AO1 R D Z": 6,
+"T AO1 R D Z": 1
+},
+"traditionally": {
+"T R AH0 D IH1 SH AH0 N AH0 L IY0": 1,
+"T R AH0 D IH1 SH N AH0 L IY0": 1
+},
+"transfer": {
+"T R AE0 N S F ER1": 8,
+"T R AE1 N S F ER0": 7
+},
+"transform": {
+"T R AE1 N S F AO0 R M": 1
+},
+"translate": {
+"T R AE0 N S L EY1 T": 2,
+"T R AE0 N Z L EY1 T": 1
+},
+"translated": {
+"T R AE0 N S L EY1 T IH0 D": 7,
+"T R AE0 N Z L EY1 T AH0 D": 2
+},
+"translation": {
+"T R AE0 N S L EY1 SH AH0 N": 3,
+"T R AE0 N Z L EY1 SH AH0 N": 2
+},
+"translations": {
+"T R AE0 N S L EY1 SH AH0 N Z": 1
+},
+"translator": {
+"T R AE0 N S L EY1 T ER0": 1
+},
+"transport": {
+"T R AE0 N S P AO1 R T": 2,
+"T R AE1 N S P AO0 R T": 3
+},
+"travelers": {
+"T R AE1 V AH0 L ER0 Z": 1
+},
+"treated": {
+"T R IY1 T AH0 D": 2,
+"T R IY1 T IH0 D": 1
+},
+"tremendous": {
+"T R IH0 M EH1 N D AH0 S": 1
+},
+"trends": {
+"T R EH1 N D Z": 4
+},
+"trial": {
+"T R AY1 AH0 L": 1
+},
+"trying": {
+"T R AY1 IH0 NG": 10,
+"T R AY1 NG": 7
+},
+"tuesday": {
+"T Y UW1 Z D EY2": 1
+},
+"tumbling": {
+"T AH1 M B L IH0 NG": 2
+},
+"twenty": {
+"T W EH1 N IY0": 19,
+"T W EH1 N T IY0": 96
+},
+"typical": {
+"T IH1 P IH0 K AH0 L": 1
+},
+"typically": {
+"T IH1 P IH0 K AH0 L IY0": 1
+},
+"umbrella": {
+"AH1 M B R EH2 L AH0": 2
+},
+"un": {
+"AH1 N": 1
+},
+"unfortunately": {
+"AH0 N F AO1 R CH AH0 N AH0 T L IY0": 1
+},
+"unit": {
+"Y UW1 N IH0 T": 1
+},
+"united": {
+"Y UW0 N AY1 T AH0 D": 2
+},
+"unity": {
+"Y UW1 N IH0 T IY0": 1
+},
+"unusual": {
+"AH0 N Y UW1 ZH UW2 AH0 L": 5,
+"AH0 N Y UW1 ZH W AH0 L": 1
+},
+"us": {
+"AH1 S": 24,
+"Y UW1 EH1 S": 4
+},
+"usage": {
+"Y UW1 S IH0 JH": 1
+},
+"use": {
+"Y UW1 S": 5,
+"Y UW1 Z": 34
+},
+"uses": {
+"Y UW1 Z AH0 Z": 1,
+"Y UW1 Z IH0 Z": 1
+},
+"usual": {
+"Y UW1 ZH UW0 AH0 L": 2
+},
+"usually": {
+"Y UW1 ZH AH0 L IY0": 11
+},
+"valid": {
+"V AE1 L IH0 D": 1
+},
+"validity": {
+"V AH0 L IH1 D IH0 T IY0": 2
+},
+"valuable": {
+"V AE1 L Y AH0 B AH0 L": 1,
+"V AE1 L Y UW0 B AH0 L": 1
+},
+"vehicle": {
+"V IY1 IH0 K AH0 L": 1
+},
+"vicinity": {
+"V IH0 S IH1 N IH0 T IY0": 1
+},
+"victim": {
+"V IH1 K T IH0 M": 1
+},
+"victims": {
+"V IH1 K T AH0 M Z": 1
+},
+"victory": {
+"V IH1 K T ER0 IY0": 3
+},
+"village": {
+"V IH1 L IH0 JH": 5
+},
+"villages": {
+"V IH1 L IH0 JH IH0 Z": 9
+},
+"violently": {
+"V AY1 L AH0 N T L IY0": 1
+},
+"visit": {
+"V IH1 Z AH0 T": 1,
+"V IH1 Z IH0 T": 4
+},
+"visited": {
+"V IH1 Z AH0 T AH0 D": 1,
+"V IH1 Z IH0 T IH0 D": 2
+},
+"visiting": {
+"V IH1 Z AH0 T IH0 NG": 2,
+"V IH1 Z IH0 T IH0 NG": 1
+},
+"visitor": {
+"V IH1 Z IH0 T ER0": 1
+},
+"visitors": {
+"V IH1 Z AH0 T ER0 Z": 2
+},
+"visits": {
+"V IH1 Z IH0 T S": 1
+},
+"voted": {
+"V OW1 T IH0 D": 2
+},
+"want": {
+"W AA1 N T": 46,
+"W AO1 N T": 3
+},
+"wanted": {
+"W AA1 N T AH0 D": 1
+},
+"was": {
+"W AA1 Z": 35,
+"W AH0 Z": 29,
+"W AH1 Z": 75,
+"W AO1 Z": 7
+},
+"watch": {
+"W AA1 CH": 4,
+"W AO1 CH": 1
+},
+"watched": {
+"W AA1 CH T": 2
+},
+"wednesday": {
+"W EH1 N Z D EY2": 1
+},
+"weekend": {
+"W IY1 K EH2 N D": 1,
+"W IY1 K IH2 N D": 2
+},
+"were": {
+"W ER0": 14,
+"W ER1": 11
+},
+"western": {
+"W EH1 S T ER0 N": 3
+},
+"what": {
+"HH W AH1 T": 100,
+"W AH1 T": 66
+},
+"what's": {
+"HH W AH1 T S": 13,
+"W AH1 T S": 8
+},
+"whatever": {
+"HH W AH2 T EH1 V ER0": 2,
+"W AH2 T EH1 V ER0": 6
+},
+"wheat": {
+"W IY1 T": 5
+},
+"wheeler": {
+"W IY1 L ER0": 2
+},
+"when": {
+"HH W EH1 N": 33,
+"HH W IH1 N": 4,
+"W EH1 N": 25,
+"W IH1 N": 23
+},
+"whenever": {
+"W EH0 N EH1 V ER0": 4
+},
+"where": {
+"HH W EH1 R": 25,
+"W EH1 R": 27
+},
+"whereas": {
+"HH W EH0 R AE1 Z": 4,
+"W EH0 R AE1 Z": 1
+},
+"whereby": {
+"W EH0 R B AY1": 1
+},
+"wherein": {
+"HH W EH0 R IH1 N": 1,
+"W EH0 R IH1 N": 2
+},
+"wherever": {
+"W EH0 R EH1 V ER0": 3
+},
+"whether": {
+"HH W EH1 DH ER0": 5,
+"W EH1 DH ER0": 4
+},
+"which": {
+"HH W IH1 CH": 73,
+"W IH1 CH": 95
+},
+"while": {
+"HH W AY1 L": 12,
+"W AY1 L": 4
+},
+"white": {
+"W AY1 T": 1
+},
+"why": {
+"HH W AY1": 19,
+"W AY1": 13
+},
+"will": {
+"W AH0 L": 5,
+"W IH1 L": 50
+},
+"windy": {
+"W IH1 N D IY0": 1
+},
+"with": {
+"W IH0 DH": 88,
+"W IH0 TH": 51,
+"W IH1 DH": 60,
+"W IH1 TH": 63
+},
+"within": {
+"W IH0 DH IH1 N": 2,
+"W IH0 TH IH1 N": 1
+},
+"without": {
+"W IH0 DH AW1 T": 5,
+"W IH0 TH AW1 T": 3
+},
+"won": {
+"W AA1 N": 1,
+"W AH1 N": 1
+},
+"worship": {
+"W ER1 SH AH0 P": 7,
+"W ER1 SH IH0 P": 1
+},
+"wounded": {
+"W UW1 N D AH0 D": 1
+},
+"wrestling": {
+"R EH1 S L IH0 NG": 3
+},
+"years": {
+"Y ER0 Z": 13,
+"Y IH1 R Z": 17
+},
+"yesterday": {
+"Y EH1 S T ER0 D EY2": 8,
+"Y EH1 S T ER0 D IY0": 1
+},
+"yesterday's": {
+"Y EH1 S T ER0 D EY2 Z": 1
+},
+"you're": {
+"Y UH1 R": 2,
+"Y UW1 R": 2
+},
+"your": {
+"Y AO1 R": 17,
+"Y UH1 R": 66
+},
+"yourself": {
+"Y AO1 R S EH0 L F": 2,
+"Y ER0 S EH1 L F": 2
+},
+"youths": {
+"Y UW1 TH S": 1
+},
+"zero": {
+"Z IH1 R OW0": 40,
+"Z IY1 R OW0": 50
+}
+}
