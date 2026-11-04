@@ -1,6 +1,6 @@
 # Implementation progress
 
-Status (2026-11-03): **Phases 0–2 complete; Phase 3 complete for English** (Telugu preprocessing is Phase 5). Nothing has been trained. The only audio produced is from the *upstream* pretrained LJSpeech model (not an assignment deliverable). Data decisions: `docs/DATA.md`.
+Status (2026-11-04): **Phases 0–3 complete for English; English training run to 50k steps on Colab (user-reported; final logs/checkpoints not yet copied locally); text-only inference implemented and CPU-tested.** Telugu: front end + MFA-train stage done, alignment pending (Colab). No assignment audio from a trained model has been verified yet. Data decisions: `docs/DATA.md`.
 
 ## Phase 0 — repo and environment inspection ✅
 - [x] Read AGENTS.md, all docs, original PDF (visually, all 3 pages)
@@ -109,14 +109,23 @@ python -m pytest tests -q                                    # 42 passed
 - Budget: `total_step 50000`, anneal at 25k/35k/45k (upstream 900k for 24 h LJSpeech). 35.4 M parameters. Evidence of the CPU runs is only that every code path executes; loss values after ≤9 steps mean nothing.
 - `notebooks/train_colab.ipynb` + Colab section in `docs/ENVIRONMENT.md`.
 
+### 2026-11-04 — Phase 4b: English training on Colab + text-only inference
+- Training: Colab L4, `train.py --amp` (bf16), resumed from step 20000 after a T4 segment (T4 fp32 ~0.63 s/step, L4 bf16 ~0.185 s/step; no NaN). User reports the run finished at 50k. Logs copied locally so far cover up to step 22k (`output/English/*.csv`): val total plateaus at ~2.55 from ~8–10k steps (best 2.546 @ 18k) while train keeps falling — overfitting without val divergence.
+- Audit vs trivial baselines (val, normalised targets): energy 0.40 vs 1.03 (per-speaker mean); duration 0.225 vs 0.256 (per-phone mean log-duration); pitch ~0.46 vs 0.480 (per-speaker mean) — the pitch predictor learns little beyond speaker level, so flat intonation is expected. No pipeline error found.
+- `fs2ra/inference.py` + `project/{English,Telugu}/inference.py`: test sentences (raw, not spell-corrected) → front end → phones (`sp` at phrase punctuation) → model with predicted duration/pitch/energy → universal HiFi-GAN. Writes `test_generated_audios/<id>.wav`, `variance_adaptor_plots/{duration,pitch,energy}/<id>.png`, `inference_summary.json` (phones, sources, predicted frames/F0 Hz/energy). Model + stats/speakers come from the checkpoint folder's training snapshot.
+- Heteronyms: words in g2p_en's homograph table are resolved by NLTK POS tag (E2a `conduct`/NN → K AA1 N D AH0 K T, E2b `conduct`/VB → K AA0 N D AH1 K T). E3 is read as written ("rhyth" → R AY1 DH, "m" → EH1 M). E4: "ten forty five a_m on twelve november twenty twenty six, so andaroo (g2p_en AE0 N D AA1 R OW0) …".
+- English voice: `inference.speaker: en_edfd2580` (most training audio, 10.6 min).
+```
+python -m pytest tests -q --deselect tests/test_features_full.py   # 64 passed (incl. English+Telugu end-to-end CPU inference on random-weight checkpoints)
+python project/English/inference.py --ckpt output/English/ckpt_dryrun/milestones/12.pth.tar --out_dir <scratch>   # code path only
+```
+
 ## Current blockers / open issues
 - Telugu alignment: no pretrained Telugu MFA model; needs a Telugu G2P/lexicon and an MFA model trained on the Telugu corpus (Phase 5).
-- Colab notebook not yet executed on a GPU; steps/sec on T4 unknown (50k-step budget may need adjusting).
 - English val is all tier-0 (clean, ≤ 11 s) while train has 254 tier-1/2 utterances (11–15 s or digits); documented asymmetry.
 - English `max_seq_len` set to 1500 (longest utterance 1,272 frames).
 - English verbalisation of digits is heuristic (e.g. 4-digit numbers read as years); mismatches with what speakers said are only caught if they cause alignment outliers.
-- Heteronyms: inference uses the lexicon's first pronunciation, so E2a/E2b `conduct` would get the same stress — to be addressed in Phase 4 inference.
 - Svarah speaker proxy may merge up to two speaker pairs (115 vs. 117).
 
 ## Next action (single task)
-User: upload `dist/english_features.tar` (+ code) to `MyDrive/fs2ra/` and run `notebooks/train_colab.ipynb` (English). In parallel locally: Phase 5 — Telugu front end (G2P), MFA acoustic model trained on the Telugu corpus, features.
+User: download `MyDrive/fs2ra/output/English/` (ckpt/milestones/*.pth.tar, ckpt/{stats,speakers}.json + config.yaml, log/*.csv, log/loss_curves.png); run `inference.py` per milestone, choose the checkpoint by val loss + listening, then final run with `--out_dir project/Results/English`. Telugu: run `notebooks/align_telugu_colab.ipynb`, then features locally, package, train on Colab.

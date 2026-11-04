@@ -1,0 +1,236 @@
+"""Text-only FastSpeech 2 synthesis (project/<Lang>/inference.py).
+
+Unlike training and the teacher-forced validation samples, nothing here comes from
+recorded audio: the phone sequence comes from the text front end, and duration, pitch
+and energy are *predicted* by the variance adaptor from text (+ speaker) only.
+
+The checkpoint's folder must hold the train-time stats.json / speakers.json / config.yaml
+snapshot written by fs2ra.training (a milestone in ckpt/milestones/ uses its parent's).
+
+Outputs (Results layout from the assignment PDF):
+    <out_dir>/test_generated_audios/<id>.wav
+    <out_dir>/variance_adaptor_plots/{duration,pitch,energy}/<id>.png
+    <out_dir>/inference_summary.json   raw + spoken text, phones, predicted values
+"""
+import json
+import os
+import re
+
+import numpy as np
+import torch
+from scipy.io import wavfile
+
+from fs2ra.config import load_config, upstream_configs
+from fs2ra.symbols import check_phone_strings, register_language
+
+# Phrase-final punctuation becomes a pause ("sp"), as in upstream synthesize.py; "10:45"
+# and "3.5" are not split. No trailing "sp": training phone strings are trimmed of
+# leading/trailing silence by the upstream preprocessor.
+PHRASE_RE = re.compile(r"[,;.?!।]+(?=\s|$)")
+
+
+class EnglishFrontEnd:
+    """normalize_english + LibriSpeech lexicon / g2p_en, as for the training dictionary.
+    Words in g2p_en's homograph table (e.g. "conduct": noun K AA1 N D AH0 K T, verb
+    K AA0 N D AH1 K T) are disambiguated by an NLTK part-of-speech tag, as g2p_en does;
+    other words take their first lexicon pronunciation."""
+
+    def __init__(self, lexicon_path):
+        from fs2ra.text_en import EnglishG2P
+
+        self.g2p = EnglishG2P(lexicon_path)
+
+    def normalize(self, text):
+        from fs2ra.text_en import normalize_english
+
+        return normalize_english(text)
+
+    def words(self, words):
+        from nltk import pos_tag
+
+        from fs2ra.text_en import EXTRA_PRONUNCIATIONS
+
+        out = []
+        for word, tag in pos_tag(words):
+            homograph = self.g2p._g2p.homograph2features.get(word)
+            if homograph and word not in EXTRA_PRONUNCIATIONS:
+                pron1, pron2, pos1 = homograph
+                out.append((word, pron1 if tag.startswith(pos1) else pron2, "homograph(%s)" % tag))
+            else:
+                prons, source = self.g2p.pronunciations(word)
+                out.append((word, prons[0], source))
+        return out
+
+
+class TeluguFrontEnd:
+    """normalize_telugu + rule-based grapheme-to-phoneme (same as the MFA dictionary)."""
+
+    def normalize(self, text):
+        from fs2ra.text_te import normalize_telugu
+
+        return normalize_telugu(text)
+
+    def words(self, words):
+        from fs2ra.text_te import g2p
+
+        return [(w, g2p(w), "rules") for w in words]
+
+
+def front_end_for(cfg):
+    if cfg["language"] == "english":
+        return EnglishFrontEnd(cfg["preprocess"]["path"]["lexicon_path"])
+    if cfg["language"] == "telugu":
+        return TeluguFrontEnd()
+    raise ValueError(cfg["language"])
+
+
+def text_to_phones(raw, front_end):
+    """Raw text -> (spoken phrases, [(word, phones, source)], phones with "sp" between phrases)."""
+    phrases, words, phones = [], [], []
+    for chunk in PHRASE_RE.split(raw):
+        spoken = front_end.normalize(chunk).split()
+        if not spoken:
+            continue
+        if phones:
+            phones.append("sp")
+        phrases.append(" ".join(spoken))
+        for word, pron, source in front_end.words(spoken):
+            words.append({"word": word, "phones": " ".join(pron), "source": source})
+            phones += pron
+    return phrases, words, phones
+
+
+def metadata_dir(ckpt_path):
+    here = os.path.dirname(os.path.abspath(ckpt_path))
+    for d in (here, os.path.dirname(here)):
+        if all(os.path.exists(os.path.join(d, n)) for n in ("stats.json", "speakers.json")):
+            return d
+    raise FileNotFoundError("stats.json/speakers.json not found next to %s or in its parent folder "
+                            "(copy them from the training ckpt folder)" % ckpt_path)
+
+
+def load_model(ckpt_path, project_cfg, device):
+    """Model built from the checkpoint folder's config snapshot (if present) and its
+    train-time stats.json / speakers.json, so inference matches training."""
+    from model import FastSpeech2  # upstream
+    from utils.model import get_vocoder, load_checkpoint
+
+    meta = metadata_dir(ckpt_path)
+    snapshot = os.path.join(meta, "config.yaml")
+    cfg = load_config(snapshot) if os.path.exists(snapshot) else project_cfg
+    if cfg["language"] != project_cfg["language"]:
+        raise ValueError("checkpoint is for %s, not %s" % (cfg["language"], project_cfg["language"]))
+    register_language(cfg["language"])  # before the model is built (embedding size)
+    configs = upstream_configs(cfg)
+    configs[0]["path"]["preprocessed_path"] = meta  # stats.json / speakers.json
+    model = FastSpeech2(configs[0], configs[1]).to(device)
+    state = load_checkpoint(ckpt_path, device)
+    model.load_state_dict(state["model"], strict=True)
+    model.eval()
+    with open(os.path.join(meta, "speakers.json"), encoding="utf-8") as f:
+        speakers = json.load(f)
+    with open(os.path.join(meta, "stats.json"), encoding="utf-8") as f:
+        stats = json.load(f)
+    return cfg, configs, model, get_vocoder(configs[1], device), speakers, stats, state.get("step")
+
+
+def plot_variance(kind, sid, raw, phones, frames, values, hop_s, path):
+    """One predicted value per phone; one slot per phone (phones predicted to last 0
+    frames stay visible and are marked "x")."""
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    x = np.arange(len(phones))
+    fig, ax = plt.subplots(figsize=(max(10, 0.16 * len(phones)), 3.6))
+    if kind == "duration":
+        ax.bar(x, frames, width=0.8, color="#4C78A8")
+        ax.set_ylabel("predicted duration (frames)\n1 frame = %.1f ms" % (1000 * hop_s))
+    else:
+        ax.stairs(values, np.arange(len(phones) + 1) - 0.5, color="#E45756" if kind == "pitch" else "#54A24B",
+                  lw=1.8, baseline=None)
+        ax.set_ylabel("predicted F0 (Hz)" if kind == "pitch" else "predicted energy\n(mean frame L2 norm)")
+        ax.set_ylim(min(0, values.min()), values.max() * 1.1 + 1e-6)
+    ax.set_xticks(x)
+    ax.set_xticklabels(phones, rotation=90, fontsize=7)
+    ax.set_xlim(-0.5, len(phones) - 0.5)
+    for i, (p, f) in enumerate(zip(phones, frames)):
+        if p == "sp":
+            ax.axvspan(i - 0.5, i + 0.5, color="0.92", zorder=0)
+        if f == 0:
+            ax.plot(i, 0, "x", color="0.4", ms=4, clip_on=False)
+    ax.set_title("%s: %s" % (sid, raw), fontsize=9)
+    ax.set_xlabel("phones (grey band = pause \"sp\"; x = 0 frames)   predicted length %.2f s"
+                  % (frames.sum() * hop_s), fontsize=8)
+    fig.tight_layout()
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    fig.savefig(path, dpi=120)
+    plt.close(fig)
+
+
+def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=None):
+    """sentences: [{"id", "text"}] raw text. Returns the per-sentence summary list."""
+    from utils.model import vocoder_infer  # upstream
+
+    device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    cfg, configs, model, vocoder, speakers, stats, step = load_model(ckpt_path, project_cfg, device)
+    preprocess_config, model_config, _ = configs
+    if configs[1]["multi_speaker"]:
+        speaker = speaker or project_cfg.get("inference", {}).get("speaker")
+        if speaker not in speakers:
+            raise ValueError("speaker %r not in speakers.json (%d speakers)" % (speaker, len(speakers)))
+    else:
+        speaker = speaker or next(iter(speakers))
+    speaker_id = speakers.get(speaker, 0)
+    audio_cfg = preprocess_config["preprocessing"]
+    sr, hop = audio_cfg["audio"]["sampling_rate"], audio_cfg["stft"]["hop_length"]
+    _, _, p_mean, p_std = stats["pitch"]
+    _, _, e_mean, e_std = stats["energy"]
+    front_end = front_end_for(cfg)
+
+    from text import text_to_sequence  # upstream, after register_language
+
+    summary = []
+    for s in sentences:
+        phrases, words, phones = text_to_phones(s["text"], front_end)
+        phone_str = "{" + " ".join(phones) + "}"
+        check_phone_strings([phone_str], cfg["language"])
+        seq = np.array(text_to_sequence(phone_str, []))
+        with torch.no_grad():
+            out = model(
+                torch.tensor([speaker_id], device=device),
+                torch.from_numpy(seq).long().unsqueeze(0).to(device),
+                torch.tensor([len(seq)], device=device),
+                len(seq),
+            )
+        # no targets passed: d/p/e below are the predictors' outputs (text-only)
+        mel_len = int(out[9][0])
+        frames = out[5][0, : len(seq)].cpu().numpy().astype(int)
+        pitch_hz = out[2][0, : len(seq)].float().cpu().numpy() * p_std + p_mean
+        energy = out[3][0, : len(seq)].float().cpu().numpy() * e_std + e_mean
+        wav = vocoder_infer(out[1].transpose(1, 2), vocoder, model_config, preprocess_config,
+                            lengths=[mel_len * hop])[0]
+        if frames.sum() != mel_len or mel_len == 0 or not np.isfinite(pitch_hz).all():
+            raise RuntimeError("%s: inconsistent prediction (sum durations %d, mel %d)"
+                               % (s["id"], frames.sum(), mel_len))
+
+        wav_path = os.path.join(out_dir, "test_generated_audios", s["id"] + ".wav")
+        os.makedirs(os.path.dirname(wav_path), exist_ok=True)
+        wavfile.write(wav_path, sr, wav)
+        for kind, values in (("duration", frames), ("pitch", pitch_hz), ("energy", energy)):
+            plot_variance(kind, s["id"], s["text"], phones, frames, values, hop / sr,
+                          os.path.join(out_dir, "variance_adaptor_plots", kind, s["id"] + ".png"))
+        summary.append({
+            "id": s["id"], "raw_text": s["text"], "spoken_phrases": phrases, "words": words,
+            "phones": phones, "pred_duration_frames": frames.tolist(),
+            "pred_f0_hz": np.round(pitch_hz, 2).tolist(), "pred_energy": np.round(energy, 3).tolist(),
+            "seconds": round(len(wav) / sr, 3), "wav": os.path.relpath(wav_path, out_dir).replace("\\", "/"),
+        })
+        print("%-4s %5.2f s  %3d phones  F0 %.0f-%.0f Hz  %s" % (
+            s["id"], len(wav) / sr, len(phones), pitch_hz.min(), pitch_hz.max(), wav_path))
+
+    with open(os.path.join(out_dir, "inference_summary.json"), "w", encoding="utf-8") as f:
+        json.dump({"checkpoint": os.path.abspath(ckpt_path), "step": step, "speaker": speaker,
+                   "device": str(device), "sentences": summary}, f, ensure_ascii=False, indent=1)
+    return summary
