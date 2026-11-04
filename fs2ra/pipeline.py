@@ -55,11 +55,21 @@ def mfa_command():
 
 
 def stage_align(cfg, dirs, num_jobs=None, extra=()):
-    cmd = mfa_command() + [
-        "align", dirs["corpus"], dirs["dictionary"], cfg["align"]["acoustic_model"], dirs["textgrid_mfa"],
-        "--clean", "--overwrite", "--num_jobs", str(num_jobs or max(1, (os.cpu_count() or 2) - 1)),
-        "--output_format", "long_textgrid", *extra,
-    ]
+    """Pretrained model: `mfa align`. With align.train_acoustic_model (no pretrained model
+    for the language, e.g. Telugu): `mfa train` on this corpus + dictionary, which also
+    writes the alignments; the trained model is saved for reuse."""
+    jobs = ["--num_jobs", str(num_jobs or max(1, (os.cpu_count() or 2) - 1))]
+    if cfg["align"].get("train_acoustic_model"):
+        model_out = os.path.join(dirs["work"], cfg["align"]["train_acoustic_model"])
+        cmd = mfa_command() + [
+            "train", dirs["corpus"], dirs["dictionary"], model_out, "--output_directory", dirs["textgrid_mfa"],
+            "--clean", *jobs, "--output_format", "long_textgrid", *extra,
+        ]
+    else:
+        cmd = mfa_command() + [
+            "align", dirs["corpus"], dirs["dictionary"], cfg["align"]["acoustic_model"], dirs["textgrid_mfa"],
+            "--clean", "--overwrite", *jobs, "--output_format", "long_textgrid", *extra,
+        ]
     print("+", " ".join(cmd))
     # MFA has its own Python; don't leak this interpreter's venv into it (on Windows
     # the venv launcher exports __PYVENV_LAUNCHER__, which redirects the child's stdlib).

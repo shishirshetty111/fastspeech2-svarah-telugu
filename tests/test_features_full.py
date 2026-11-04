@@ -9,7 +9,7 @@ from fs2ra.inventory import normalize_text_key
 from fs2ra.sources import DATA_ROOT
 from fs2ra.tables import read_csv
 
-LANGS = ["english"]
+LANGS = ["english", "telugu"]
 
 
 def load(lang):

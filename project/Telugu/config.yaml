@@ -1,0 +1,99 @@
+# FastSpeech 2 — Telugu (IndicTTS Telugu, male speaker). One file with the three upstream
+# config sections (ming024/FastSpeech2 preprocess.yaml / model.yaml / train.yaml schema).
+# "$DATA" = FS2_DATA_ROOT (default <repo>/data), "$REPO" = repo root,
+# "$OUT" = FS2_OUTPUT_ROOT (default <repo>/output; point it at Google Drive on Colab).
+language: telugu
+
+data:
+  splits_dir: "$REPO/project/Telugu/splits"
+  work_dir: "$DATA/telugu"
+  target_hours: {train: 5.0, val: 1.0}   # reserve utterances top up alignment failures
+  max_phone_frames: 50                   # same outlier rule as English (0.58 s per non-silence phone)
+
+align:
+  # No pretrained Telugu MFA model exists: train one on this corpus (train+val+reserve
+  # transcripts and audio; unsupervised w.r.t. the TTS targets) with the rule-based
+  # pronunciation dictionary from fs2ra/text_te.py, and keep its alignments.
+  train_acoustic_model: "mfa_telugu_acoustic.zip"   # written to work_dir
+  dictionary: "$DATA/telugu/dictionary.txt"
+
+preprocess:
+  dataset: "IndicTTS_Telugu"
+  path:
+    raw_path: "$DATA/telugu/corpus"
+    preprocessed_path: "$DATA/telugu/preprocessed"
+  preprocessing:
+    val_size: 0                          # unused: splits come from project/Telugu/splits
+    text:
+      text_cleaners: []                  # phones come from fs2ra/text_te.py, not upstream cleaners
+      language: "te"
+    audio:
+      sampling_rate: 22050               # source is 48 kHz; resampled to the HiFi-GAN rate
+      max_wav_value: 32768.0
+    stft:
+      filter_length: 1024
+      hop_length: 256
+      win_length: 1024
+    mel:
+      n_mel_channels: 80
+      mel_fmin: 0
+      mel_fmax: 8000                     # must match HiFi-GAN
+    pitch:
+      feature: "phoneme_level"
+      normalization: True
+    energy:
+      feature: "phoneme_level"
+      normalization: True
+
+model:
+  transformer:
+    encoder_layer: 4
+    encoder_head: 2
+    encoder_hidden: 256
+    decoder_layer: 6
+    decoder_head: 2
+    decoder_hidden: 256
+    conv_filter_size: 1024
+    conv_kernel_size: [9, 1]
+    encoder_dropout: 0.2
+    decoder_dropout: 0.2
+  variance_predictor:
+    filter_size: 256
+    kernel_size: 3
+    dropout: 0.5
+  variance_embedding:
+    pitch_quantization: "linear"
+    energy_quantization: "linear"
+    n_bins: 256
+  multi_speaker: False                   # one (male) speaker
+  max_seq_len: 1000                      # train/val clips <= 11 s = 948 frames
+  vocoder:
+    model: "HiFi-GAN"
+    speaker: "universal"                 # not LJSpeech: universal generator
+
+train:
+  path:
+    ckpt_path: "$OUT/Telugu/ckpt"
+    log_path: "$OUT/Telugu/log"
+    result_path: "$OUT/Telugu/result"
+  optimizer:
+    batch_size: 16
+    betas: [0.9, 0.98]
+    eps: 0.000000001
+    weight_decay: 0.0
+    grad_clip_thresh: 1.0
+    grad_acc_step: 1
+    warm_up_step: 4000
+    # Upstream (LJSpeech, 24 h): 900k steps, anneal at 300k/400k/500k. Here 5 h and a free
+    # Colab T4 budget: 50k steps (~305 epochs of 2,623 utts at batch 16), annealed in the last half.
+    anneal_steps: [25000, 35000, 45000]
+    anneal_rate: 0.3
+  step:
+    total_step: 50000
+    log_step: 100
+    synth_step: 1000
+    val_step: 1000
+    save_step: 2000                      # frequent, resumable checkpoints for Colab
+  checkpoint:                            # fs2ra.training: disk use on Drive
+    keep_last: 2                         # full checkpoints (model + Adam), ~420 MB each
+    keep_every: 10000                    # model-only milestones (~140 MB) kept in ckpt/milestones
