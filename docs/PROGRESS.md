@@ -120,6 +120,18 @@ python -m pytest tests -q --deselect tests/test_features_full.py   # 64 passed (
 python project/English/inference.py --ckpt output/English/ckpt_dryrun/milestones/12.pth.tar --out_dir <scratch>   # code path only
 ```
 
+### 2026-11-04 — Phase 4c: English finalised
+- Full logs downloaded: train total 0.84 at 50k; val minimum 2.546 @ 18k, 2.572 @ 20k, 2.570 @ 50k (plateau from ~10k). Val duration loss lowest at 1k (0.205).
+- Listening (user): 20k preferred over 50k; voice somewhat robotic; first front end gave "parlimenary", "con-duct" for both E2a/E2b, "rythem" with no break, date as "twel… twenty six".
+- Front-end fixes: lexicon variant most often aligned in the training split (`project/English/pronunciation_variants.json` via `scripts/pronunciation_variants.py`; e.g. TWENTY with T 96 vs 19), homographs mapped to the lexicon variant with the same stress position (verb conduct K AH0 N D AH1 K T), runs of 2+ spaces → `sp`. Phone inputs verified correct; on re-listening the user judged most issues still audible → remaining errors are in the predicted durations/pitch (e.g. E4 stressed vowels in "twelve"/"november" 3 frames each).
+- Submitted: `project/English/checkpoints/20000.pth.tar` (Git LFS, model-only, sha256 97bfe6a0…a6492b) + stats/speakers/config snapshot; `project/Results/English/` (5 wavs, 15 variance plots, training_loss.png, validation_loss.png, inference_summary.json); `project/Report/Technical_Report.{md,pdf}` (English complete, Telugu sections marked pending); `project/README.md`.
+```
+python scripts/pronunciation_variants.py
+python project/English/inference.py --out_dir project/Results/English
+python scripts/build_report.py
+python -m pytest tests -q --deselect tests/test_features_full.py   # 65 passed
+```
+
 ## Current blockers / open issues
 - Telugu alignment: no pretrained Telugu MFA model; needs a Telugu G2P/lexicon and an MFA model trained on the Telugu corpus (Phase 5).
 - English val is all tier-0 (clean, ≤ 11 s) while train has 254 tier-1/2 utterances (11–15 s or digits); documented asymmetry.
@@ -128,4 +140,4 @@ python project/English/inference.py --ckpt output/English/ckpt_dryrun/milestones
 - Svarah speaker proxy may merge up to two speaker pairs (115 vs. 117).
 
 ## Next action (single task)
-User: download `MyDrive/fs2ra/output/English/` (ckpt/milestones/*.pth.tar, ckpt/{stats,speakers}.json + config.yaml, log/*.csv, log/loss_curves.png); run `inference.py` per milestone, choose the checkpoint by val loss + listening, then final run with `--out_dir project/Results/English`. Telugu: run `notebooks/align_telugu_colab.ipynb`, then features locally, package, train on Colab.
+Telugu: user runs `notebooks/align_telugu_colab.ipynb` (upload `dist/telugu_corpus.tar` first) → extract `telugu_alignment.tar` into `data/` → `project/Telugu/preprocess.py --stage features` → `scripts/package_features.py telugu` → Colab L4 training → inference → fill the Telugu sections of the report.

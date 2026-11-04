@@ -1,0 +1,100 @@
+# FastSpeech 2 — English (Svarah). One file with the three upstream config
+# sections (ming024/FastSpeech2 preprocess.yaml / model.yaml / train.yaml schema).
+# "$DATA" = FS2_DATA_ROOT (default <repo>/data), "$REPO" = repo root,
+# "$OUT" = FS2_OUTPUT_ROOT (default <repo>/output; point it at Google Drive on Colab).
+language: english
+
+data:
+  splits_dir: "$REPO/project/English/splits"
+  work_dir: "$DATA/english"
+  target_hours: {train: 5.0, val: 1.0}   # reserve utterances top up alignment failures
+  # Reject utterances whose longest non-silence phone exceeds 50 frames (0.58 s):
+  # in Svarah these are filled pauses ("uhh") or untranscribed speech that MFA absorbs
+  # into one phone, mostly AH0 (365 of 4,987 aligned utterances; see docs/DATA.md).
+  max_phone_frames: 50
+
+align:
+  acoustic_model: english_us_arpa        # MFA 3.x pretrained model; ARPAbet phones with stress
+  dictionary: "$DATA/english/dictionary.txt"   # LibriSpeech lexicon + g2p_en OOVs (built by preprocess.py)
+
+preprocess:
+  dataset: "Svarah"
+  path:
+    lexicon_path: "$REPO/third_party/FastSpeech2/lexicon/librispeech-lexicon.txt"
+    raw_path: "$DATA/english/corpus"
+    preprocessed_path: "$DATA/english/preprocessed"
+  preprocessing:
+    val_size: 0                          # unused: splits come from project/English/splits
+    text:
+      text_cleaners: ["english_cleaners"]
+      language: "en"
+    audio:
+      sampling_rate: 22050               # Svarah is 16 kHz; resampled (mel fmax 8 kHz = 16 kHz Nyquist)
+      max_wav_value: 32768.0
+    stft:
+      filter_length: 1024
+      hop_length: 256
+      win_length: 1024
+    mel:
+      n_mel_channels: 80
+      mel_fmin: 0
+      mel_fmax: 8000                     # must match HiFi-GAN
+    pitch:
+      feature: "phoneme_level"
+      normalization: True
+    energy:
+      feature: "phoneme_level"
+      normalization: True
+
+model:
+  transformer:
+    encoder_layer: 4
+    encoder_head: 2
+    encoder_hidden: 256
+    decoder_layer: 6
+    decoder_head: 2
+    decoder_hidden: 256
+    conv_filter_size: 1024
+    conv_kernel_size: [9, 1]
+    encoder_dropout: 0.2
+    decoder_dropout: 0.2
+  variance_predictor:
+    filter_size: 256
+    kernel_size: 3
+    dropout: 0.5
+  variance_embedding:
+    pitch_quantization: "linear"
+    energy_quantization: "linear"
+    n_bins: 256
+  multi_speaker: True                    # ~113 speaker proxies (see docs/DATA.md)
+  max_seq_len: 1500                      # train clips up to 15 s = 1292 frames (upstream: 1000)
+  vocoder:
+    model: "HiFi-GAN"
+    speaker: "universal"                 # multi-speaker, accented data: universal generator
+
+train:
+  path:
+    ckpt_path: "$OUT/English/ckpt"
+    log_path: "$OUT/English/log"
+    result_path: "$OUT/English/result"
+  optimizer:
+    batch_size: 16
+    betas: [0.9, 0.98]
+    eps: 0.000000001
+    weight_decay: 0.0
+    grad_clip_thresh: 1.0
+    grad_acc_step: 1
+    warm_up_step: 4000
+    # Upstream (LJSpeech, 24 h): 900k steps, anneal at 300k/400k/500k. Here 5 h and a free
+    # Colab T4 budget: 50k steps (~235 epochs of 3,417 utts at batch 16), annealed in the last half.
+    anneal_steps: [25000, 35000, 45000]
+    anneal_rate: 0.3
+  step:
+    total_step: 50000
+    log_step: 100
+    synth_step: 1000
+    val_step: 1000
+    save_step: 2000                      # frequent, resumable checkpoints for Colab
+  checkpoint:                            # fs2ra.training: disk use on Drive
+    keep_last: 2                         # full checkpoints (model + Adam), ~420 MB each
+    keep_every: 10000                    # model-only milestones (~140 MB) kept in ckpt/milestones
