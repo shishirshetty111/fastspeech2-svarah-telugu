@@ -21,6 +21,7 @@ import torch
 from scipy.io import wavfile
 
 from fs2ra.config import load_config, upstream_configs
+from fs2ra.hf import REPO_ROOT
 from fs2ra.symbols import check_phone_strings, register_language
 
 # Phrase-final punctuation becomes a pause ("sp"), as in upstream synthesize.py; "10:45"
@@ -49,6 +50,12 @@ class EnglishFrontEnd:
         from fs2ra.text_en import EnglishG2P
 
         self.g2p = EnglishG2P(lexicon_path)
+        import nltk
+
+        try:  # nltk >= 3.8.2 tags with this resource; g2p_en only fetches the older one
+            nltk.data.find("taggers/averaged_perceptron_tagger_eng/")
+        except LookupError:
+            nltk.download("averaged_perceptron_tagger_eng", quiet=True)
         self.variants = {}
         if variants_path and os.path.exists(variants_path):
             with open(variants_path, encoding="utf-8") as f:
@@ -257,7 +264,13 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
         print("%-4s %5.2f s  %3d phones  F0 %.0f-%.0f Hz  %s" % (
             s["id"], len(wav) / sr, len(phones), pitch_hz.min(), pitch_hz.max(), wav_path))
 
+    ckpt_abs = os.path.abspath(ckpt_path)
+    try:  # repo-relative when inside the repo (relpath raises across Windows drives)
+        ckpt_rel = os.path.relpath(ckpt_abs, REPO_ROOT)
+    except ValueError:
+        ckpt_rel = ".."
     with open(os.path.join(out_dir, "inference_summary.json"), "w", encoding="utf-8") as f:
-        json.dump({"checkpoint": os.path.abspath(ckpt_path), "step": step, "speaker": speaker,
-                   "device": str(device), "sentences": summary}, f, ensure_ascii=False, indent=1)
+        json.dump({"checkpoint": ckpt_abs if ckpt_rel.startswith("..") else ckpt_rel.replace("\\", "/"),
+                   "step": step, "speaker": speaker, "device": str(device), "sentences": summary},
+                  f, ensure_ascii=False, indent=1)
     return summary

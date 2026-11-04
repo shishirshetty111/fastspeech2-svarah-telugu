@@ -26,6 +26,7 @@ dist/
 *.zip
 # Final assignment deliverables are re-included explicitly once they exist:
 !project/Results/**/test_generated_audios/*.wav
+!project/*/checkpoints/*.pth.tar
 
 # Secrets
 .env
