@@ -3,6 +3,7 @@
     python project/English/train.py --dry-run                 # few CPU steps through every code path
     python project/English/train.py                           # full run; resumes from the latest checkpoint
     python project/English/train.py --total_step 60000        # override config train.step.total_step
+    python project/English/train.py --amp                     # mixed precision on GPU (faster)
 
 Needs the features from `preprocess.py` under $FS2_DATA_ROOT/english/preprocessed.
 Checkpoints, CSV logs, loss plots and teacher-forced validation samples go to
@@ -27,9 +28,10 @@ def main():
     parser.add_argument("--total_step", type=int, default=None)
     parser.add_argument("--dry-run", action="store_true", help="tiny run into *_dryrun output dirs")
     parser.add_argument("--num_workers", type=int, default=2)
+    parser.add_argument("--amp", action="store_true", help="mixed precision (bf16 on L4/A100, fp16 on T4)")
     args = parser.parse_args()
     train(load_config(args.config), args.config, total_step=args.total_step, dry_run=args.dry_run,
-          num_workers=args.num_workers)
+          num_workers=args.num_workers, amp=args.amp)
 
 
 if __name__ == "__main__":

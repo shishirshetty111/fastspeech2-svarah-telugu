@@ -12,7 +12,11 @@ and Dataset (ming024/FastSpeech2 train.py), adapted for preemptible notebooks:
 4. Each validation also writes one teacher-forced sample (ground-truth durations,
    pitch and energy; mel from the model) as wav + png. Real text-only inference is
    project/<Lang>/inference.py.
-5. The train-only stats.json / speakers.json and the config are copied next to the
+5. Optional mixed precision (--amp): forward pass and loss under torch.autocast in
+   bfloat16 where the GPU supports it (L4/A100), else float16 with a GradScaler (T4).
+   Weights, optimizer state and checkpoints stay float32, so runs can switch between
+   amp and fp32 (or GPUs) on resume. Validation and inference run in float32.
+6. The train-only stats.json / speakers.json and the config are copied next to the
    checkpoints, so a checkpoint folder is self-contained for inference.
 
 Teacher forcing (as upstream): during training the variance adaptor is fed the
@@ -26,6 +30,7 @@ import re
 import shutil
 import time
 from argparse import Namespace
+from functools import partial
 
 import numpy as np
 import torch
@@ -36,6 +41,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from fs2ra.config import upstream_configs
+from fs2ra.symbols import check_phone_strings, register_language
 
 LOSS_NAMES = ["total", "mel", "postnet_mel", "pitch", "energy", "duration"]
 CKPT_RE = re.compile(r"^(\d+)\.pth\.tar$")
@@ -134,7 +140,19 @@ def _write_sample(sample, vocoder, configs, out_dir, step):
         wavfile.write(stem + "_vocoded_target.wav", sr, wav_target)
 
 
-def train(cfg, config_path, total_step=None, dry_run=False, num_workers=2, seed=1234):
+def _worker_init(language, worker_id):
+    register_language(language)  # spawned workers re-import upstream `text` without our phones
+
+
+def _amp_dtype(amp, device):
+    if not amp:
+        return None
+    if device.type == "cuda":
+        return torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+    return torch.bfloat16  # CPU autocast: only useful to exercise the code path
+
+
+def train(cfg, config_path, total_step=None, dry_run=False, num_workers=2, seed=1234, amp=False):
     from dataset import Dataset  # upstream
     from model import FastSpeech2Loss
     from utils.model import get_model, get_param_num, get_vocoder
@@ -142,6 +160,7 @@ def train(cfg, config_path, total_step=None, dry_run=False, num_workers=2, seed=
 
     from fs2ra.plots import plot_losses
 
+    n_symbols = register_language(cfg["language"])  # before the model is built
     configs = upstream_configs(cfg)
     preprocess_config, model_config, train_config = configs
     step_cfg, opt_cfg = train_config["step"], train_config["optimizer"]
@@ -179,15 +198,19 @@ def train(cfg, config_path, total_step=None, dry_run=False, num_workers=2, seed=
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     torch.manual_seed(seed + restore_step)
-    print("device %s | %s | resume from step %d | total_step %d" % (
-        device, torch.cuda.get_device_name(0) if device.type == "cuda" else "cpu", restore_step, total_step))
+    amp_dtype = _amp_dtype(amp, device)
+    scaler = torch.amp.GradScaler(device.type, enabled=amp_dtype == torch.float16)
+    print("device %s | %s | precision %s | resume from step %d | total_step %d" % (
+        device, torch.cuda.get_device_name(0) if device.type == "cuda" else "cpu",
+        "amp " + str(amp_dtype).replace("torch.", "") if amp_dtype else "float32", restore_step, total_step))
 
     train_set = Dataset("train.txt", preprocess_config, train_config, sort=True, drop_last=True)
     val_set = Dataset("val.txt", preprocess_config, train_config, sort=False, drop_last=False)
+    check_phone_strings(train_set.text + val_set.text, cfg["language"])
     batch_size, group_size = opt_cfg["batch_size"], 4  # upstream: sort within groups of 4 batches
     assert batch_size * group_size < len(train_set)
     loader_kw = dict(num_workers=num_workers, persistent_workers=num_workers > 0,
-                     pin_memory=device.type == "cuda")
+                     pin_memory=device.type == "cuda", worker_init_fn=partial(_worker_init, cfg["language"]))
     train_loader = DataLoader(train_set, batch_size=batch_size * group_size, shuffle=True,
                               collate_fn=train_set.collate_fn, **loader_kw)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, collate_fn=val_set.collate_fn,
@@ -196,8 +219,8 @@ def train(cfg, config_path, total_step=None, dry_run=False, num_workers=2, seed=
     model, optimizer = get_model(Namespace(restore_step=restore_step), configs, device, train=True)
     loss_fn = FastSpeech2Loss(preprocess_config, model_config).to(device)
     vocoder = get_vocoder(model_config, device)
-    print("FastSpeech2 parameters: %d | train %d utts, val %d utts" % (
-        get_param_num(model), len(train_set), len(val_set)))
+    print("FastSpeech2 parameters: %d | symbols %d | train %d utts, val %d utts" % (
+        get_param_num(model), n_symbols, len(train_set), len(val_set)))
 
     grad_acc, clip = opt_cfg["grad_acc_step"], opt_cfg["grad_clip_thresh"]
     step = restore_step + 1
@@ -207,12 +230,16 @@ def train(cfg, config_path, total_step=None, dry_run=False, num_workers=2, seed=
         for batchs in train_loader:
             for batch in batchs:
                 batch = to_device(batch, device)
-                output = model(*(batch[2:]))
-                losses = loss_fn(batch, output)
-                (losses[0] / grad_acc).backward()
+                with torch.autocast(device.type, dtype=amp_dtype, enabled=amp_dtype is not None):
+                    output = model(*(batch[2:]))
+                    losses = loss_fn(batch, output)
+                scaler.scale(losses[0] / grad_acc).backward()
                 if step % grad_acc == 0:
+                    scaler.unscale_(optimizer._optimizer)  # no-ops unless float16
                     nn.utils.clip_grad_norm_(model.parameters(), clip)
-                    optimizer.step_and_update_lr()
+                    optimizer._update_learning_rate()  # = upstream step_and_update_lr, via the scaler
+                    scaler.step(optimizer._optimizer)
+                    scaler.update()
                     optimizer.zero_grad()
                 running += np.array([l.item() for l in losses])
                 n_running += 1

@@ -64,13 +64,19 @@ Upstream `Preprocessor.process_utterance` (mel, durations, F0, energy) is reused
 - Every utterance is validated (sum of durations = mel frames, one pitch/energy value per phone, finite) and logged in `feature_status.csv`.
 - `speakers.json` is sorted and built from train speakers only (upstream: `os.listdir` order); val utterances of unseen speakers are dropped and logged.
 
+## Telugu symbols (`fs2ra/symbols.py`, Phase 5)
+Upstream's symbol table (360 symbols: ARPAbet, pinyin, ASCII, silences) has no Telugu phones, and `text_to_sequence` **silently drops** any `{...}` phone it does not know. For Telugu, the 49-phone ASCII set of `fs2ra/text_te.py` is appended in place to `text.symbols.symbols` / `text._symbol_to_id` before the model is built (the encoder embedding size is read from `len(symbols)` at construction); names that already exist (e.g. pinyin initials `@k`, `@m`) reuse that id, which is harmless for a model trained from scratch. English registers nothing and keeps 360 symbols. Safeguards: training checks that every phone of every train/val line maps to an id, and the registration also runs in each DataLoader worker (`worker_init_fn`), because spawned workers re-import upstream `text` without it.
+
+## Training loop (`fs2ra/training.py`, Phase 4)
+Upstream model, loss, `ScheduledOptim` and `Dataset` unchanged. Replaces `train.py` for: automatic resume from the newest checkpoint, atomic checkpoint writes, pruning + model-only milestones, CSV loss logs and PNG curves, teacher-forced validation samples, no `DataParallel` (state_dict keys without `module.`), checkpoint lr stored as float (numpy-2 portability).
+
 ## Known upstream issues to fix in later phases (not patched yet)
 - `preprocessor/ljspeech.py` etc.: `librosa.load(path, sampling_rate)` positional `sr` breaks on librosa ≥0.10. We will write our own corpus loaders anyway.
 - `Preprocessor.process_utterance`: `librosa.load(wav_path)` silently resamples to librosa's default 22050 rather than the config value — fine for 22050 but a hidden coupling.
 - `Preprocessor.build_from_path`: fits stats on train + val and splits by a random `val_size` count. **Bypassed** by `fs2ra/features.py` (manifest splits, train-only stats).
 - `Preprocessor.build_from_path` also iterates `os.listdir` and `random.shuffle` without a seed. **Bypassed** (not used).
-- `train.py`: saves only every `save_step` (100k), uses tensorboard only (no CSV/PNG loss curves), `nn.DataParallel`, no data-loader resume. Need frequent resumable checkpoints for Colab/Kaggle and CSV loss logging for the required plots.
+- `train.py`: saves only every `save_step` (100k), uses tensorboard only, `nn.DataParallel`. **Bypassed** by `fs2ra/training.py`.
 - `synthesize.py` single mode uses the raw text (first 100 chars) as the output filename — invalid on Windows for `?`, `:`; we pass explicit utterance IDs.
 - `VariancePredictor` hard-codes `padding=1` in the second conv (only correct for `kernel_size: 3`).
-- Symbol table has no Telugu symbols; the `{...}` phone parser assumes space-separated phone tokens — Telugu needs a new phone set and embedding size (checkpoint transfer would need embedding resize).
+- Symbol table has no Telugu symbols. **Handled** by `fs2ra/symbols.py` (above).
 - `synthesize.py::preprocess_english` strips only trailing punctuation and relies on `g2p_en` for numbers/OOV; E4 (`10:45 AM`, `12 November 2026`, `andaroo`) and E3 (`rhyth m`) behaviour must be documented, not silently normalised.

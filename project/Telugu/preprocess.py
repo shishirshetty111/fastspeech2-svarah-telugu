@@ -1,9 +1,47 @@
-"""Telugu preprocess entrypoint (assignment layout: project/Telugu/preprocess.py).
+"""Telugu (IndicTTS, male) preprocessing: export corpus -> MFA (trained here) -> FastSpeech 2 targets.
 
-Not implemented yet: Phase 0-1 only set up the upstream baseline. See
-docs/IMPLEMENTATION_PLAN.md and docs/PROGRESS.md for the phase that adds this.
+    python project/Telugu/preprocess.py --stage export align features             # full 5 h + 1 h (+ reserve)
+    python project/Telugu/preprocess.py --smoke 30 10 --stage export align features   # 30 train + 10 val
+
+Set FS2_MFA_CMD to the MFA executable (see docs/ENVIRONMENT.md). The align stage trains
+an MFA acoustic model on this corpus (no pretrained Telugu model exists). Outputs go to
+$FS2_DATA_ROOT/telugu[_smoke]/ (git-ignored).
 """
+import argparse
+import os
 import sys
 
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path[:0] = [REPO_ROOT, os.path.join(REPO_ROOT, "third_party", "FastSpeech2")]
+
+from fs2ra import pipeline  # noqa: E402
+from fs2ra.text_te import build_telugu_dictionary, normalize_telugu  # noqa: E402
+
+CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.yaml")
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", default=CONFIG)
+    parser.add_argument("--stage", nargs="+", choices=["export", "align", "features"], required=True)
+    parser.add_argument("--smoke", nargs=2, type=int, metavar=("N_TRAIN", "N_VAL"),
+                        help="only the first N train and M val utterances, in a separate work dir")
+    parser.add_argument("--num_jobs", type=int, default=None)
+    args = parser.parse_args()
+
+    cfg = pipeline.load(args.config)
+    smoke = args.smoke is not None
+    dirs = pipeline.work_dirs(cfg, smoke)
+    if "export" in args.stage:
+        rows = pipeline.select_rows(cfg, *(args.smoke or (0, 0)))
+        pipeline.stage_export(cfg, rows, dirs, normalize_telugu, build_telugu_dictionary)
+    if "align" in args.stage:
+        pipeline.stage_align(cfg, dirs, args.num_jobs)
+    if "features" in args.stage:
+        from fs2ra.features import stage_features
+
+        stage_features(cfg, dirs)
+
+
 if __name__ == "__main__":
-    sys.exit("project/Telugu/preprocess.py is not implemented yet (see docs/PROGRESS.md).")
+    main()
