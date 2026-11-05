@@ -1,6 +1,6 @@
 # Implementation progress
 
-Status (2026-11-04): **Phases 0–3 complete for English; English training run to 50k steps on Colab (user-reported; final logs/checkpoints not yet copied locally); text-only inference implemented and CPU-tested.** Telugu: front end + MFA-train stage done, alignment pending (Colab). No assignment audio from a trained model has been verified yet. Data decisions: `docs/DATA.md`.
+Status (2026-11-04): **Phases 0–3 complete for English; English training run to 50k steps on Colab (user-reported; final logs/checkpoints not yet copied locally); text-only inference implemented and CPU-tested.** Telugu: aligned and features built (2026-11-05); training pending (Colab). No assignment audio from a trained model has been verified yet. Data decisions: `docs/DATA.md`.
 
 ## Phase 0 — repo and environment inspection ✅
 - [x] Read AGENTS.md, all docs, original PDF (visually, all 3 pages)
@@ -132,12 +132,23 @@ python scripts/build_report.py
 python -m pytest tests -q --deselect tests/test_features_full.py   # 65 passed
 ```
 
+### 2026-11-05 — Phase 5a: Telugu alignment + features
+- MFA 3.4.3 `mfa train` on Colab CPU (`notebooks/align_telugu_colab.ipynb`, now runs MFA under nohup so a browser/wifi drop does not kill it): 6,024 s; 3,778 / 3,782 utterances aligned (no alignment: 2 train, 2 reserve).
+- Features (local, 6 jobs): 3,775 ok; dropped 4 no_alignment + 3 invalid:long_phone; topped up from reserve → train 2,625 utts / 5.000 h, val 525 / 1.001 h; 1 speaker (te_male); stats fit on train only.
+- Pitch mean 190 Hz (std 43): checked on 15 random utterances, dio+stonemask (used for training) and harvest agree (median 179 Hz, p5–p95 120–266 Hz), unimodal → speaker's real register, not octave errors.
+```
+tar -xf dist/telugu_alignment.tar -C data
+python project/Telugu/preprocess.py --stage features --num_jobs 6
+python -m pytest tests/test_features_full.py -q          # 6 passed (English + Telugu integrity)
+python scripts/package_features.py telugu                # dist/telugu_features.tar, 502.0 MB, sha256 7c0d3e9a…f8080e
+```
+
 ## Current blockers / open issues
-- Telugu alignment: no pretrained Telugu MFA model; needs a Telugu G2P/lexicon and an MFA model trained on the Telugu corpus (Phase 5).
+- Telugu alignment relies on an MFA model trained on the 5 h + 1 h + reserve corpus itself (no pretrained Telugu model) and a rule-based G2P; alignment quality is not checked against manual labels.
 - English val is all tier-0 (clean, ≤ 11 s) while train has 254 tier-1/2 utterances (11–15 s or digits); documented asymmetry.
 - English `max_seq_len` set to 1500 (longest utterance 1,272 frames).
 - English verbalisation of digits is heuristic (e.g. 4-digit numbers read as years); mismatches with what speakers said are only caught if they cause alignment outliers.
 - Svarah speaker proxy may merge up to two speaker pairs (115 vs. 117).
 
 ## Next action (single task)
-Telugu: user runs `notebooks/align_telugu_colab.ipynb` (upload `dist/telugu_corpus.tar` first) → extract `telugu_alignment.tar` into `data/` → `project/Telugu/preprocess.py --stage features` → `scripts/package_features.py telugu` → Colab L4 training → inference → fill the Telugu sections of the report.
+Telugu training: user uploads `dist/telugu_features.tar` to `MyDrive/fs2ra/`, runs `notebooks/train_colab.ipynb` with `LANG = "Telugu"` on L4 (`--amp`) → then inference → Results/Telugu, checkpoint via LFS, Telugu sections of the report.
