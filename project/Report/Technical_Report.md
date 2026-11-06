@@ -4,7 +4,7 @@ subtitle: "Technical report - IIIT Hyderabad RA assignment"
 date: "7 November 2026"
 ---
 
-This report covers two FastSpeech 2 text-to-speech models that I trained from scratch: one for English (Svarah) and one for Telugu (IndicTTS). The sections follow the order of the assignment brief. All numbers come from the logs and files in the repository. Listening comments are my own, from a single informal listener.
+This report covers two FastSpeech 2 text-to-speech models trained from scratch: one for English (Svarah) and one for Telugu (IndicTTS). The sections follow the order of the assignment brief. All numbers come from the logs and files in the repository. Listening comments come from a single informal listener.
 
 | | English | Telugu |
 |---|---|---|
@@ -16,18 +16,18 @@ This report covers two FastSpeech 2 text-to-speech models that I trained from sc
 
 # 1. Implementation approach and architecture
 
-**Starting point.** I used the open-source FastSpeech 2 implementation by ming024 (github.com/ming024/FastSpeech2, commit `d4e79eb`, MIT licence) together with the HiFi-GAN vocoder that comes with it. I did not rewrite the network. The model, loss function and learning-rate schedule are unchanged from that code.
+**Starting point.** The project uses the open-source FastSpeech 2 implementation by ming024 (github.com/ming024/FastSpeech2, commit `d4e79eb`, MIT licence) together with the HiFi-GAN vocoder that comes with it. The network was not rewritten. The model, loss function and learning-rate schedule are unchanged from that code.
 
 **How the model works.** Text is first converted into phones (speech sounds). An encoder turns the phones into hidden vectors. A *variance adaptor* then predicts three things for every phone: how long it lasts (duration), its pitch (F0) and its loudness (energy). The phone vectors are stretched to the predicted length, and a decoder turns them into a mel-spectrogram. Finally the HiFi-GAN vocoder turns the mel-spectrogram into audio.
 
 - During **training**, the decoder is given the real durations, pitch and energy measured from the recording, and the three predictors learn to guess them.
 - During **inference**, only the text (and a speaker for English) is given, so the model must use its own predictions. This is why audio produced during training sounds better than real text-to-speech output.
 
-**Changes I made to the reference code:**
+**Changes made to the reference code:**
 
 - **Compatibility fixes** for current library versions (librosa 0.10, CPU-only PyTorch, safe checkpoint loading), plus one upstream bug fix: the energy embedding was being scaled by the pitch control. All changes are in `patches/ming024_fastspeech2_compat.patch`.
-- **Silence handling.** The aligner I used (MFA 3) marks pauses as empty intervals, which the original code silently dropped. This would have shifted every duration after the first pause without any error. I relabel these intervals as pauses (`sp`) before feature extraction.
-- **Telugu phones.** The original code silently drops any phone it does not know. I added the 49 Telugu phones to its symbol table, and training refuses to start if any phone is unknown.
+- **Silence handling.** The aligner used here (MFA 3) marks pauses as empty intervals, which the original code silently dropped. This would have shifted every duration after the first pause without any error. These intervals are relabelled as pauses (`sp`) before feature extraction.
+- **Telugu phones.** The original code silently drops any phone it does not know. The 49 Telugu phones were added to its symbol table, and training refuses to start if any phone is unknown.
 - **Training loop.** It can resume after a disconnection (important on Colab), saves checkpoints safely, logs losses to CSV and supports mixed precision. It also stores the normalisation statistics and speaker list next to each checkpoint, so inference always uses the same settings as training.
 - **Inference front end.** A text-only pipeline converts raw text to phones in the same way as for the training data (Section 4).
 
@@ -35,11 +35,11 @@ This report covers two FastSpeech 2 text-to-speech models that I trained from sc
 
 # 2. Data, preprocessing and training setup
 
-**Splits.** For both languages I measured the audio length directly instead of trusting the dataset cards. The splits are fixed (random seed 1234) and grouped by sentence text, so no sentence appears in both training and validation. Tests confirm that training and validation share no clips, audio or sentences. Pitch and energy statistics are computed from the training split only.
+**Splits.** For both languages the audio length was measured directly instead of trusting the dataset cards. The splits are fixed (random seed 1234) and grouped by sentence text, so no sentence appears in both training and validation. Tests confirm that training and validation share no clips, audio or sentences. Pitch and energy statistics are computed from the training split only.
 
-**English: Svarah** (ai4bharat, CC BY 4.0). Svarah contains 9.6 h of Indian-accented English recorded for speech recognition, both read and spontaneous. It has no speaker column, so I used each session's demographic profile as the speaker ID (115 profiles). I removed clips shorter than 1 s, longer than 15 s, too quiet, or with an unusual speaking rate. The final split is 5.00 h for training and 1.00 h for validation, over 113 speakers. The median speaker has only about 1.9 minutes of training audio, so a single-speaker model was not possible and the English model is multi-speaker.
+**English: Svarah** (ai4bharat, CC BY 4.0). Svarah contains 9.6 h of Indian-accented English recorded for speech recognition, both read and spontaneous. It has no speaker column, so each session's demographic profile is used as the speaker ID (115 profiles). Clips were removed if they were shorter than 1 s, longer than 15 s, too quiet, or had an unusual speaking rate. The final split is 5.00 h for training and 1.00 h for validation, over 113 speakers. The median speaker has only about 1.9 minutes of training audio, so a single-speaker model was not possible and the English model is multi-speaker.
 
-**Telugu: IndicTTS Telugu** (IIT Madras). The download held 36.7 h from two speakers, not the ~8.7 h on the card. I chose the male speaker: he has 8.1 h of usable clips (15 s or shorter), against 3.6 h for the female speaker, and all his recordings come from one consistent setup. The split is 5.00 h for training and 1.00 h for validation. I rejected 11 transcripts in which a Latin "o" had been typed in place of the Telugu anusvara, instead of correcting them silently.
+**Telugu: IndicTTS Telugu** (IIT Madras). The download held 36.7 h from two speakers, not the ~8.7 h on the card. The male speaker was chosen: he has 8.1 h of usable clips (15 s or shorter), against 3.6 h for the female speaker, and all his recordings come from one consistent setup. The split is 5.00 h for training and 1.00 h for validation. 11 transcripts in which a Latin "o" had been typed in place of the Telugu anusvara were rejected rather than silently corrected.
 
 **English preprocessing.**
 
@@ -50,7 +50,7 @@ This report covers two FastSpeech 2 text-to-speech models that I trained from sc
 5. Extract the training targets with the reference code: mel-spectrogram, phone durations, pitch (WORLD, interpolated through unvoiced parts) and energy, each averaged per phone.
 6. Drop 437 clips with an unrealistically long phone, usually an untranscribed "uhh", and replace them from a reserve pool.
 
-**Telugu preprocessing.** There is no ready-made pronunciation dictionary or alignment model for Telugu, so I built both:
+**Telugu preprocessing.** There is no ready-made pronunciation dictionary or alignment model for Telugu, so both were built for this project:
 
 - A **rule-based Telugu-to-phone converter** (`fs2ra/text_te.py`) handles the inherent vowel and virama, vowel signs, anusvara before consonants, vocalic r, visarga and double consonants. It also writes numbers, ordinals and times as Telugu words.
 - An **MFA alignment model trained on this Telugu corpus itself**. It ran on Colab (about 100 minutes) and aligned 3,778 of 3,782 clips.
@@ -85,9 +85,9 @@ As a sanity check, the speaker's average pitch came out at 190 Hz, which is high
 
 **Overfitting.** For both languages the validation loss stops improving after about 8,000 to 10,000 steps (lowest at 18k: English 2.55, Telugu 1.98) and then stays flat, while the training loss keeps falling. This is clear overfitting: the model memorises the training set but does not get better on new sentences. It does not get worse either. With only 5 hours of data, 50,000 steps is more than needed.
 
-**Checkpoint choice.** The 20k, 30k and 50k checkpoints have almost the same validation loss. I listened to all of them, preferred 20k for both languages, and submitted 20k.
+**Checkpoint choice.** The 20k, 30k and 50k checkpoints have almost the same validation loss. All of them were compared by listening, and 20k was preferred and submitted for both languages.
 
-**Did the predictors actually learn?** I compared each predictor's validation error with a simple baseline (for example, always guessing the speaker's average pitch):
+**Did the predictors actually learn?** Each predictor's validation error was compared with a simple baseline (for example, always guessing the speaker's average pitch):
 
 | Predictor | English: model vs baseline | Telugu: model vs baseline |
 |---|---|---|
@@ -95,7 +95,7 @@ As a sanity check, the speaker's average pitch came out at 190 Hz, which is high
 | Energy | 0.40 vs 1.03 | 0.21 vs 1.09 |
 | Duration | 0.23 vs 0.26 | 0.062 vs 0.131 |
 
-The Telugu model roughly halves the baseline error for all three. The English model learns energy well, but its pitch is barely better than guessing the speaker's average. I explain why in Section 6.
+The Telugu model roughly halves the baseline error for all three. The English model learns energy well, but its pitch is barely better than guessing the speaker's average. Section 6 explains why.
 
 # 4. Generated speech and pronunciation
 
@@ -103,7 +103,7 @@ All 10 test sentences (5 per language) are in `Results/<Language>/test_generated
 
 **Front-end decisions:**
 
-- **English words with several dictionary pronunciations** use the one that the training speakers actually used most often. For example, "twenty" is pronounced with its T and "parliamentary" with its T, because that is what the aligner found in the training data. My first version picked the dictionary's first entry and produced "twenny" and "parlimenary".
+- **English words with several dictionary pronunciations** use the one that the training speakers actually used most often. For example, "twenty" is pronounced with its T and "parliamentary" with its T, because that is what the aligner found in the training data. The first version picked the dictionary's first entry and produced "twenny" and "parlimenary".
 - ***conduct* (E2a noun, E2b verb)** and ***పట్టు* (T2a, T2b)**. For English, a part-of-speech tagger chooses the pronunciation: CON-duct for the noun, con-DUCT for the verb. The two Telugu words are spelled and pronounced the same, so they get identical phones and only the sentence context differs.
 - **Double spaces** (E3 "rhyth  m", T3 "అడ  విలో") are not spell-corrected, as the brief asks to preserve the text. The extra space is read as a short pause. "rhyth" is not an English word, so the g2p model guesses its pronunciation, and the lone "m" is read as the letter name.
 - **Numbers and dates** (E4, T4) are written out as words. Digits never appear in the Telugu training text, so this is the only way the model can say them.
@@ -111,13 +111,13 @@ All 10 test sentences (5 per language) are in `Results/<Language>/test_generated
 
 **English: speech quality.** The English voice is understandable, but it does not sound fully natural.
 
-- **Background buzz.** The first version had a robotic buzz. A listening test showed where it comes from: the original recordings were clean, and real spectrograms passed through the vocoder were also clean. Only the model's own spectrograms buzzed. So the cause is the model's blurred (over-smoothed) spectrogram output, a known weakness of FastSpeech 2, not noise in the data. To reduce it, I fine-tuned the HiFi-GAN vocoder for 3,000 steps on this model's own spectrograms from the English training set. On listening, the buzz was reduced. The old audio is kept in `Results/English/before_vocoder_finetuning/`.
-- **Voice choice.** Because the English model has many speakers, I compared how well it reproduces each speaker's own held-out recordings (`scripts/speaker_search.py`). The speaker with the most data (`en_edfd2580`) ranked only 23rd of 89. I listened to five of the best-ranked speakers and judged `en_72a36e45` (ranked 2nd) the best. It also speaks more slowly than the earlier voice (11 to 13.5 vs 12 to 15.5 phones per second). The earlier voice is kept in `Results/English/previous_speaker_en_edfd2580/`.
-- **Pronunciation.** The phones given to the model are correct, but the delivery still sounds hesitant, as if the speaker were struggling with some words. In my listening of the first version, the date in E4 sounded rushed ("twel... twenty six") and the noun and verb *conduct* did not sound clearly different. These come from the predicted durations and pitch (Section 5), not from the input phones.
+- **Background buzz.** The first version had a robotic buzz. A listening test showed where it comes from: the original recordings were clean, and real spectrograms passed through the vocoder were also clean. Only the model's own spectrograms buzzed. So the cause is the model's blurred (over-smoothed) spectrogram output, a known weakness of FastSpeech 2, not noise in the data. To reduce it, the HiFi-GAN vocoder was fine-tuned for 3,000 steps on this model's own spectrograms from the English training set. On listening, the buzz was reduced. The old audio is kept in `Results/English/before_vocoder_finetuning/`.
+- **Voice choice.** Because the English model has many speakers, it was scored on how well it reproduces each speaker's own held-out recordings (`scripts/speaker_search.py`). The speaker with the most data (`en_edfd2580`) ranked only 23rd of 89. Five of the best-ranked speakers were compared by listening, and `en_72a36e45` (ranked 2nd) was judged the best. It also speaks more slowly than the earlier voice (11 to 13.5 vs 12 to 15.5 phones per second). The earlier voice is kept in `Results/English/previous_speaker_en_edfd2580/`.
+- **Pronunciation.** The phones given to the model are correct, but the delivery still sounds hesitant, as if the speaker were struggling with some words. When listening to the first version, the date in E4 sounded rushed ("twel... twenty six") and the noun and verb *conduct* did not sound clearly different. These come from the predicted durations and pitch (Section 5), not from the input phones.
 
-**Telugu: speech quality.** I judged the 20k Telugu output good for submission. I am not a fluent Telugu speaker, so I could only judge pronunciation roughly. The measurements in Section 5 show a much clearer sentence melody than English.
+**Telugu: speech quality.** The 20k Telugu output was judged good for submission. The listener is not a fluent Telugu speaker, so pronunciation could only be judged roughly. The measurements in Section 5 show a much clearer sentence melody than English.
 
-- The model speaks fast. I measured this, and it matches the real speaker's speed (about 15 phones per second). I also generated 10% and 20% slower versions, but preferred the normal speed.
+- The model speaks fast. Measured, this matches the real speaker's speed (about 15 phones per second). Versions 10% and 20% slower were also generated, but the normal speed was preferred.
 - **T1:** ఔషధాల sounds like "ushadhalu" instead of "aushadhalu". The phones are correct, but a word-starting ఔ appears only once in the 5 hours of training data, so the model has not learned it. It predicts this vowel much too quietly.
 - **T4:** the comma pause is now silent (see above).
 
@@ -182,10 +182,10 @@ With about 2 minutes per speaker of spontaneous, varied recordings, the English 
 - **Unknown and mixed words.** "rhyth" and the Telugu word "andaroo" in English text depend on g2p guesses, and English phones cannot represent Telugu vowels exactly.
 - **Speaker labels.** English speaker IDs are demographic profiles, so a few real speakers may be merged.
 
-**What I tried that did not help:**
+**What was tried but did not help:**
 
 - A stronger vocoder (BigVGAN-v2) reproduced real spectrograms more accurately, but it did not remove the buzz. This confirms the problem lies in the model's predicted spectrograms.
-- Simple prosody rules applied after prediction, such as a wider pitch range and slightly slower speech, were tuned on validation data. They made no audible difference, so I did not use them (branch `prosody-experiment`).
+- Simple prosody rules applied after prediction, such as a wider pitch range and slightly slower speech, were tuned on validation data. They made no audible difference, so they were not used (branch `prosody-experiment`).
 
 **Possible improvements:**
 
