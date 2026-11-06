@@ -2,6 +2,9 @@
  "checkpoint": "project/English/checkpoints/20000.pth.tar",
  "step": 20000,
  "speaker": "en_edfd2580",
+ "pace": 1.0,
+ "split_at_punctuation": false,
+ "vocoder": "project/English/checkpoints/vocoder_hifigan_finetuned_g02503000.pth.tar",
  "device": "cpu",
  "sentences": [
   {

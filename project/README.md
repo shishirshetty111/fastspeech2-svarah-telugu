@@ -1,6 +1,6 @@
 # FastSpeech 2 — English (Svarah) and Telugu (IndicTTS)
 
-Two FastSpeech 2 acoustic models **trained from scratch**: English on 5 h of Svarah, and Telugu on 5 h of IndicTTS Telugu. Each has a disjoint 1 h validation set. The vocoder is the pretrained HiFi-GAN "universal" model. Full write-up: [`Report/Technical_Report.pdf`](Report/Technical_Report.pdf).
+Two FastSpeech 2 acoustic models **trained from scratch**: English on 5 h of Svarah, and Telugu on 5 h of IndicTTS Telugu. Each has a disjoint 1 h validation set. The vocoder is the pretrained HiFi-GAN "universal" model; for English it is fine-tuned on the model's own teacher-forced mels from the training split (`English/checkpoints/vocoder_hifigan_finetuned_g02503000.pth.tar`, report §7.1). Full write-up: [`Report/Technical_Report.pdf`](Report/Technical_Report.pdf).
 
 | | English | Telugu |
 |---|---|---|

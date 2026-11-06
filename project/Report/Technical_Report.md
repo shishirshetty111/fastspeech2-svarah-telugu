@@ -14,11 +14,11 @@ date: "2026-11-06"
 | Train / validation | 5.000 h (3,417 utts) / 1.000 h (757 utts), disjoint | 5.000 h (2,625 utts) / 1.001 h (525 utts), disjoint |
 | Model | FastSpeech 2 (ming024), 35.4 M parameters, multi-speaker, **trained from scratch** | same architecture, single speaker, Telugu phone set |
 | Alignment | MFA 3.4.3, pretrained `english_us_arpa` | MFA 3.4.3 acoustic model **trained on this corpus** with a rule-based Telugu lexicon |
-| Vocoder | pretrained HiFi-GAN "universal" (frozen) | same |
+| Vocoder | pretrained HiFi-GAN "universal", **fine-tuned on this model's teacher-forced mels** of the English train split (§7.1) | pretrained HiFi-GAN "universal" (frozen) |
 | Training | 50k steps (T4 fp32 for 0–20k, L4 bf16 for 20k–50k) | 50k steps (Colab GPU, bf16 autocast, one uninterrupted run) |
 | Submitted checkpoint | step 20,000 (`project/English/checkpoints/20000.pth.tar`) | step 20,000 (`project/Telugu/checkpoints/20000.pth.tar`) |
 
-All parameters of the acoustic model were randomly initialised and trained. No pretrained acoustic weights, frozen layers or LoRA were used. The only pretrained component is the vocoder, which turns mel-spectrograms into waveforms.
+All parameters of the acoustic model were randomly initialised and trained. No pretrained acoustic weights, frozen layers or LoRA were used. The only pretrained component is the vocoder, which turns mel-spectrograms into waveforms; for English it was additionally fine-tuned on the English training split (§7.1), which does not change the acoustic model.
 
 # 2. Architecture and modifications
 
@@ -174,14 +174,14 @@ Hours were measured from the decoded audio, not taken from dataset cards. Each r
 |---|---|
 | Lexicon words with several pronunciations | Use the variant MFA aligned most often in the **training** alignments (`project/English/pronunciation_variants.json`, 973 words); otherwise the longest. The LibriSpeech lexicon lists reduced forms first. For example, TWENTY `T W EH1 N IY0` comes before `T W EH1 N T IY0`, but training speakers used the latter 96 times against 19. The first version of inference used the first variant and produced audible "parlimenary" and "twenny". |
 | Heteronym *conduct* (E2a/E2b) | An NLTK part-of-speech tag (noun in E2a, verb in E2b) selects g2p_en's homograph entry, which is mapped to the lexicon variant with the same stress position. The noun is K **AA1** N D AH0 K T and the verb K AH0 N D **AH1** K T. |
-| E3 `rhyth  m` | Not spell-corrected. "rhyth" is out of vocabulary, so g2p_en gives R AY1 DH; "m" is the letter name EH1 M. The double space is kept as a pause, so the given text is rendered as written. |
+| E3 `rhyth  m` | Not spell-corrected (the PDF asks to preserve the text; merging into "rhythm" would be silent correction). "rhyth" is out of vocabulary, so g2p_en gives R AY1 DH; "m" is read by its letter name EH1 M, the generic convention for a lone letter. The double space is kept as a pause, so the visible gap is audible (the alternative, collapsing it to an ordinary word gap as standard text cleaners do, is equally defensible). The same rule applies to Telugu T3. No word-specific pronunciation was hard-coded for the test fragments, so the behaviour is what any future malformed input would get. |
 | E4 `10:45 AM`, `12 November 2026` | "ten forty five a_m", "twelve november twenty twenty six". The comma becomes a pause. |
 | E4 `andaroo` | A Telugu word (అందరూ, "everyone") in English text. g2p_en guesses AE0 N D AA1 R OW0; English phones cannot represent its Telugu vowels exactly. |
 
 **Listening observations** (author; informal, single listener):
 
 - **20k vs 50k:** 20k was preferred over 50k.
-- **Voice quality:** the voice is intelligible but somewhat **robotic**. This is consistent with the flat predicted pitch (§8) and a vocoder that never saw these speakers.
+- **Voice quality** (with the original universal vocoder): the voice is intelligible but somewhat **robotic**, with an audible background glitch. This is consistent with the flat predicted pitch (§8) and with over-smoothed predicted mels (below and §7.1).
 - **Errors heard with the first front end:**
   - "parliamentary" sounded like "parlimenary";
   - *conduct* sounded like "CON-duct" in both E2a and E2b, never "cun-DUCT";
@@ -189,6 +189,20 @@ Hours were measured from the decoded audio, not taken from dataset cards. Each r
   - in E4 the date was heard as "twel… twenty six".
 - **After the front-end corrections in the table above:** the phone inputs are verifiably correct. They include the T in "parliamentary" and "twenty", the reduced first vowel of the verb *conduct*, and a pause in E3. However, on re-listening **most of these problems were judged still audible**. The remaining errors therefore come from the acoustic model's predicted durations and pitch, analysed in §8, rather than from the input phones.
 - **Where the "robotic" glitch comes from** (diagnostic listening test, 3 validation sentences): (1) the original Svarah recording, (2) its ground-truth mel through the vocoder, and (3) our model synthesising the same text for the same speaker. The listener heard **no glitch in (1) or (2), only in (3)**, and judged pronunciation in (3) fine. So neither recording noise nor the vocoder's rendering of real mels explains it: the artefact comes from the acoustic model's **predicted** mel-spectrograms (see §10).
+
+- **Teacher-forced audio also glitches.** The validation samples written during training (real durations, pitch and energy; `output/English/result/*_teacher_forced.wav`) were judged by the listener to have the same glitch and to be not very clearly pronounced, so the decoder itself, not only the variance predictions, produces the over-smoothed mels.
+- **After vocoder fine-tuning** (§7.1): the listener judged the **glitch reduced**. The voice still sounds hesitant, "like someone struggling to pronounce", which the vocoder cannot change (see §10).
+
+## 7.1 Vocoder fine-tuning on the model's own mels (English)
+
+The standard remedy for a vocoder that is fed over-smoothed predicted mels (HiFi-GAN paper, §4.4) was applied without touching the acoustic model:
+
+1. **GTA mels** (`scripts/export_gta.py`): the submitted 20k model, in eval mode and teacher-forced with the ground-truth durations, pitch and energy, regenerated the PostNet mel of every train and validation utterance (4,174; mean L1 to the real mel 0.494). Each was paired with the exact audio span its target mel came from (TextGrid-trimmed, cut to T × 256 samples; the re-analysed mel of the exported audio matches the training target to L1 ≤ 0.013).
+2. **Fine-tuning** (`notebooks/finetune_hifigan_colab.ipynb`): official [jik876/hifi-gan](https://github.com/jik876/hifi-gan) @ `4769534` (MIT) with three librosa/PyTorch compatibility edits, started from the official UNIVERSAL_V1 generator *and* discriminators (2.5M steps; the generator is identical to the one bundled with FastSpeech 2), batch 16, fine-tuning mode (input = GTA mel, target = real audio of the **train split only**). Colab L4, 0.62 s/step, 10,600 steps (50 epochs).
+3. **Selection:** validation mel L1 (100 held-out validation utterances, jik876 metric) was 0.7193 at 1k steps, **0.7089 at 3k** (minimum), then fluctuated between 0.711 and 0.721 until 10.6k. The 3k-step generator (`project/English/checkpoints/vocoder_hifigan_finetuned_g02503000.pth.tar`, 56 MB, Git LFS) is used for the submitted English audio.
+4. **Before/after** on the same 100 validation GTA mels, scored against the real recordings (re-analysed log-mel L1, 0–8 kHz): universal 0.780 ± 0.121, fine-tuned **0.774 ± 0.119**, better on 58/100. The numeric gain is small because the vocoder cannot add detail missing from the input mel; the audible change is the reduced buzz.
+
+The predicted durations, pitch and energy, and therefore all variance plots, are unchanged. The audio from the original universal vocoder is kept in `Results/English/before_vocoder_finetuning/` for comparison. Telugu uses the original universal vocoder: its audio had no comparable artefact.
 
 # 8. Variance-adaptor analysis per sentence (English)
 
@@ -280,8 +294,9 @@ Same pipeline as §7, with the rule-based Telugu front end (`fs2ra/text_te.py`) 
   - A clean single-speaker English corpus would be expected to sound far more natural, but the assignment fixes the dataset.
 - **Overfitting.** Validation loss plateaus after about 10k steps, so 50k steps is more than this data supports. Stronger regularisation, a smaller model or early stopping on validation would be the next experiments. A 10k-step milestone interval was too coarse to keep the validation minimum (18k).
 - **Teacher forcing vs inference gap.** Validation losses and teacher-forced samples overstate the quality of real text-to-speech output, because errors in predicted durations and pitch only appear at inference.
-- **Over-smoothed predictions (English glitch).** The listening test in §7 locates the English artefact in the predicted mels. This matches the known over-smoothing of FastSpeech 2: an L1/MSE-trained decoder predicts a conditional average, which the vocoder renders as buzz (Kögel et al., Interspeech 2023; Ren et al., *Revisiting Over-Smoothness in Text to Speech*, ACL 2022). Fixes from the literature all need retraining: GAN or flow decoders, mixture-density outputs, or joint acoustic model + vocoder training (JETS, 2022). Fine-tuning the vocoder on the model's own (teacher-forced) mels is the cheaper standard alternative. None was possible before the deadline; they are candidates for follow-up work on the `experiments` branch.
-- **Vocoder.** The universal HiFi-GAN was not fine-tuned on Svarah or IndicTTS. As a tested alternative (on the `experiments` branch, not used for the submitted audio), NVIDIA BigVGAN-v2 (22 kHz, 80 bands, f_max 8 kHz, same mel definition) reproduced real validation mels more faithfully on 40/40 utterances per language (re-analysed log-mel L1: English 0.235 vs 0.327, Telugu 0.321 vs 0.394). On listening it did **not** remove the English glitch, consistent with the artefact being in the predicted mels.
+- **Over-smoothed predictions (English glitch).** The listening test in §7 locates the English artefact in the predicted mels. This matches the known over-smoothing of FastSpeech 2: an L1/MSE-trained decoder predicts a conditional average, which the vocoder renders as buzz (Kögel et al., Interspeech 2023; Ren et al., *Revisiting Over-Smoothness in Text to Speech*, ACL 2022). Fixes from the literature all need retraining: GAN or flow decoders, mixture-density outputs, or joint acoustic model + vocoder training (JETS, 2022). Fine-tuning the vocoder on the model's own (teacher-forced) mels is the cheaper standard alternative, and was done (§7.1): it reduced the glitch but cannot sharpen the mels themselves. The decoder-side fixes were not possible before the deadline.
+- **Hesitant English delivery.** Even with real (teacher-forced) prosody the decoder's pronunciation is not crisp on unseen sentences (train mel L1 0.37 vs validation 0.58 at 20k). With about 2–3 min of mostly spontaneous speech per speaker, the decoder learns blurred, speaker-averaged phones, and the duration predictor learns little beyond a per-phone average (§6). Within the assignment's constraints (FastSpeech 2 trained from scratch on 5 h of Svarah) the main remaining lever would be better alignments (adapting the MFA acoustic model to Svarah); pretrained acoustic initialisation was deliberately not used.
+- **Vocoder.** As an additional tested alternative (not used for the submitted audio; `--vocoder bigvgan`, `scripts/vocoder_eval.py`), NVIDIA BigVGAN-v2 (22 kHz, 80 bands, f_max 8 kHz, same mel definition) reproduced real validation mels more faithfully on 40/40 utterances per language (re-analysed log-mel L1: English 0.235 vs 0.327, Telugu 0.321 vs 0.394). On listening it did **not** remove the English glitch, consistent with the artefact being in the predicted mels.
 - **Telugu coverage.** Rare phones and contexts are poorly learned (word-initial `ఔ` occurs once in 5 h; heard as "ushadhalu" in T1). The submitted Telugu audio was judged by a listener who is not a fluent Telugu speaker; an automatic intelligibility test (ASR character error rate) was considered but not run.
 - **Telugu long-sentence pause.** The decoder voiced a predicted pause in T4; phrase-level synthesis at punctuation is an inference-time workaround, not a model fix.
 - **Front end:**
@@ -308,7 +323,8 @@ python project/English/preprocess.py --stage export align features   # MFA 3.4.3
 python scripts/package_features.py english                            # -> Colab: notebooks/train_colab.ipynb
 python project/English/train.py --amp                                 # resumable; 50k steps
 python scripts/pronunciation_variants.py                              # lexicon variants used in training
-python project/English/inference.py --out_dir project/Results/English # uses checkpoints/20000.pth.tar
+python scripts/export_gta.py english --ckpt project/English/checkpoints/20000.pth.tar   # GTA mels -> Colab: notebooks/finetune_hifigan_colab.ipynb
+python project/English/inference.py --out_dir project/Results/English # 20000.pth.tar + fine-tuned vocoder (config inference.vocoder)
 
 # Telugu
 python project/Telugu/preprocess.py --stage export                    # then notebooks/align_telugu_colab.ipynb (Colab CPU)
