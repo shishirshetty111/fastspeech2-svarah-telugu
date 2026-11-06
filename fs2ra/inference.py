@@ -237,15 +237,33 @@ def plot_variance(kind, sid, raw, phones, frames, values, hop_s, path):
     plt.close(fig)
 
 
-def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=None, pace=1.0):
+VOCODERS = ("hifigan", "bigvgan")
+
+
+def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=None, pace=1.0, vocoder=None):
     """sentences: [{"id", "text"}] raw text. Returns the per-sentence summary list.
     pace: FastSpeech 2 duration control (upstream d_control): every predicted phone
-    duration is multiplied by it before rounding; >1 = slower speech, 1.0 = as predicted."""
+    duration is multiplied by it before rounding; >1 = slower speech, 1.0 = as predicted.
+    vocoder: "hifigan" (upstream universal HiFi-GAN, default) or "bigvgan" (fs2ra.vocoder_bigvgan);
+    default from the config's inference.vocoder."""
     from utils.model import vocoder_infer  # upstream
 
     device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    cfg, configs, model, vocoder, speakers, stats, step = load_model(ckpt_path, project_cfg, device)
+    cfg, configs, model, hifigan, speakers, stats, step = load_model(ckpt_path, project_cfg, device)
     preprocess_config, model_config, _ = configs
+    vocoder_name = vocoder or project_cfg.get("inference", {}).get("vocoder", "hifigan")
+    if vocoder_name not in VOCODERS:
+        raise ValueError("vocoder must be one of %s" % (VOCODERS,))
+    if vocoder_name == "bigvgan":
+        from fs2ra.vocoder_bigvgan import bigvgan_infer, get_bigvgan
+
+        voc = get_bigvgan(preprocess_config, device)
+
+        def vocode(mel, n):
+            return bigvgan_infer(mel, voc, preprocess_config, lengths=[n])[0]
+    else:
+        def vocode(mel, n):
+            return vocoder_infer(mel, hifigan, model_config, preprocess_config, lengths=[n])[0]
     if configs[1]["multi_speaker"]:
         speaker = speaker or project_cfg.get("inference", {}).get("speaker")
         if speaker not in speakers:
@@ -283,8 +301,7 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
         if frames.sum() != mel_len or mel_len == 0 or not np.isfinite(pitch_hz).all():
             raise RuntimeError("%s: inconsistent prediction (sum durations %d, mel %d)"
                                % (sid, frames.sum(), mel_len))
-        wav = vocoder_infer(out[1].transpose(1, 2), vocoder, model_config, preprocess_config,
-                            lengths=[mel_len * hop])[0]
+        wav = vocode(out[1].transpose(1, 2), mel_len * hop)
         return frames, pitch_hz, energy, wav
 
     summary = []
@@ -334,6 +351,7 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
     with open(os.path.join(out_dir, "inference_summary.json"), "w", encoding="utf-8") as f:
         json.dump({"checkpoint": ckpt_abs if ckpt_rel.startswith("..") else ckpt_rel.replace("\\", "/"),
                    "step": step, "speaker": speaker, "pace": pace, "split_at_punctuation": split,
+                   "vocoder": vocoder_name,
                    "device": str(device),
                    "sentences": summary},
                   f, ensure_ascii=False, indent=1)
