@@ -37,6 +37,8 @@ def main():
                         help="duration control: scale predicted phone durations (>1 slower; default 1.0)")
     parser.add_argument("--vocoder", help="hifigan | bigvgan | path to a fine-tuned HiFi-GAN g_* file "
                                           "(default: inference.vocoder in config.yaml, else hifigan)")
+    parser.add_argument("--prosody_rules", help="prosody_rules.json from scripts/prosody_calibrate.py, or 'none' "
+                                                "(default: inference.prosody_rules in config.yaml, else off)")
     args = parser.parse_args()
 
     ckpt = args.ckpt
@@ -52,7 +54,8 @@ def main():
             sentences = [s for s in json.load(f)["sentences"] if not args.ids or s["id"] in args.ids]
     step = os.path.basename(ckpt).split(".")[0]
     out_dir = args.out_dir or os.path.join(OUTPUT_ROOT, "English", "inference", "step" + step)
-    synthesize(load_config(args.config), ckpt, sentences, out_dir, speaker=args.speaker, pace=args.pace, vocoder=args.vocoder)
+    synthesize(load_config(args.config), ckpt, sentences, out_dir, speaker=args.speaker, pace=args.pace, vocoder=args.vocoder,
+               prosody_rules=args.prosody_rules)
     print("outputs in", out_dir)
 
 

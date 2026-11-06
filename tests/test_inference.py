@@ -72,6 +72,32 @@ def test_telugu_front_end():
         assert phones.count("sp") == (1 if sid in ("T3", "T4") else 0), sid  # T3 double space, T4 comma
 
 
+RULES = {"stress_floor_frames": {"IH": 12, "AY": 12}, "pitch_scale": 1.5, "stress_accent_sd": 0.3,
+         "final_lengthen": 1.2, "final_drop_sd": 0.4, "space_pause_min_frames": 40}
+
+
+def test_prosody_rules_generic():
+    """Rules key on stress digits, positions and pause kinds only -- any phone string works."""
+    import numpy as np
+
+    from fs2ra.prosody import apply_rules, final_vowels
+
+    ph = ["DH", "IH1", "S", "sp", "M", "AY1", "N", "D", "IH0", "Z", "sp", "K", "AY0"]
+    assert final_vowels(ph) == [1, 8, 12]  # last vowel before each pause and before the end
+    d = np.array([3, 2, 4, 5, 3, 20, 4, 3, 2, 3, 6, 3, 4])
+    f = np.linspace(150, 170, len(ph))
+    e = np.ones(len(ph))
+    d2, f2, e2, log = apply_rules(ph, d, f, e, RULES, ["space", "punct"])
+    assert d2[1] == round(12 * 1.2) and d2[5] == 20  # floor (then phrase-final), never shortens
+    assert d2[3] == 40 and d2[10] == 6  # only the space-made pause gets the floor
+    assert d2[12] == round(4 * 1.2)  # phrase-final lengthening
+    m = f[[i for i, p in enumerate(ph) if p != "sp"]].mean()
+    assert abs(f2[0] - (m + 1.5 * (f[0] - m))) < 1e-6  # unstressed, non-final: pitch expansion only
+    assert (e2 == e).all() and log
+    d3, f3, _, _ = apply_rules(ph, d, f, e, RULES, ["space", "punct"], enabled="")
+    assert (d3 == d).all() and np.allclose(f3, f)
+
+
 E2E = r"""
 import json, os, sys, torch
 sys.path[:0] = [{repo!r}, {up!r}]
@@ -92,16 +118,21 @@ with torch.no_grad():  # untrained predictors give ~0 frames per phone; aim for 
     model.variance_adaptor.duration_predictor.linear_layer.bias.fill_(1.8)
 torch.save({{"model": model.state_dict(), "step": 7}}, os.path.join(d, "7.pth.tar"))
 out = synthesize(cfg, os.path.join(d, "7.pth.tar"), [{{"id": "X1", "text": {text!r}}}], os.path.join(d, "out"),
-                 speaker="spk_b", device=torch.device("cpu"))
+                 speaker="spk_b", device=torch.device("cpu"), prosody_rules={prosody!r})
 print(json.dumps(out[0]["phones"]))
 """
 
 
 @pytest.mark.skipif(not os.path.exists(VOCODER), reason="universal HiFi-GAN not unpacked (setup_upstream.py)")
-@pytest.mark.parametrize("lang, sid", [("English", "E4"), ("Telugu", "T4")])
-def test_end_to_end_cpu(tmp_path, lang, sid):
+@pytest.mark.parametrize("lang, sid, prosody", [("English", "E4", "none"), ("Telugu", "T4", "none"),
+                                               ("English", "E3", "rules")])
+def test_end_to_end_cpu(tmp_path, lang, sid, prosody):
     """In a subprocess: symbol registration mutates upstream's global table."""
-    code = E2E.format(repo=REPO_ROOT, up=UPSTREAM_DIR, lang=lang, tmp=str(tmp_path), text=_sentences(lang)[sid])
+    if prosody == "rules":
+        prosody = str(tmp_path / "rules.json")
+        (tmp_path / "rules.json").write_text(json.dumps(RULES))
+    code = E2E.format(repo=REPO_ROOT, up=UPSTREAM_DIR, lang=lang, tmp=str(tmp_path), text=_sentences(lang)[sid],
+                      prosody=prosody)
     run = subprocess.run([sys.executable, "-c", code], cwd=REPO_ROOT, capture_output=True, text=True,
                          encoding="utf-8")
     assert run.returncode == 0, run.stderr[-3000:]
@@ -113,4 +144,27 @@ def test_end_to_end_cpu(tmp_path, lang, sid):
     s = summary["sentences"][0]
     assert summary["speaker"] == "spk_b" and summary["step"] == 7
     assert summary["split_at_punctuation"] == (lang == "Telugu")  # T4/E4 have a comma
+    if prosody != "none":  # pass 2 used the rule-adjusted values; raw ones recorded
+        assert summary["prosody_rules"] and s["prosody_rule_changes"]
+        assert len(s["raw_duration_frames"]) == len(s["phones"])
+        assert all(a >= b for a, b in zip(s["pred_duration_frames"], s["raw_duration_frames"]))
+        sp = [i for i, p in enumerate(s["phones"]) if p == "sp"]  # E3: "rhyth  m" double space
+        assert all(s["pred_duration_frames"][i] >= RULES["space_pause_min_frames"] for i in sp)
+    else:
+        assert summary["prosody_rules"] is None
     assert len(s["pred_duration_frames"]) == len(s["pred_f0_hz"]) == len(s["phones"])
+
+
+
+def test_prosody_join_rule():
+    """J: only a pause made by a run of spaces is closed; punctuation pauses and phones stay."""
+    import numpy as np
+
+    from fs2ra.prosody import apply_rules
+
+    ph = ["R", "AY1", "DH", "sp", "EH1", "M", "sp", "K", "AE1", "T"]
+    d = np.array([3, 6, 4, 27, 5, 4, 30, 3, 8, 4])
+    f, e = np.full(len(ph), 150.0), np.ones(len(ph))
+    d2, f2, _, log = apply_rules(ph, d, f, e, RULES, ["space", "punct"], enabled="J")
+    assert d2[3] == 0 and d2[6] == 30 and (np.delete(d2, 3) == np.delete(d, 3)).all()
+    assert np.allclose(f2, f) and log == ["J sp#3 27->0 frames"]

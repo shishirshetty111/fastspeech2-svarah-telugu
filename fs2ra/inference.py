@@ -202,9 +202,10 @@ def title_font_family():
     return _title_family
 
 
-def plot_variance(kind, sid, raw, phones, frames, values, hop_s, path):
+def plot_variance(kind, sid, raw, phones, frames, values, hop_s, path, before=None):
     """One predicted value per phone; one slot per phone (phones predicted to last 0
-    frames stay visible and are marked "x")."""
+    frames stay visible and are marked "x"). before: the model's raw prediction when
+    prosody rules changed it (drawn dashed)."""
     import matplotlib
 
     matplotlib.use("Agg")
@@ -213,13 +214,22 @@ def plot_variance(kind, sid, raw, phones, frames, values, hop_s, path):
     x = np.arange(len(phones))
     fig, ax = plt.subplots(figsize=(max(10, 0.16 * len(phones)), 3.6))
     if kind == "duration":
-        ax.bar(x, frames, width=0.8, color="#4C78A8")
+        ax.bar(x, frames, width=0.8, color="#4C78A8", label="after prosody rules")
+        if before is not None:
+            ax.stairs(before, np.arange(len(phones) + 1) - 0.5, color="k", ls="--", lw=1, baseline=None,
+                      label="model prediction")
+            ax.legend(fontsize=7, loc="upper right")
         ax.set_ylabel("predicted duration (frames)\n1 frame = %.1f ms" % (1000 * hop_s))
     else:
         ax.stairs(values, np.arange(len(phones) + 1) - 0.5, color="#E45756" if kind == "pitch" else "#54A24B",
                   lw=1.8, baseline=None)
         ax.set_ylabel("predicted F0 (Hz)" if kind == "pitch" else "predicted energy\n(mean frame L2 norm)")
-        ax.set_ylim(min(0, values.min()), values.max() * 1.1 + 1e-6)
+        if before is not None:
+            ax.stairs(before, np.arange(len(phones) + 1) - 0.5, color="k", ls="--", lw=1, baseline=None)
+            ax.legend(["after prosody rules", "model prediction"], fontsize=7, loc="upper right")
+        lo = min(values.min(), before.min()) if before is not None else values.min()
+        hi = max(values.max(), before.max()) if before is not None else values.max()
+        ax.set_ylim(min(0, lo), hi * 1.1 + 1e-6)
     ax.set_xticks(x)
     ax.set_xticklabels(phones, rotation=90, fontsize=7)
     ax.set_xlim(-0.5, len(phones) - 0.5)
@@ -256,13 +266,18 @@ def load_hifigan_generator(path, device):
     return gen.to(device)
 
 
-def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=None, pace=1.0, vocoder=None):
+def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=None, pace=1.0, vocoder=None,
+               prosody_rules=None):
     """sentences: [{"id", "text"}] raw text. Returns the per-sentence summary list.
     pace: FastSpeech 2 duration control (upstream d_control): every predicted phone
     duration is multiplied by it before rounding; >1 = slower speech, 1.0 = as predicted.
     vocoder: "hifigan" (upstream universal HiFi-GAN, default), "bigvgan" (fs2ra.vocoder_bigvgan),
     or the path of a fine-tuned HiFi-GAN generator (g_XXXXXXXX);
-    default from the config's inference.vocoder."""
+    default from the config's inference.vocoder.
+    prosody_rules: path of a prosody_rules.json (scripts/prosody_calibrate.py), default from the
+    config's inference.prosody_rules; "none" or unset = off. When on, each forward pass is
+    followed by a second one in which the rule-adjusted durations/F0/energy (fs2ra.prosody) are
+    supplied as variance targets; both raw and adjusted values are recorded."""
     from utils.model import vocoder_infer  # upstream
 
     device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -299,27 +314,55 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
     from text import text_to_sequence  # upstream, after register_language
 
     split = bool(project_cfg.get("inference", {}).get("split_at_punctuation"))
+    rules_path = prosody_rules or project_cfg.get("inference", {}).get("prosody_rules")
+    rules = None
+    if rules_path and rules_path != "none":
+        from fs2ra.prosody import apply_rules
 
-    def run(phone_list, sid):
-        """One forward pass, no targets: d/p/e are the predictors' outputs (text-only)."""
-        phone_str = "{" + " ".join(phone_list) + "}"
-        check_phone_strings([phone_str], cfg["language"])
-        seq = np.array(text_to_sequence(phone_str, []))
+        with open(rules_path, encoding="utf-8") as f:
+            rules = json.load(f)
+        rules_enabled = rules.get("enabled", "ABCDP")
+
+    def forward(seq, targets=None):
+        args = [torch.tensor([speaker_id], device=device),
+                torch.from_numpy(seq).long().unsqueeze(0).to(device), torch.tensor([len(seq)], device=device), len(seq)]
+        # rule E (calibrated overall pace) acts through d_control, i.e. before rounding
+        kw = {"d_control": pace * (rules.get("duration_scale", 1.0) if rules and "E" in rules_enabled else 1.0)}
+        if targets is not None:  # pass 2: rule-adjusted values condition the decoder
+            d, f, e = targets
+            n = int(d.sum())
+            t = lambda a: torch.from_numpy(np.asarray(a, np.float32)).unsqueeze(0).to(device)  # noqa: E731
+            kw = {"mel_lens": torch.tensor([n], device=device), "max_mel_len": n,
+                  "p_targets": t((f - p_mean) / p_std), "e_targets": t((e - e_mean) / e_std),
+                  "d_targets": torch.from_numpy(np.asarray(d)).long().unsqueeze(0).to(device)}
         with torch.no_grad():
-            out = model(
-                torch.tensor([speaker_id], device=device),
-                torch.from_numpy(seq).long().unsqueeze(0).to(device),
-                torch.tensor([len(seq)], device=device),
-                len(seq),
-                d_control=pace,
-            )
+            out = model(*args, **kw)
         mel_len = int(out[9][0])
         frames = out[5][0, : len(seq)].cpu().numpy().astype(int)
         pitch_hz = out[2][0, : len(seq)].float().cpu().numpy() * p_std + p_mean
         energy = out[3][0, : len(seq)].float().cpu().numpy() * e_std + e_mean
+        return out, mel_len, frames, pitch_hz, energy
+
+    def run(phone_list, sid, kinds=None, raw=None):
+        """Text-only: pass 1 has no targets, so d/p/e are the predictors' outputs. With prosody
+        rules, pass 2 conditions the decoder on the rule-adjusted pass-1 values (still text-only:
+        nothing comes from a recording). raw (optional dict) receives the pass-1 values."""
+        phone_str = "{" + " ".join(phone_list) + "}"
+        check_phone_strings([phone_str], cfg["language"])
+        seq = np.array(text_to_sequence(phone_str, []))
+        out, mel_len, frames, pitch_hz, energy = forward(seq)
         if frames.sum() != mel_len or mel_len == 0 or not np.isfinite(pitch_hz).all():
             raise RuntimeError("%s: inconsistent prediction (sum durations %d, mel %d)"
                                % (sid, frames.sum(), mel_len))
+        if rules is not None:
+            d2, f2, e2, log = apply_rules(phone_list, frames, pitch_hz, energy, rules, kinds, rules_enabled)
+            if raw is not None:
+                raw.setdefault("frames", []).append(frames)
+                raw.setdefault("pitch", []).append(pitch_hz)
+                raw.setdefault("log", []).extend(log)
+            out, mel_len, _, _, _ = forward(seq, (d2, f2, e2))
+            assert mel_len == d2.sum(), (mel_len, d2.sum())
+            frames, pitch_hz, energy = d2, f2, e2
         wav = vocode(out[1].transpose(1, 2), mel_len * hop)
         return frames, pitch_hz, energy, wav
 
@@ -327,8 +370,10 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
     for s in sentences:
         sp_kinds = []
         phrases, words, phones = text_to_phones(s["text"], front_end, sp_kinds)
-        frames, pitch_hz, energy, wav = run(phones, s["id"])
         sp_idx = [i for i, p in enumerate(phones) if p == "sp"]
+        kind_at = dict(zip(sp_idx, sp_kinds))
+        raw = {}
+        frames, pitch_hz, energy, wav = run(phones, s["id"], sp_kinds, raw)
         cuts = [i for i, k in zip(sp_idx, sp_kinds) if k == "punct"] if split else []
         if cuts:
             # Phrase-level synthesis: each punctuation-delimited phrase is its own forward
@@ -337,12 +382,17 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
             # a predicted pause, e.g. Telugu T4's comma, although every training pause is silent.)
             parts_f, parts_p, parts_e, parts_w = [], [], [], []
             for a, b in zip([-1] + cuts, cuts + [len(phones)]):
-                f, p, e, w = run(phones[a + 1: b], s["id"])
+                if not parts_f:
+                    raw = {}  # record the pass-1 values of the phrases actually used
+                kinds = [kind_at[i] for i in range(a + 1, b) if phones[i] == "sp"]
+                f, p, e, w = run(phones[a + 1: b], s["id"], kinds, raw)
                 parts_f.append(f), parts_p.append(p), parts_e.append(e), parts_w.append(w)
                 if b < len(phones):  # the pause itself, from the whole-sentence prediction
                     parts_f.append(frames[b:b + 1]), parts_p.append(pitch_hz[b:b + 1])
                     parts_e.append(energy[b:b + 1])
                     parts_w.append(np.zeros(int(frames[b]) * hop, dtype=w.dtype))
+                    if rules is not None:
+                        raw["frames"].append(frames[b:b + 1]), raw["pitch"].append(pitch_hz[b:b + 1])
             frames, pitch_hz, energy = (np.concatenate(x) for x in (parts_f, parts_p, parts_e))
             wav = np.concatenate(parts_w)
             assert len(frames) == len(phones) and len(wav) == frames.sum() * hop
@@ -350,15 +400,21 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
         wav_path = os.path.join(out_dir, "test_generated_audios", s["id"] + ".wav")
         os.makedirs(os.path.dirname(wav_path), exist_ok=True)
         wavfile.write(wav_path, sr, wav)
-        for kind, values in (("duration", frames), ("pitch", pitch_hz), ("energy", energy)):
+        raw_f = np.concatenate(raw["frames"]) if raw.get("frames") else None
+        raw_p = np.concatenate(raw["pitch"]) if raw.get("pitch") else None
+        for kind, values, before in (("duration", frames, raw_f), ("pitch", pitch_hz, raw_p),
+                                     ("energy", energy, None)):
             plot_variance(kind, s["id"], s["text"], phones, frames, values, hop / sr,
-                          os.path.join(out_dir, "variance_adaptor_plots", kind, s["id"] + ".png"))
+                          os.path.join(out_dir, "variance_adaptor_plots", kind, s["id"] + ".png"), before)
         summary.append({
             "id": s["id"], "raw_text": s["text"], "spoken_phrases": phrases, "words": words,
             "phones": phones, "pred_duration_frames": frames.tolist(),
             "pred_f0_hz": np.round(pitch_hz, 2).tolist(), "pred_energy": np.round(energy, 3).tolist(),
             "seconds": round(len(wav) / sr, 3), "wav": os.path.relpath(wav_path, out_dir).replace("\\", "/"),
         })
+        if rules is not None:
+            summary[-1].update({"raw_duration_frames": raw_f.tolist(), "raw_f0_hz": np.round(raw_p, 2).tolist(),
+                                "prosody_rule_changes": raw["log"]})
         print("%-4s %5.2f s  %3d phones  F0 %.0f-%.0f Hz  %s" % (
             s["id"], len(wav) / sr, len(phones), pitch_hz.min(), pitch_hz.max(), wav_path))
 
@@ -374,6 +430,7 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
     with open(os.path.join(out_dir, "inference_summary.json"), "w", encoding="utf-8") as f:
         json.dump({"checkpoint": repo_rel(ckpt_path),
                    "step": step, "speaker": speaker, "pace": pace, "split_at_punctuation": split,
+                   "prosody_rules": repo_rel(rules_path) if rules is not None else None,
                    "vocoder": repo_rel(vocoder_name) if os.path.isfile(vocoder_name) else vocoder_name,
                    "device": str(device),
                    "sentences": summary},

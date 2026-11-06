@@ -1,0 +1,41 @@
+{
+ "source": {
+  "checkpoint": "project/English/checkpoints/20000.pth.tar",
+  "step": 20000,
+  "train_utterances": 3417,
+  "calibration_utterances": 366,
+  "halves": "md5(utterance id) even = calibration, odd = evaluation"
+ },
+ "stress_floor_frames": {
+  "AA": 3,
+  "AE": 4,
+  "AH": 3,
+  "AO": 3,
+  "AW": 6,
+  "AY": 6,
+  "EH": 3,
+  "ER": 4,
+  "EY": 4,
+  "IH": 3,
+  "IY": 3,
+  "OW": 3,
+  "OY": 6,
+  "UH": 3,
+  "UW": 3
+ },
+ "pitch_scale": 1.512,
+ "stress_accent_sd": 0.0,
+ "final_lengthen": 1.0,
+ "final_drop_sd": 0.0,
+ "space_pause_min_frames": 13,
+ "duration_scale": 1.045,
+ "raw_estimates": {
+  "pitch_scale": 1.5116795200107458,
+  "stress_gap_z": -0.02912355973595885,
+  "final_drop_z": -0.1475540229447671,
+  "final_lengthen": 0.9815863337204801,
+  "duration_scale": 1.045348521325327,
+  "n_train_pauses": 8447
+ },
+ "enabled": "BE"
+}
