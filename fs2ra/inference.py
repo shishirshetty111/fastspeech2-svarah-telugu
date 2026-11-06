@@ -362,15 +362,19 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
         print("%-4s %5.2f s  %3d phones  F0 %.0f-%.0f Hz  %s" % (
             s["id"], len(wav) / sr, len(phones), pitch_hz.min(), pitch_hz.max(), wav_path))
 
-    ckpt_abs = os.path.abspath(ckpt_path)
-    try:  # repo-relative when inside the repo (relpath raises across Windows drives)
-        ckpt_rel = os.path.relpath(ckpt_abs, REPO_ROOT)
-    except ValueError:
-        ckpt_rel = ".."
+    def repo_rel(path):
+        """Repo-relative when inside the repo (relpath raises across Windows drives)."""
+        a = os.path.abspath(path)
+        try:
+            r = os.path.relpath(a, REPO_ROOT)
+        except ValueError:
+            return a
+        return a if r.startswith("..") else r.replace("\\", "/")
+
     with open(os.path.join(out_dir, "inference_summary.json"), "w", encoding="utf-8") as f:
-        json.dump({"checkpoint": ckpt_abs if ckpt_rel.startswith("..") else ckpt_rel.replace("\\", "/"),
+        json.dump({"checkpoint": repo_rel(ckpt_path),
                    "step": step, "speaker": speaker, "pace": pace, "split_at_punctuation": split,
-                   "vocoder": vocoder_name,
+                   "vocoder": repo_rel(vocoder_name) if os.path.isfile(vocoder_name) else vocoder_name,
                    "device": str(device),
                    "sentences": summary},
                   f, ensure_ascii=False, indent=1)

@@ -105,3 +105,8 @@ inference:                               # fs2ra.inference (text-only synthesis)
   speaker: en_edfd2580
   # Lexicon variant MFA aligned most often in the training split (scripts/pronunciation_variants.py)
   pronunciation_variants: "$REPO/project/English/pronunciation_variants.json"
+  # Universal HiFi-GAN fine-tuned on this model's teacher-forced (GTA) mels of the English
+  # train split (notebooks/finetune_hifigan_colab.ipynb, step 2,503,000 = 3,000 fine-tuning
+  # steps, lowest validation mel L1). Removes most of the buzzy artefact. "hifigan" = the
+  # original universal vocoder (project/Results/English/before_vocoder_finetuning/).
+  vocoder: "$REPO/project/English/checkpoints/vocoder_hifigan_finetuned_g02503000.pth.tar"
