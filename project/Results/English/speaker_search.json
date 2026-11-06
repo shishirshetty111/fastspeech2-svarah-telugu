@@ -1,0 +1,719 @@
+{
+ "checkpoint": "project/English/checkpoints/20000.pth.tar",
+ "step": 20000,
+ "ranked_by": "gta_l1 (validation, teacher-forced)",
+ "speakers": [
+  {
+   "speaker": "en_495812d0",
+   "train_min": 1.24,
+   "n_val": 4,
+   "gta_l1": 0.5345,
+   "text_l1": 0.5885,
+   "text_rank": 1
+  },
+  {
+   "speaker": "en_72a36e45",
+   "train_min": 5.34,
+   "n_val": 11,
+   "gta_l1": 0.6092,
+   "text_l1": 0.7034,
+   "text_rank": 4
+  },
+  {
+   "speaker": "en_24481cc0",
+   "train_min": 3.28,
+   "n_val": 8,
+   "gta_l1": 0.6109,
+   "text_l1": 0.6865,
+   "text_rank": 3
+  },
+  {
+   "speaker": "en_afaeffa3",
+   "train_min": 2.1,
+   "n_val": 6,
+   "gta_l1": 0.6166,
+   "text_l1": 0.662,
+   "text_rank": 2
+  },
+  {
+   "speaker": "en_0dc085c3",
+   "train_min": 4.6,
+   "n_val": 10,
+   "gta_l1": 0.617,
+   "text_l1": 0.739,
+   "text_rank": 7
+  },
+  {
+   "speaker": "en_e8f1f190",
+   "train_min": 1.13,
+   "n_val": 5,
+   "gta_l1": 0.6193,
+   "text_l1": 0.7366,
+   "text_rank": 6
+  },
+  {
+   "speaker": "en_db945b36",
+   "train_min": 0.95,
+   "n_val": 4,
+   "gta_l1": 0.6363,
+   "text_l1": 0.7504,
+   "text_rank": 8
+  },
+  {
+   "speaker": "en_0b883dad",
+   "train_min": 5.0,
+   "n_val": 15,
+   "gta_l1": 0.6382,
+   "text_l1": 0.715,
+   "text_rank": 5
+  },
+  {
+   "speaker": "en_26f7b84c",
+   "train_min": 1.84,
+   "n_val": 5,
+   "gta_l1": 0.6462,
+   "text_l1": 0.7889,
+   "text_rank": 18
+  },
+  {
+   "speaker": "en_0539cfea",
+   "train_min": 5.48,
+   "n_val": 13,
+   "gta_l1": 0.6521,
+   "text_l1": 0.773,
+   "text_rank": 11
+  },
+  {
+   "speaker": "en_7e47e7f0",
+   "train_min": 1.88,
+   "n_val": 7,
+   "gta_l1": 0.6529,
+   "text_l1": 0.7971,
+   "text_rank": 21
+  },
+  {
+   "speaker": "en_2da3dfb0",
+   "train_min": 1.57,
+   "n_val": 5,
+   "gta_l1": 0.6578,
+   "text_l1": 0.7988,
+   "text_rank": 22
+  },
+  {
+   "speaker": "en_1acd3db2",
+   "train_min": 8.76,
+   "n_val": 21,
+   "gta_l1": 0.6609,
+   "text_l1": 0.7925,
+   "text_rank": 19
+  },
+  {
+   "speaker": "en_d7695e9f",
+   "train_min": 4.67,
+   "n_val": 9,
+   "gta_l1": 0.6637,
+   "text_l1": 0.7857,
+   "text_rank": 16
+  },
+  {
+   "speaker": "en_ea4c84a9",
+   "train_min": 0.77,
+   "n_val": 4,
+   "gta_l1": 0.6703,
+   "text_l1": 0.7869,
+   "text_rank": 17
+  },
+  {
+   "speaker": "en_02a2caaf",
+   "train_min": 3.23,
+   "n_val": 9,
+   "gta_l1": 0.671,
+   "text_l1": 0.8607,
+   "text_rank": 47
+  },
+  {
+   "speaker": "en_d6114749",
+   "train_min": 3.96,
+   "n_val": 11,
+   "gta_l1": 0.6717,
+   "text_l1": 0.7733,
+   "text_rank": 12
+  },
+  {
+   "speaker": "en_68def7f0",
+   "train_min": 2.14,
+   "n_val": 8,
+   "gta_l1": 0.6721,
+   "text_l1": 0.7773,
+   "text_rank": 14
+  },
+  {
+   "speaker": "en_3a94c182",
+   "train_min": 2.57,
+   "n_val": 6,
+   "gta_l1": 0.6783,
+   "text_l1": 0.8165,
+   "text_rank": 27
+  },
+  {
+   "speaker": "en_2da0c3ba",
+   "train_min": 1.99,
+   "n_val": 4,
+   "gta_l1": 0.6841,
+   "text_l1": 0.8197,
+   "text_rank": 31
+  },
+  {
+   "speaker": "en_cc3bab09",
+   "train_min": 5.71,
+   "n_val": 18,
+   "gta_l1": 0.6859,
+   "text_l1": 0.9157,
+   "text_rank": 62
+  },
+  {
+   "speaker": "en_4ad2d3a7",
+   "train_min": 4.11,
+   "n_val": 12,
+   "gta_l1": 0.6877,
+   "text_l1": 0.8141,
+   "text_rank": 26
+  },
+  {
+   "speaker": "en_edfd2580",
+   "train_min": 10.65,
+   "n_val": 20,
+   "gta_l1": 0.6897,
+   "text_l1": 0.7838,
+   "text_rank": 15
+  },
+  {
+   "speaker": "en_c8daf25f",
+   "train_min": 1.94,
+   "n_val": 4,
+   "gta_l1": 0.6898,
+   "text_l1": 0.8008,
+   "text_rank": 24
+  },
+  {
+   "speaker": "en_6ef20d2e",
+   "train_min": 1.35,
+   "n_val": 4,
+   "gta_l1": 0.6939,
+   "text_l1": 0.7764,
+   "text_rank": 13
+  },
+  {
+   "speaker": "en_70df50f0",
+   "train_min": 6.55,
+   "n_val": 21,
+   "gta_l1": 0.6962,
+   "text_l1": 0.8418,
+   "text_rank": 39
+  },
+  {
+   "speaker": "en_3e392606",
+   "train_min": 3.88,
+   "n_val": 11,
+   "gta_l1": 0.6972,
+   "text_l1": 0.8547,
+   "text_rank": 44
+  },
+  {
+   "speaker": "en_121e25d9",
+   "train_min": 2.05,
+   "n_val": 5,
+   "gta_l1": 0.6996,
+   "text_l1": 0.7601,
+   "text_rank": 9
+  },
+  {
+   "speaker": "en_cfd14342",
+   "train_min": 0.85,
+   "n_val": 5,
+   "gta_l1": 0.6998,
+   "text_l1": 0.8281,
+   "text_rank": 35
+  },
+  {
+   "speaker": "en_7ad518c5",
+   "train_min": 1.91,
+   "n_val": 7,
+   "gta_l1": 0.7006,
+   "text_l1": 0.8175,
+   "text_rank": 29
+  },
+  {
+   "speaker": "en_bb3d8b08",
+   "train_min": 4.12,
+   "n_val": 14,
+   "gta_l1": 0.7069,
+   "text_l1": 0.8563,
+   "text_rank": 46
+  },
+  {
+   "speaker": "en_8f2b3ab1",
+   "train_min": 3.16,
+   "n_val": 7,
+   "gta_l1": 0.7192,
+   "text_l1": 0.8324,
+   "text_rank": 36
+  },
+  {
+   "speaker": "en_0805afb8",
+   "train_min": 1.17,
+   "n_val": 5,
+   "gta_l1": 0.7218,
+   "text_l1": 0.8351,
+   "text_rank": 37
+  },
+  {
+   "speaker": "en_a327b8f2",
+   "train_min": 2.09,
+   "n_val": 7,
+   "gta_l1": 0.7223,
+   "text_l1": 0.7622,
+   "text_rank": 10
+  },
+  {
+   "speaker": "en_a4d7896e",
+   "train_min": 4.03,
+   "n_val": 10,
+   "gta_l1": 0.7231,
+   "text_l1": 0.8091,
+   "text_rank": 25
+  },
+  {
+   "speaker": "en_5a07d783",
+   "train_min": 3.22,
+   "n_val": 8,
+   "gta_l1": 0.7244,
+   "text_l1": 0.8867,
+   "text_rank": 54
+  },
+  {
+   "speaker": "en_14af7751",
+   "train_min": 2.59,
+   "n_val": 6,
+   "gta_l1": 0.7267,
+   "text_l1": 0.871,
+   "text_rank": 51
+  },
+  {
+   "speaker": "en_5ece4623",
+   "train_min": 2.9,
+   "n_val": 12,
+   "gta_l1": 0.7277,
+   "text_l1": 0.8227,
+   "text_rank": 33
+  },
+  {
+   "speaker": "en_caf65e20",
+   "train_min": 1.94,
+   "n_val": 8,
+   "gta_l1": 0.7288,
+   "text_l1": 0.8452,
+   "text_rank": 40
+  },
+  {
+   "speaker": "en_05f73314",
+   "train_min": 3.2,
+   "n_val": 10,
+   "gta_l1": 0.7289,
+   "text_l1": 0.8808,
+   "text_rank": 53
+  },
+  {
+   "speaker": "en_12528a60",
+   "train_min": 1.31,
+   "n_val": 4,
+   "gta_l1": 0.7294,
+   "text_l1": 0.8188,
+   "text_rank": 30
+  },
+  {
+   "speaker": "en_5413a12c",
+   "train_min": 2.74,
+   "n_val": 6,
+   "gta_l1": 0.7305,
+   "text_l1": 0.8953,
+   "text_rank": 57
+  },
+  {
+   "speaker": "en_bc128eeb",
+   "train_min": 1.31,
+   "n_val": 5,
+   "gta_l1": 0.7323,
+   "text_l1": 0.8475,
+   "text_rank": 41
+  },
+  {
+   "speaker": "en_e0d921ec",
+   "train_min": 4.73,
+   "n_val": 14,
+   "gta_l1": 0.7333,
+   "text_l1": 0.861,
+   "text_rank": 48
+  },
+  {
+   "speaker": "en_2da3020c",
+   "train_min": 1.66,
+   "n_val": 4,
+   "gta_l1": 0.7384,
+   "text_l1": 0.7993,
+   "text_rank": 23
+  },
+  {
+   "speaker": "en_e4eb904a",
+   "train_min": 2.21,
+   "n_val": 5,
+   "gta_l1": 0.7407,
+   "text_l1": 0.8477,
+   "text_rank": 42
+  },
+  {
+   "speaker": "en_603a2648",
+   "train_min": 2.28,
+   "n_val": 6,
+   "gta_l1": 0.7417,
+   "text_l1": 0.7968,
+   "text_rank": 20
+  },
+  {
+   "speaker": "en_a8239907",
+   "train_min": 0.98,
+   "n_val": 4,
+   "gta_l1": 0.7421,
+   "text_l1": 0.8404,
+   "text_rank": 38
+  },
+  {
+   "speaker": "en_76be7190",
+   "train_min": 1.66,
+   "n_val": 6,
+   "gta_l1": 0.7443,
+   "text_l1": 0.824,
+   "text_rank": 34
+  },
+  {
+   "speaker": "en_ffa717c9",
+   "train_min": 1.38,
+   "n_val": 5,
+   "gta_l1": 0.7445,
+   "text_l1": 0.8168,
+   "text_rank": 28
+  },
+  {
+   "speaker": "en_a147992a",
+   "train_min": 1.45,
+   "n_val": 9,
+   "gta_l1": 0.7454,
+   "text_l1": 0.8612,
+   "text_rank": 49
+  },
+  {
+   "speaker": "en_5f96b2db",
+   "train_min": 2.74,
+   "n_val": 6,
+   "gta_l1": 0.7486,
+   "text_l1": 0.9083,
+   "text_rank": 60
+  },
+  {
+   "speaker": "en_cd72a00c",
+   "train_min": 1.4,
+   "n_val": 5,
+   "gta_l1": 0.7521,
+   "text_l1": 0.9628,
+   "text_rank": 67
+  },
+  {
+   "speaker": "en_1e34483b",
+   "train_min": 1.45,
+   "n_val": 6,
+   "gta_l1": 0.7553,
+   "text_l1": 0.8561,
+   "text_rank": 45
+  },
+  {
+   "speaker": "en_10b078e1",
+   "train_min": 1.03,
+   "n_val": 4,
+   "gta_l1": 0.7572,
+   "text_l1": 0.8874,
+   "text_rank": 55
+  },
+  {
+   "speaker": "en_d486b727",
+   "train_min": 2.67,
+   "n_val": 5,
+   "gta_l1": 0.7573,
+   "text_l1": 0.9088,
+   "text_rank": 61
+  },
+  {
+   "speaker": "en_1e0a19fc",
+   "train_min": 2.88,
+   "n_val": 9,
+   "gta_l1": 0.7592,
+   "text_l1": 0.899,
+   "text_rank": 58
+  },
+  {
+   "speaker": "en_9da37fba",
+   "train_min": 2.47,
+   "n_val": 8,
+   "gta_l1": 0.7682,
+   "text_l1": 0.8724,
+   "text_rank": 52
+  },
+  {
+   "speaker": "en_9359be12",
+   "train_min": 1.19,
+   "n_val": 5,
+   "gta_l1": 0.7702,
+   "text_l1": 0.8502,
+   "text_rank": 43
+  },
+  {
+   "speaker": "en_1c02e1b8",
+   "train_min": 0.72,
+   "n_val": 4,
+   "gta_l1": 0.7758,
+   "text_l1": 0.9891,
+   "text_rank": 76
+  },
+  {
+   "speaker": "en_b827cb29",
+   "train_min": 1.41,
+   "n_val": 5,
+   "gta_l1": 0.7814,
+   "text_l1": 0.8612,
+   "text_rank": 50
+  },
+  {
+   "speaker": "en_288f2d8a",
+   "train_min": 1.16,
+   "n_val": 5,
+   "gta_l1": 0.7815,
+   "text_l1": 0.9073,
+   "text_rank": 59
+  },
+  {
+   "speaker": "en_ff955fc3",
+   "train_min": 2.5,
+   "n_val": 7,
+   "gta_l1": 0.7819,
+   "text_l1": 0.8224,
+   "text_rank": 32
+  },
+  {
+   "speaker": "en_8af921bc",
+   "train_min": 3.44,
+   "n_val": 8,
+   "gta_l1": 0.7845,
+   "text_l1": 1.0007,
+   "text_rank": 80
+  },
+  {
+   "speaker": "en_8b650535",
+   "train_min": 2.3,
+   "n_val": 5,
+   "gta_l1": 0.7872,
+   "text_l1": 0.9941,
+   "text_rank": 77
+  },
+  {
+   "speaker": "en_a7ab6fb6",
+   "train_min": 5.06,
+   "n_val": 11,
+   "gta_l1": 0.7914,
+   "text_l1": 0.9608,
+   "text_rank": 66
+  },
+  {
+   "speaker": "en_c26634cb",
+   "train_min": 2.99,
+   "n_val": 7,
+   "gta_l1": 0.7928,
+   "text_l1": 1.0271,
+   "text_rank": 83
+  },
+  {
+   "speaker": "en_513ce421",
+   "train_min": 1.06,
+   "n_val": 4,
+   "gta_l1": 0.7934,
+   "text_l1": 0.9465,
+   "text_rank": 65
+  },
+  {
+   "speaker": "en_bb526278",
+   "train_min": 8.02,
+   "n_val": 21,
+   "gta_l1": 0.8014,
+   "text_l1": 0.965,
+   "text_rank": 68
+  },
+  {
+   "speaker": "en_ce31f68c",
+   "train_min": 3.5,
+   "n_val": 11,
+   "gta_l1": 0.802,
+   "text_l1": 0.8875,
+   "text_rank": 56
+  },
+  {
+   "speaker": "en_98bbc429",
+   "train_min": 1.2,
+   "n_val": 4,
+   "gta_l1": 0.8046,
+   "text_l1": 0.9761,
+   "text_rank": 71
+  },
+  {
+   "speaker": "en_a5ebbad9",
+   "train_min": 3.39,
+   "n_val": 11,
+   "gta_l1": 0.8051,
+   "text_l1": 0.9734,
+   "text_rank": 70
+  },
+  {
+   "speaker": "en_2b913129",
+   "train_min": 1.57,
+   "n_val": 4,
+   "gta_l1": 0.8143,
+   "text_l1": 1.0462,
+   "text_rank": 84
+  },
+  {
+   "speaker": "en_aecf0bcf",
+   "train_min": 0.88,
+   "n_val": 4,
+   "gta_l1": 0.8198,
+   "text_l1": 0.9247,
+   "text_rank": 63
+  },
+  {
+   "speaker": "en_7cbf88ae",
+   "train_min": 7.7,
+   "n_val": 14,
+   "gta_l1": 0.8206,
+   "text_l1": 1.0206,
+   "text_rank": 81
+  },
+  {
+   "speaker": "en_2411c230",
+   "train_min": 2.09,
+   "n_val": 5,
+   "gta_l1": 0.821,
+   "text_l1": 0.9982,
+   "text_rank": 79
+  },
+  {
+   "speaker": "en_e4b8b423",
+   "train_min": 2.16,
+   "n_val": 7,
+   "gta_l1": 0.8378,
+   "text_l1": 0.9685,
+   "text_rank": 69
+  },
+  {
+   "speaker": "en_170015fd",
+   "train_min": 1.19,
+   "n_val": 6,
+   "gta_l1": 0.8412,
+   "text_l1": 0.9848,
+   "text_rank": 74
+  },
+  {
+   "speaker": "en_91c716a7",
+   "train_min": 1.02,
+   "n_val": 5,
+   "gta_l1": 0.8418,
+   "text_l1": 0.9845,
+   "text_rank": 73
+  },
+  {
+   "speaker": "en_cf83f8a3",
+   "train_min": 4.9,
+   "n_val": 10,
+   "gta_l1": 0.8442,
+   "text_l1": 1.0206,
+   "text_rank": 82
+  },
+  {
+   "speaker": "en_8d947860",
+   "train_min": 0.9,
+   "n_val": 4,
+   "gta_l1": 0.8474,
+   "text_l1": 0.9396,
+   "text_rank": 64
+  },
+  {
+   "speaker": "en_ee1953ea",
+   "train_min": 6.69,
+   "n_val": 11,
+   "gta_l1": 0.851,
+   "text_l1": 0.98,
+   "text_rank": 72
+  },
+  {
+   "speaker": "en_bbd062f3",
+   "train_min": 4.8,
+   "n_val": 20,
+   "gta_l1": 0.8616,
+   "text_l1": 0.9851,
+   "text_rank": 75
+  },
+  {
+   "speaker": "en_ff9d0d9c",
+   "train_min": 1.39,
+   "n_val": 4,
+   "gta_l1": 0.8769,
+   "text_l1": 1.0906,
+   "text_rank": 86
+  },
+  {
+   "speaker": "en_14fcb9cf",
+   "train_min": 2.1,
+   "n_val": 7,
+   "gta_l1": 0.8803,
+   "text_l1": 1.0629,
+   "text_rank": 85
+  },
+  {
+   "speaker": "en_f38c9437",
+   "train_min": 4.12,
+   "n_val": 11,
+   "gta_l1": 0.8943,
+   "text_l1": 1.1258,
+   "text_rank": 88
+  },
+  {
+   "speaker": "en_6f4aff37",
+   "train_min": 1.48,
+   "n_val": 4,
+   "gta_l1": 0.9003,
+   "text_l1": 0.9954,
+   "text_rank": 78
+  },
+  {
+   "speaker": "en_77a83a65",
+   "train_min": 1.78,
+   "n_val": 6,
+   "gta_l1": 0.9823,
+   "text_l1": 1.0967,
+   "text_rank": 87
+  },
+  {
+   "speaker": "en_53e56a62",
+   "train_min": 3.03,
+   "n_val": 8,
+   "gta_l1": 1.0575,
+   "text_l1": 1.1808,
+   "text_rank": 89
+  }
+ ]
+}

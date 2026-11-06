@@ -38,7 +38,7 @@ python project/English/inference.py --out_dir my_outputs   # the 5 test sentence
 python project/English/inference.py --text "Any English sentence." --ids demo --out_dir my_outputs
 python project/Telugu/inference.py --out_dir my_outputs_te                       # the 5 Telugu test sentences
 ```
-Options: `--pace 1.2` speaks 20 % slower (FastSpeech 2 duration control); `--speaker <id>` picks another English voice from `speakers.json`.
+Options: `--pace 1.2` speaks 20 % slower (FastSpeech 2 duration control); `--speaker <id>` picks another English voice from `speakers.json` (default `en_72a36e45`, chosen by listening among the voices the model renders best on held-out data: `python scripts/speaker_search.py --ckpt project/English/checkpoints/20000.pth.tar`, report §7.2).
 If `git lfs` was not installed before cloning, run `git lfs pull` to fetch the checkpoint.
 
 ## Full reproduction

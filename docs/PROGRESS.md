@@ -158,6 +158,16 @@ python scripts/build_report.py                                           # 13 pa
 python -m pytest tests -q --deselect tests/test_features_full.py         # 66 passed
 ```
 
+### 2026-11-06/07 — Phase 5c: English vocoder fine-tuning, prosody experiment, voice choice
+- Vocoder: GTA mels of the 20k model (`scripts/export_gta.py`, 4,174 utts, L1 0.494) → jik876 HiFi-GAN UNIVERSAL_V1 fine-tuned on Colab L4 (train split only; `notebooks/finetune_hifigan_colab.ipynb`). Val mel L1 min 0.7089 at 3k steps → `project/English/checkpoints/vocoder_hifigan_finetuned_g02503000.pth.tar` (LFS). Before/after on 100 val GTA mels: 0.780 vs 0.774, better 58/100. User: glitch reduced.
+- Prosody post-rules (branch `prosody-experiment`, not on main): calibrated on train + half of val, scored on the other half (391 utts). Only pitch range (×1.51; F0 sd 0.64 → 0.97 of real) and pace (×1.045; length 0.95 → 0.99) moved towards real speech; model already matched real stress/final/stressed-vowel-length. Rule J (close double-space pauses) also rendered. User: no audible difference → not adopted.
+- Voice: `scripts/speaker_search.py` ranks 89 speakers (≥ 4 val utts) by teacher-forced val mel L1. Previous `en_edfd2580` ranked 23 (0.690). Rendered 5 candidates; user chose `en_72a36e45` (rank 2, 0.609, 5.3 min train). Config `inference.speaker` changed; `project/Results/English/` regenerated (byte-identical to the files the user approved); previous voice kept in `Results/English/previous_speaker_en_edfd2580/`; report §7.2 and §8 updated.
+```
+python scripts/speaker_search.py --ckpt project/English/checkpoints/20000.pth.tar   # output/English/speaker_search.json
+python project/English/inference.py --out_dir project/Results/English
+python scripts/build_report.py                                                     # 15 pages
+```
+
 ## Current blockers / open issues
 - Telugu alignment relies on an MFA model trained on the 5 h + 1 h + reserve corpus itself (no pretrained Telugu model) and a rule-based G2P; alignment quality is not checked against manual labels.
 - English val is all tier-0 (clean, ≤ 11 s) while train has 254 tier-1/2 utterances (11–15 s or digits); documented asymmetry.
@@ -166,4 +176,4 @@ python -m pytest tests -q --deselect tests/test_features_full.py         # 66 pa
 - Svarah speaker proxy may merge up to two speaker pairs (115 vs. 117).
 
 ## Next action (single task)
-Submission complete on `main` (both languages). Optional: English quality experiments on branch `experiments` (vocoder fine-tuning on teacher-forced mels, decoder changes) without touching the submission.
+Submission complete on `main` (both languages; English voice en_72a36e45 with the fine-tuned vocoder). Deadline 2026-11-07 23:59.

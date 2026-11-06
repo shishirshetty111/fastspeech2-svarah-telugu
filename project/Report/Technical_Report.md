@@ -166,7 +166,7 @@ Hours were measured from the decoded audio, not taken from dataset cards. Each r
 2. Phrase-final punctuation becomes a pause `sp`, as in upstream `synthesize.py`. (For Telugu only, punctuation phrases are additionally synthesised separately; see §9.2.)
 3. The model, conditioned on the speaker embedding, *predicts* durations, pitch and energy, and HiFi-GAN produces the waveform.
 
-**Voice.** Speaker `en_edfd2580`, the profile with the most training audio (10.6 min).
+**Voice.** Speaker `en_72a36e45` (5.3 min of training audio), chosen as described in §7.2. The first submitted version used `en_edfd2580`, the profile with the most training audio (10.6 min); its audio is kept in `Results/English/previous_speaker_en_edfd2580/`.
 
 **Front-end decisions**, all recorded per word in `Results/English/inference_summary.json`:
 
@@ -192,6 +192,7 @@ Hours were measured from the decoded audio, not taken from dataset cards. Each r
 
 - **Teacher-forced audio also glitches.** The validation samples written during training (real durations, pitch and energy; `output/English/result/*_teacher_forced.wav`) were judged by the listener to have the same glitch and to be not very clearly pronounced, so the decoder itself, not only the variance predictions, produces the over-smoothed mels.
 - **After vocoder fine-tuning** (§7.1): the listener judged the **glitch reduced**. The voice still sounds hesitant, "like someone struggling to pronounce", which the vocoder cannot change (see §10).
+- **Voice choice** (§7.2): of five candidate speakers, the listener judged `en_72a36e45` the best and it replaced `en_edfd2580`.
 
 ## 7.1 Vocoder fine-tuning on the model's own mels (English)
 
@@ -202,7 +203,22 @@ The standard remedy for a vocoder that is fed over-smoothed predicted mels (HiFi
 3. **Selection:** validation mel L1 (100 held-out validation utterances, jik876 metric) was 0.7193 at 1k steps, **0.7089 at 3k** (minimum), then fluctuated between 0.711 and 0.721 until 10.6k. The 3k-step generator (`project/English/checkpoints/vocoder_hifigan_finetuned_g02503000.pth.tar`, 56 MB, Git LFS) is used for the submitted English audio.
 4. **Before/after** on the same 100 validation GTA mels, scored against the real recordings (re-analysed log-mel L1, 0–8 kHz): universal 0.780 ± 0.121, fine-tuned **0.774 ± 0.119**, better on 58/100. The numeric gain is small because the vocoder cannot add detail missing from the input mel; the audible change is the reduced buzz.
 
-The predicted durations, pitch and energy, and therefore all variance plots, are unchanged. The audio from the original universal vocoder is kept in `Results/English/before_vocoder_finetuning/` for comparison. Telugu uses the original universal vocoder: its audio had no comparable artefact.
+The predicted durations, pitch and energy are unchanged by the vocoder. The audio from the original universal vocoder (speaker `en_edfd2580`) is kept in `Results/English/before_vocoder_finetuning/` for comparison. Telugu uses the original universal vocoder: its audio had no comparable artefact.
+
+## 7.2 Choice of the inference voice (English)
+
+The English model is multi-speaker (113 speaker profiles), so the test sentences can be rendered in any training voice; this changes nothing in training. The model does not render all voices equally well. `scripts/speaker_search.py` scores each speaker on **their own validation utterances** (never trained on) by the mean L1 between the model's teacher-forced mel (real durations, pitch and energy given) and the real mel. A second score uses predicted pitch and energy (real durations, so frames still align). 89 speakers have at least 4 validation utterances; the full table is `Results/English/speaker_search.json`.
+
+| Speaker | Training audio | Validation utts | Teacher-forced L1 (rank) | With predicted pitch/energy (rank) |
+|---|---|---|---|---|
+| en_495812d0 | 1.2 min | 4 | 0.535 (1) | 0.589 (1) |
+| **en_72a36e45** | 5.3 min | 11 | **0.609 (2)** | 0.703 (4) |
+| en_24481cc0 | 3.3 min | 8 | 0.611 (3) | 0.687 (3) |
+| en_afaeffa3 | 2.1 min | 6 | 0.617 (4) | 0.662 (2) |
+| en_0b883dad | 5.0 min | 15 | 0.638 (8) | 0.715 (5) |
+| en_edfd2580 (first choice) | 10.6 min | 20 | 0.690 (23) | 0.784 (15) |
+
+The most-trained voice is not the best rendered: the score reflects how consistent and clean a speaker's recordings are as much as their amount. Five candidates (table: the four best-ranked, plus en_0b883dad, the best-ranked speaker with at least 15 validation utterances, as the most reliably scored) were rendered on all five test sentences with the fine-tuned vocoder, and the listener chose **`en_72a36e45`** by ear. A low L1 is only a guide (quiet or clean recordings score well; en_495812d0's score rests on 4 utterances), which is why the final choice was made by listening. Compared with `en_edfd2580`, the chosen voice is predicted to speak more slowly (11.3–13.5 vs 12.3–15.5 phones/s) and with a wider pitch range (sd 21–23 vs 11–16 Hz), §8.
 
 # 8. Variance-adaptor analysis per sentence (English)
 
@@ -210,23 +226,25 @@ All values are the model's *predictions* at inference. One frame is 11.6 ms. The
 
 | | Length | Phones/s | Predicted F0 mean ± sd (range) | Notes |
 |---|---|---|---|---|
-| E1 | 5.67 s | 15.5 | 135 ± 11 Hz (117–173) | antidisestablishmentarianism: 146 frames (1.7 s); the primary stress EH1 gets only 5 frames |
-| E2a | 3.97 s | 13.1 | 127 ± 12 Hz (92–153) | *conduct* noun: AA1 10 frames vs AH0 5 |
-| E2b | 3.73 s | 15.0 | 131 ± 14 Hz (89–180) | *conduct* verb: AH1 4 frames vs AH0 5; AH1 F0 +11 Hz, energy +42 % |
-| E3 | 3.02 s | 12.6 | 134 ± 15 Hz (116–171) | 27-frame (0.31 s) pause between "rhyth" and "m" |
-| E4 | 6.04 s | 13.4 | 140 ± 17 Hz (113–189) | 32-frame pause at the comma; stressed vowels in "twelve" and "november" 3 frames (35 ms) each |
+| E1 | 6.51 s | 13.5 | 201 ± 22 Hz (163–290) | antidisestablishmentarianism: 174 frames (2.0 s); the primary stress EH1 gets 7 frames, the pitch peak (290 Hz) falls on the unstressed AY0 |
+| E2a | 4.42 s | 11.8 | 185 ± 21 Hz (102–228) | *conduct* noun: AA1 12 frames vs AH0 6; AA1 not higher in pitch (179 vs 178 Hz) |
+| E2b | 4.27 s | 13.1 | 192 ± 23 Hz (131–256) | *conduct* verb: AH1 5 frames vs AH0 7; AH1 F0 +7 Hz, energy +60 % |
+| E3 | 3.27 s | 11.3 | 196 ± 23 Hz (169–254) | 22-frame (0.26 s) pause between "rhyth" and "m" |
+| E4 | 6.82 s | 11.7 | 202 ± 22 Hz (161–261) | 33-frame (0.38 s) pause at the comma; stressed vowels in "twelve" and "november" 4 frames (46 ms) each |
 
-![E2b predicted pitch: the stressed second syllable of *conduct* (AH1) is only about 11 Hz above its neighbours.](../Results/English/variance_adaptor_plots/pitch/E2b.png)
+Values for speaker `en_72a36e45`; those of the first voice, `en_edfd2580`, are in `Results/English/previous_speaker_en_edfd2580/inference_summary.json` (F0 sd 11–16 Hz around 127–140 Hz, 12.3–15.5 phones/s).
 
-![E4 predicted durations: the date words are compressed, with stressed vowels of about 35 ms.](../Results/English/variance_adaptor_plots/duration/E4.png)
+![E2b predicted pitch: the stressed second syllable of *conduct* (AH1) is only about 7 Hz above the unstressed first vowel.](../Results/English/variance_adaptor_plots/pitch/E2b.png)
 
-- **Pitch** stays within about ±15 Hz of a 127–140 Hz centre across every sentence. There is no clear phrase-level declination or question/statement contour. This is the flat intonation predicted by the baseline comparison in §6, and the main reason the voice sounds robotic.
+![E4 predicted durations: the date words are compressed, with stressed vowels of about 46 ms.](../Results/English/variance_adaptor_plots/duration/E4.png)
+
+- **Pitch** varies with an sd of 21–23 Hz around a 185–202 Hz centre in every sentence (wider than the first voice's 11–16 Hz, mostly the speaker's own range). There is still no clear phrase-level declination or question/statement contour. This is the flat intonation predicted by the baseline comparison in §6.
 - **Lexical stress is weakly encoded.**
   - In E2a the noun's stressed vowel is lengthened (10 vs 5 frames) but not raised in pitch.
   - In E2b the verb's stressed vowel is slightly higher and louder but *shorter* than the unstressed one.
 
   Both cues are small, which matches the listener hearing no clear noun/verb contrast.
-- **Durations** are plausible overall (13–15.5 phones/s; no zero-length phones; pauses of 0.3–0.4 s at punctuation and at the E3 double space). Dense number and date regions are compressed, however: "twelve" lasts 15 frames (0.17 s), and the stressed vowels in "twelve" and "november" get 3 frames. That matches the heard "twel… twenty six". Spoken dates are rare in Svarah, and the duration predictor overfits early (§6).
+- **Durations** are plausible overall (11.3–13.5 phones/s; no zero-length phones; pauses of 0.26–0.38 s at punctuation and at the E3 double space). Dense number and date regions are compressed, however: "twelve" lasts 17 frames (0.20 s), and the stressed vowels in "twelve" and "november" get 4 frames. That matches the "twel… twenty six" heard with the first voice. Spoken dates are rare in Svarah, and the duration predictor overfits early (§6).
 - **Energy** follows the phone classes as expected (vowels high, closures and `sp` low). It is the best-learned predictor (§6).
 
 # 9. Telugu results
@@ -296,6 +314,7 @@ Same pipeline as §7, with the rule-based Telugu front end (`fs2ra/text_te.py`) 
 - **Teacher forcing vs inference gap.** Validation losses and teacher-forced samples overstate the quality of real text-to-speech output, because errors in predicted durations and pitch only appear at inference.
 - **Over-smoothed predictions (English glitch).** The listening test in §7 locates the English artefact in the predicted mels. This matches the known over-smoothing of FastSpeech 2: an L1/MSE-trained decoder predicts a conditional average, which the vocoder renders as buzz (Kögel et al., Interspeech 2023; Ren et al., *Revisiting Over-Smoothness in Text to Speech*, ACL 2022). Fixes from the literature all need retraining: GAN or flow decoders, mixture-density outputs, or joint acoustic model + vocoder training (JETS, 2022). Fine-tuning the vocoder on the model's own (teacher-forced) mels is the cheaper standard alternative, and was done (§7.1): it reduced the glitch but cannot sharpen the mels themselves. The decoder-side fixes were not possible before the deadline.
 - **Hesitant English delivery.** Even with real (teacher-forced) prosody the decoder's pronunciation is not crisp on unseen sentences (train mel L1 0.37 vs validation 0.58 at 20k). With about 2–3 min of mostly spontaneous speech per speaker, the decoder learns blurred, speaker-averaged phones, and the duration predictor learns little beyond a per-phone average (§6). Within the assignment's constraints (FastSpeech 2 trained from scratch on 5 h of Svarah) the main remaining lever would be better alignments (adapting the MFA acoustic model to Svarah); pretrained acoustic initialisation was deliberately not used.
+- **Post-hoc prosody rules (tried, not adopted).** Generic rules applied to the predicted durations and pitch before a second decoder pass (stressed-vowel duration floor, pitch-range expansion, stress accent, phrase-final lengthening and fall, overall pace, closing double-space pauses) were calibrated on the training split and half of the validation split and scored on the other half (branch `prosody-experiment`, `scripts/prosody_calibrate.py`). Only pitch-range expansion (×1.51: predicted F0 sd 64 % → 97 % of real) and pace (×1.045: utterance length 0.95 → 0.99 of real) moved their measures towards real speech; the model already matched real speech on stress, phrase-final behaviour and stressed-vowel length. The listener heard no clear difference, so none were adopted.
 - **Vocoder.** As an additional tested alternative (not used for the submitted audio; `--vocoder bigvgan`, `scripts/vocoder_eval.py`), NVIDIA BigVGAN-v2 (22 kHz, 80 bands, f_max 8 kHz, same mel definition) reproduced real validation mels more faithfully on 40/40 utterances per language (re-analysed log-mel L1: English 0.235 vs 0.327, Telugu 0.321 vs 0.394). On listening it did **not** remove the English glitch, consistent with the artefact being in the predicted mels.
 - **Telugu coverage.** Rare phones and contexts are poorly learned (word-initial `ఔ` occurs once in 5 h; heard as "ushadhalu" in T1). The submitted Telugu audio was judged by a listener who is not a fluent Telugu speaker; an automatic intelligibility test (ASR character error rate) was considered but not run.
 - **Telugu long-sentence pause.** The decoder voiced a predicted pause in T4; phrase-level synthesis at punctuation is an inference-time workaround, not a model fix.
