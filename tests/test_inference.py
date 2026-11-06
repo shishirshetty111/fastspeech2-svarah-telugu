@@ -49,6 +49,19 @@ def test_e3_spacing_kept_and_e4_pause(english):
     assert phones.count("sp") == 1 and phones[-1] != "sp"  # comma -> pause; no trailing pause
 
 
+def test_pause_kinds():
+    """Double spaces and punctuation both give "sp"; only punctuation may split synthesis."""
+    from fs2ra.inference import EnglishFrontEnd, TeluguFrontEnd, text_to_phones
+
+    fe_en = EnglishFrontEnd(LEXICON, os.path.join(REPO_ROOT, "project", "English", "pronunciation_variants.json"))
+    expected = {"E3": ["space"], "E4": ["punct"], "T3": ["space"], "T4": ["punct"]}
+    for sid, kinds in expected.items():
+        lang = "English" if sid[0] == "E" else "Telugu"
+        kinds_out = []
+        text_to_phones(_sentences(lang)[sid], fe_en if lang == "English" else TeluguFrontEnd(), kinds_out)
+        assert kinds_out == kinds, sid
+
+
 def test_telugu_front_end():
     from fs2ra.inference import TeluguFrontEnd, text_to_phones
     from fs2ra.text_te import PHONES
@@ -99,4 +112,5 @@ def test_end_to_end_cpu(tmp_path, lang, sid):
     summary = json.loads((out / "inference_summary.json").read_text(encoding="utf-8"))
     s = summary["sentences"][0]
     assert summary["speaker"] == "spk_b" and summary["step"] == 7
+    assert summary["split_at_punctuation"] == (lang == "Telugu")  # T4/E4 have a comma
     assert len(s["pred_duration_frames"]) == len(s["pred_f0_hz"]) == len(s["phones"])

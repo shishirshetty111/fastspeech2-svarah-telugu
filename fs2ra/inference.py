@@ -118,19 +118,27 @@ def front_end_for(cfg, inference_cfg=None):
     raise ValueError(cfg["language"])
 
 
-def text_to_phones(raw, front_end):
-    """Raw text -> (spoken phrases, [(word, phones, source)], phones with "sp" between phrases)."""
+def text_to_phones(raw, front_end, sp_kinds=None):
+    """Raw text -> (spoken phrases, [(word, phones, source)], phones with "sp" between phrases).
+    sp_kinds (optional list) receives, per "sp", "punct" (phrase punctuation) or "space"."""
     phrases, words, phones = [], [], []
-    for chunk in PHRASE_RE.split(raw):
+    pos, pending = 0, ""
+    for m in list(PHRASE_RE.finditer(raw)) + [None]:
+        chunk = raw[pos: m.start() if m else len(raw)]
         spoken = front_end.normalize(chunk).split()
-        if not spoken:
-            continue
-        if phones:
-            phones.append("sp")
-        phrases.append(" ".join(spoken))
-        for word, pron, source in front_end.words(spoken):
-            words.append({"word": word, "phones": " ".join(pron), "source": source})
-            phones += pron
+        if spoken:
+            if phones:
+                phones.append("sp")
+                if sp_kinds is not None:
+                    sp_kinds.append("punct" if pending.strip() else "space")
+            phrases.append(" ".join(spoken))
+            for word, pron, source in front_end.words(spoken):
+                words.append({"word": word, "phones": " ".join(pron), "source": source})
+                phones += pron
+            pending = ""
+        if m:
+            pending += m.group()
+            pos = m.end()
     return phrases, words, phones
 
 
@@ -253,10 +261,11 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
 
     from text import text_to_sequence  # upstream, after register_language
 
-    summary = []
-    for s in sentences:
-        phrases, words, phones = text_to_phones(s["text"], front_end)
-        phone_str = "{" + " ".join(phones) + "}"
+    split = bool(project_cfg.get("inference", {}).get("split_at_punctuation"))
+
+    def run(phone_list, sid):
+        """One forward pass, no targets: d/p/e are the predictors' outputs (text-only)."""
+        phone_str = "{" + " ".join(phone_list) + "}"
         check_phone_strings([phone_str], cfg["language"])
         seq = np.array(text_to_sequence(phone_str, []))
         with torch.no_grad():
@@ -267,16 +276,40 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
                 len(seq),
                 d_control=pace,
             )
-        # no targets passed: d/p/e below are the predictors' outputs (text-only)
         mel_len = int(out[9][0])
         frames = out[5][0, : len(seq)].cpu().numpy().astype(int)
         pitch_hz = out[2][0, : len(seq)].float().cpu().numpy() * p_std + p_mean
         energy = out[3][0, : len(seq)].float().cpu().numpy() * e_std + e_mean
-        wav = vocoder_infer(out[1].transpose(1, 2), vocoder, model_config, preprocess_config,
-                            lengths=[mel_len * hop])[0]
         if frames.sum() != mel_len or mel_len == 0 or not np.isfinite(pitch_hz).all():
             raise RuntimeError("%s: inconsistent prediction (sum durations %d, mel %d)"
-                               % (s["id"], frames.sum(), mel_len))
+                               % (sid, frames.sum(), mel_len))
+        wav = vocoder_infer(out[1].transpose(1, 2), vocoder, model_config, preprocess_config,
+                            lengths=[mel_len * hop])[0]
+        return frames, pitch_hz, energy, wav
+
+    summary = []
+    for s in sentences:
+        sp_kinds = []
+        phrases, words, phones = text_to_phones(s["text"], front_end, sp_kinds)
+        frames, pitch_hz, energy, wav = run(phones, s["id"])
+        sp_idx = [i for i, p in enumerate(phones) if p == "sp"]
+        cuts = [i for i, k in zip(sp_idx, sp_kinds) if k == "punct"] if split else []
+        if cuts:
+            # Phrase-level synthesis: each punctuation-delimited phrase is its own forward
+            # pass, joined by digital silence as long as the pause the model predicted for
+            # that "sp" in the whole-sentence pass. (In long sentences the decoder can voice
+            # a predicted pause, e.g. Telugu T4's comma, although every training pause is silent.)
+            parts_f, parts_p, parts_e, parts_w = [], [], [], []
+            for a, b in zip([-1] + cuts, cuts + [len(phones)]):
+                f, p, e, w = run(phones[a + 1: b], s["id"])
+                parts_f.append(f), parts_p.append(p), parts_e.append(e), parts_w.append(w)
+                if b < len(phones):  # the pause itself, from the whole-sentence prediction
+                    parts_f.append(frames[b:b + 1]), parts_p.append(pitch_hz[b:b + 1])
+                    parts_e.append(energy[b:b + 1])
+                    parts_w.append(np.zeros(int(frames[b]) * hop, dtype=w.dtype))
+            frames, pitch_hz, energy = (np.concatenate(x) for x in (parts_f, parts_p, parts_e))
+            wav = np.concatenate(parts_w)
+            assert len(frames) == len(phones) and len(wav) == frames.sum() * hop
 
         wav_path = os.path.join(out_dir, "test_generated_audios", s["id"] + ".wav")
         os.makedirs(os.path.dirname(wav_path), exist_ok=True)
@@ -300,7 +333,8 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
         ckpt_rel = ".."
     with open(os.path.join(out_dir, "inference_summary.json"), "w", encoding="utf-8") as f:
         json.dump({"checkpoint": ckpt_abs if ckpt_rel.startswith("..") else ckpt_rel.replace("\\", "/"),
-                   "step": step, "speaker": speaker, "pace": pace, "device": str(device),
+                   "step": step, "speaker": speaker, "pace": pace, "split_at_punctuation": split,
+                   "device": str(device),
                    "sentences": summary},
                   f, ensure_ascii=False, indent=1)
     return summary
