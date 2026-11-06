@@ -3,7 +3,7 @@
     python project/Telugu/preprocess.py --stage export align features             # full 5 h + 1 h (+ reserve)
     python project/Telugu/preprocess.py --smoke 30 10 --stage export align features   # 30 train + 10 val
 
-Set FS2_MFA_CMD to the MFA executable (see docs/ENVIRONMENT.md). The align stage trains
+Set FS2_MFA_CMD to the MFA executable (see project/README.md). The align stage trains
 an MFA acoustic model on this corpus (no pretrained Telugu model exists). Outputs go to
 $FS2_DATA_ROOT/telugu[_smoke]/ (git-ignored).
 """

@@ -1,6 +1,6 @@
 """FastSpeech 2 training targets from MFA alignments, reusing upstream
 Preprocessor.process_utterance unchanged (mel, phone durations, phoneme-level
-F0 and energy), with these project-level changes (see docs/UPSTREAM_NOTES.md):
+F0 and energy), with these project-level changes:
 
 1. MFA 3 leaves silences as *empty* intervals, which tgt drops by default; upstream
    (written for MFA 1.x "sil"/"sp") would then lose every internal pause from the

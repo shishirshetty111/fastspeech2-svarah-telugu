@@ -3,7 +3,7 @@
     python project/English/preprocess.py --stage export align features             # full 5 h + 1 h (+ reserve)
     python project/English/preprocess.py --smoke 30 10 --stage export align features   # 30 train + 10 val
 
-Set FS2_MFA_CMD to the MFA executable (see docs/ENVIRONMENT.md). Outputs go to
+Set FS2_MFA_CMD to the MFA executable (see project/README.md). Outputs go to
 $FS2_DATA_ROOT/english[_smoke]/ (git-ignored).
 """
 import argparse

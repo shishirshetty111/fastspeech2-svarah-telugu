@@ -1,6 +1,6 @@
 {
-  "source": "docs/FastSpeech2_Assignment.pdf",
-  "note": "Exact raw test text from docs/FastSpeech2_Assignment.pdf (logical-order extraction with PyMuPDF; line-wrap/span splits joined; trailing layout spaces stripped; internal spacing kept, incl. double spaces). Telugu verified by re-rendering these strings in Nirmala UI and comparing to a 300-dpi render of PDF page 2. Do not normalise or spell-correct; any spoken-form normalisation must be stored separately.",
+  "source": "FastSpeech2_Assignment.pdf (assignment brief)",
+  "note": "Exact raw test text from the assignment PDF (logical-order extraction with PyMuPDF; line-wrap/span splits joined; trailing layout spaces stripped; internal spacing kept, incl. double spaces). Telugu verified by re-rendering these strings in Nirmala UI and comparing to a 300-dpi render of PDF page 2. Do not normalise or spell-correct; any spoken-form normalisation must be stored separately.",
   "sentences": [
     {
       "id": "T1",

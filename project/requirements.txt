@@ -1,5 +1,5 @@
 # Verified 2026-11-02 on Windows 11 / Python 3.11.15 (CPU) with the patched
-# upstream ming024/FastSpeech2 @ d4e79eb (see patches/ and docs/UPSTREAM_NOTES.md).
+# upstream ming024/FastSpeech2 @ d4e79eb (see patches/).
 # torch is NOT pinned here: install the build for your platform first
 #   local CPU : pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
 #   Colab/Kaggle: use the preinstalled CUDA torch (>=2.4 required for weights_only safe globals)

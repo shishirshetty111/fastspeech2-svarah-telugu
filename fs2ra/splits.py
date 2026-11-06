@@ -1,6 +1,6 @@
 """Quality filtering and deterministic, duration-targeted train/val/reserve splits.
 
-Rules (documented in docs/DATA.md):
+Rules:
 * QC rejects are logged with a reason, never silently dropped.
 * Utterances sharing a normalised transcript form one group and always land in
   the same split, so no sentence appears in both train and validation.

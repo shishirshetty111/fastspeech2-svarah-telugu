@@ -1,3 +1,0 @@
-# Suggested SECOND Codex prompt (after Phase 0/1 verified)
-
-Read AGENTS.md and current docs/PROGRESS.md. Implement **Phase 2** only: inspect available Svarah and IndicTTS datasets with correct access/auth handling; create a schema-aware data-inspection script, duration-aware and speaker-aware deterministic 5h train / 1h validation split manifests, and pytest checks for manifest integrity and no overlap. Work on 10-50 real rows first, avoid loading all audio into memory, don't assume field names before inspecting them, and never print Hugging Face credentials. If datasets are inaccessible, implement documented loaders and accurate blocking tests instead of inventing dataset records. Commit no raw audio or fake results.

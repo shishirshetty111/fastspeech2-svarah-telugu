@@ -10,7 +10,7 @@ data:
   target_hours: {train: 5.0, val: 1.0}   # reserve utterances top up alignment failures
   # Reject utterances whose longest non-silence phone exceeds 50 frames (0.58 s):
   # in Svarah these are filled pauses ("uhh") or untranscribed speech that MFA absorbs
-  # into one phone, mostly AH0 (365 of 4,987 aligned utterances; see docs/DATA.md).
+  # into one phone, mostly AH0 (365 of 4,987 aligned utterances).
   max_phone_frames: 50
 
 align:
@@ -66,7 +66,7 @@ model:
     pitch_quantization: "linear"
     energy_quantization: "linear"
     n_bins: 256
-  multi_speaker: True                    # ~113 speaker proxies (see docs/DATA.md)
+  multi_speaker: True                    # ~113 speaker proxies (session demographic profiles)
   max_seq_len: 1500                      # train clips up to 15 s = 1292 frames (upstream: 1000)
   vocoder:
     model: "HiFi-GAN"

@@ -28,6 +28,7 @@ def test_ids_and_invariants():
     assert all(re.fullmatch(r"[ఀ-౿0-9 ,.:]+", t) for t in te.values())
 
 
+@pytest.mark.skipif(not os.path.exists(PDF), reason="assignment PDF not in the repository (kept locally in docs/)")
 def test_sentences_match_pdf_text():
     pymupdf = pytest.importorskip("pymupdf")
     lines = []

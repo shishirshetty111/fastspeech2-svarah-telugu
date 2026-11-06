@@ -10,7 +10,7 @@ third_party/
 
 # Large / licensed artifacts: never commit raw audio, datasets or downloaded weights
 pretrained/
-data/
+/data/
 raw_data/
 preprocessed_data/
 outputs/

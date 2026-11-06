@@ -10,7 +10,7 @@ data:
   target_hours: {train: 5.0, val: 1.0}   # reserve utterances top up alignment failures
   # Reject utterances whose longest non-silence phone exceeds 50 frames (0.58 s):
   # in Svarah these are filled pauses ("uhh") or untranscribed speech that MFA absorbs
-  # into one phone, mostly AH0 (365 of 4,987 aligned utterances; see docs/DATA.md).
+  # into one phone, mostly AH0 (365 of 4,987 aligned utterances).
   max_phone_frames: 50
 
 align:
@@ -66,7 +66,7 @@ model:
     pitch_quantization: "linear"
     energy_quantization: "linear"
     n_bins: 256
-  multi_speaker: True                    # ~113 speaker proxies (see docs/DATA.md)
+  multi_speaker: True                    # ~113 speaker proxies (session demographic profiles)
   max_seq_len: 1500                      # train clips up to 15 s = 1292 frames (upstream: 1000)
   vocoder:
     model: "HiFi-GAN"
@@ -103,13 +103,12 @@ inference:                               # fs2ra.inference (text-only synthesis)
   # Multi-speaker model: the voice used for the test sentences. en_72a36e45 (5.3 min of the
   # 5 h): chosen by listening among the 5 speakers the model renders most faithfully on their
   # own held-out validation clips (scripts/speaker_search.py, teacher-forced mel L1 0.609,
-  # rank 2 of 89). Previously en_edfd2580 (most training audio, 10.6 min; L1 0.690, rank 23):
-  # project/Results/English/previous_speaker_en_edfd2580/.
+  # rank 2 of 89). Previously en_edfd2580 (most training audio, 10.6 min; L1 0.690, rank 23).
   speaker: en_72a36e45
   # Lexicon variant MFA aligned most often in the training split (scripts/pronunciation_variants.py)
   pronunciation_variants: "$REPO/project/English/pronunciation_variants.json"
   # Universal HiFi-GAN fine-tuned on this model's teacher-forced (GTA) mels of the English
   # train split (notebooks/finetune_hifigan_colab.ipynb, step 2,503,000 = 3,000 fine-tuning
   # steps, lowest validation mel L1). Removes most of the buzzy artefact. "hifigan" = the
-  # original universal vocoder (project/Results/English/before_vocoder_finetuning/).
+  # original universal vocoder.
   vocoder: "$REPO/project/English/checkpoints/vocoder_hifigan_finetuned_g02503000.pth.tar"
