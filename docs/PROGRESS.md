@@ -1,6 +1,6 @@
 # Implementation progress
 
-Status (2026-11-04): **Phases 0–3 complete for English; English training run to 50k steps on Colab (user-reported; final logs/checkpoints not yet copied locally); text-only inference implemented and CPU-tested.** Telugu: trained and submitted (2026-11-06). No assignment audio from a trained model has been verified yet. Data decisions: `docs/DATA.md`.
+Status (2026-11-06): **Both models trained from scratch (50k steps each) and submitted at step 20,000 on `main`: checkpoints (Git LFS), Results/{English,Telugu}, report, README.** English quality experiments live on branch `experiments`. Data decisions: `docs/DATA.md`.
 
 ## Phase 0 — repo and environment inspection ✅
 - [x] Read AGENTS.md, all docs, original PDF (visually, all 3 pages)
