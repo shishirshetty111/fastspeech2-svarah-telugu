@@ -35,8 +35,8 @@ def main():
     parser.add_argument("--speaker", help="speaker name from speakers.json (multi-speaker models)")
     parser.add_argument("--pace", type=float, default=1.0,
                         help="duration control: scale predicted phone durations (>1 slower; default 1.0)")
-    parser.add_argument("--vocoder", choices=["hifigan", "bigvgan"],
-                        help="default: inference.vocoder in config.yaml, else hifigan")
+    parser.add_argument("--vocoder", help="hifigan | bigvgan | path to a fine-tuned HiFi-GAN g_* file "
+                                          "(default: inference.vocoder in config.yaml, else hifigan)")
     args = parser.parse_args()
 
     ckpt = args.ckpt
