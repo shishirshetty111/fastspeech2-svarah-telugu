@@ -97,3 +97,10 @@ train:
   checkpoint:                            # fs2ra.training: disk use on Drive
     keep_last: 2                         # full checkpoints (model + Adam), ~420 MB each
     keep_every: 10000                    # model-only milestones (~140 MB) kept in ckpt/milestones
+
+inference:                               # fs2ra.inference (text-only synthesis)
+  # Synthesize each punctuation-delimited phrase separately and join them with silence of
+  # the model-predicted pause length: in T4 the decoder voiced the comma pause ("aaa") at
+  # every checkpoint, although all training pauses are silent. Pauses from double spaces
+  # (T3) stay inside one forward pass.
+  split_at_punctuation: true
