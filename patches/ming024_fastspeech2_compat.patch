@@ -49,7 +49,7 @@ index fcce29b..4b87b55 100644
          mel_basis = torch.from_numpy(mel_basis).float()
          self.register_buffer("mel_basis", mel_basis)
 diff --git a/model/modules.py b/model/modules.py
-index 9933725..5adb2ca 100644
+index 9933725..896ec70 100644
 --- a/model/modules.py
 +++ b/model/modules.py
 @@ -121,7 +121,7 @@ class VarianceAdaptor(nn.Module):
@@ -61,7 +61,17 @@ index 9933725..5adb2ca 100644
              )
              x = x + energy_embedding
  
-@@ -143,7 +143,7 @@ class VarianceAdaptor(nn.Module):
+@@ -130,7 +130,8 @@ class VarianceAdaptor(nn.Module):
+             duration_rounded = duration_target
+         else:
+             duration_rounded = torch.clamp(
+-                (torch.round(torch.exp(log_duration_prediction) - 1) * d_control),
++                # scale before rounding, so pace also stretches short phones (identical at 1.0)
++                torch.round((torch.exp(log_duration_prediction) - 1) * d_control),
+                 min=0,
+             )
+             x, mel_len = self.length_regulator(x, duration_rounded, max_len)
+@@ -143,7 +144,7 @@ class VarianceAdaptor(nn.Module):
              x = x + pitch_embedding
          if self.energy_feature_level == "frame_level":
              energy_prediction, energy_embedding = self.get_energy_embedding(

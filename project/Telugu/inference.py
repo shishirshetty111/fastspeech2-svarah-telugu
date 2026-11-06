@@ -33,6 +33,8 @@ def main():
     parser.add_argument("--ids", nargs="*", help="subset of test sentence ids")
     parser.add_argument("--text", help="synthesize this text instead (id from --ids, default 'custom')")
     parser.add_argument("--speaker", help="speaker name from speakers.json (multi-speaker models)")
+    parser.add_argument("--pace", type=float, default=1.0,
+                        help="duration control: scale predicted phone durations (>1 slower; default 1.0)")
     args = parser.parse_args()
 
     ckpt = args.ckpt
@@ -48,7 +50,7 @@ def main():
             sentences = [s for s in json.load(f)["sentences"] if not args.ids or s["id"] in args.ids]
     step = os.path.basename(ckpt).split(".")[0]
     out_dir = args.out_dir or os.path.join(OUTPUT_ROOT, "Telugu", "inference", "step" + step)
-    synthesize(load_config(args.config), ckpt, sentences, out_dir, speaker=args.speaker)
+    synthesize(load_config(args.config), ckpt, sentences, out_dir, speaker=args.speaker, pace=args.pace)
     print("outputs in", out_dir)
 
 

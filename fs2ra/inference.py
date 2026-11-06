@@ -168,6 +168,32 @@ def load_model(ckpt_path, project_cfg, device):
     return cfg, configs, model, get_vocoder(configs[1], device), speakers, stats, state.get("step")
 
 
+# Fonts with Telugu glyphs (DejaVu Sans has none -> empty boxes in plot titles).
+TELUGU_FONTS = ["C:/Windows/Fonts/Nirmala.ttc", "/usr/share/fonts/truetype/noto/NotoSansTelugu-Regular.ttf",
+                "/usr/share/fonts/opentype/noto/NotoSansTelugu-Regular.ttf",
+                "/System/Library/Fonts/Supplemental/Telugu Sangam MN.ttc"]
+_title_family = None
+
+
+def title_font_family():
+    """['DejaVu Sans', <first available Telugu-capable font>] as a matplotlib fallback list."""
+    global _title_family
+    if _title_family is None:
+        from matplotlib import font_manager
+
+        _title_family = ["DejaVu Sans"]
+        for path in TELUGU_FONTS:
+            if os.path.exists(path):
+                font_manager.fontManager.addfont(path)  # may already be known from the system scan
+                names = sorted({f.name for f in font_manager.fontManager.ttflist
+                                if os.path.normcase(os.path.abspath(f.fname)) == os.path.normcase(os.path.abspath(path))})
+                name = "Nirmala UI" if "Nirmala UI" in names else (names[0] if names else None)
+                if name:
+                    _title_family.append(name)
+                    break
+    return _title_family
+
+
 def plot_variance(kind, sid, raw, phones, frames, values, hop_s, path):
     """One predicted value per phone; one slot per phone (phones predicted to last 0
     frames stay visible and are marked "x")."""
@@ -194,7 +220,7 @@ def plot_variance(kind, sid, raw, phones, frames, values, hop_s, path):
             ax.axvspan(i - 0.5, i + 0.5, color="0.92", zorder=0)
         if f == 0:
             ax.plot(i, 0, "x", color="0.4", ms=4, clip_on=False)
-    ax.set_title("%s: %s" % (sid, raw), fontsize=9)
+    ax.set_title("%s: %s" % (sid, raw), fontsize=9, fontfamily=title_font_family())
     ax.set_xlabel("phones (grey band = pause \"sp\"; x = 0 frames)   predicted length %.2f s"
                   % (frames.sum() * hop_s), fontsize=8)
     fig.tight_layout()
@@ -203,8 +229,10 @@ def plot_variance(kind, sid, raw, phones, frames, values, hop_s, path):
     plt.close(fig)
 
 
-def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=None):
-    """sentences: [{"id", "text"}] raw text. Returns the per-sentence summary list."""
+def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=None, pace=1.0):
+    """sentences: [{"id", "text"}] raw text. Returns the per-sentence summary list.
+    pace: FastSpeech 2 duration control (upstream d_control): every predicted phone
+    duration is multiplied by it before rounding; >1 = slower speech, 1.0 = as predicted."""
     from utils.model import vocoder_infer  # upstream
 
     device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -237,6 +265,7 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
                 torch.from_numpy(seq).long().unsqueeze(0).to(device),
                 torch.tensor([len(seq)], device=device),
                 len(seq),
+                d_control=pace,
             )
         # no targets passed: d/p/e below are the predictors' outputs (text-only)
         mel_len = int(out[9][0])
@@ -271,6 +300,7 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
         ckpt_rel = ".."
     with open(os.path.join(out_dir, "inference_summary.json"), "w", encoding="utf-8") as f:
         json.dump({"checkpoint": ckpt_abs if ckpt_rel.startswith("..") else ckpt_rel.replace("\\", "/"),
-                   "step": step, "speaker": speaker, "device": str(device), "sentences": summary},
+                   "step": step, "speaker": speaker, "pace": pace, "device": str(device),
+                   "sentences": summary},
                   f, ensure_ascii=False, indent=1)
     return summary
