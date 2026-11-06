@@ -4,9 +4,9 @@ Two FastSpeech 2 acoustic models **trained from scratch**: English on 5 h of Sva
 
 | | English | Telugu |
 |---|---|---|
-| Status | trained (50k steps); **submitted checkpoint: step 20,000** | in progress (front end and alignment pipeline done; training pending) |
-| Checkpoint | [`English/checkpoints/20000.pth.tar`](English/checkpoints/) (Git LFS, 142 MB, model weights only) + `stats.json`, `speakers.json`, `config.yaml` | — |
-| Results | [`Results/English/`](Results/English/) | — |
+| Status | trained (50k steps); **submitted checkpoint: step 20,000** | trained (50k steps); **submitted checkpoint: step 20,000** |
+| Checkpoint | [`English/checkpoints/20000.pth.tar`](English/checkpoints/) (Git LFS, 142 MB, model weights only) + `stats.json`, `speakers.json`, `config.yaml` | [`Telugu/checkpoints/20000.pth.tar`](Telugu/checkpoints/) (Git LFS, model weights only) + `stats.json`, `speakers.json`, `config.yaml` |
+| Results | [`Results/English/`](Results/English/) | [`Results/Telugu/`](Results/Telugu/) |
 
 Based on [ming024/FastSpeech2](https://github.com/ming024/FastSpeech2) @ `d4e79eb` (MIT) and its bundled HiFi-GAN (MIT). Our changes to upstream are in `../patches/`, and the code around it is in `../fs2ra/`. Details: `../docs/UPSTREAM_NOTES.md`.
 
@@ -36,7 +36,9 @@ pip install -r requirements.txt
 python scripts/setup_upstream.py                          # clones + patches upstream, unpacks HiFi-GAN
 python project/English/inference.py --out_dir my_outputs   # the 5 test sentences, CPU, about 1 min
 python project/English/inference.py --text "Any English sentence." --ids demo --out_dir my_outputs
+python project/Telugu/inference.py --out_dir my_outputs_te                       # the 5 Telugu test sentences
 ```
+Options: `--pace 1.2` speaks 20 % slower (FastSpeech 2 duration control); `--speaker <id>` picks another English voice from `speakers.json`.
 If `git lfs` was not installed before cloning, run `git lfs pull` to fetch the checkpoint.
 
 ## Full reproduction
