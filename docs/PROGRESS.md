@@ -1,6 +1,6 @@
 # Implementation progress
 
-Status (2026-11-04): **Phases 0–3 complete for English; English training run to 50k steps on Colab (user-reported; final logs/checkpoints not yet copied locally); text-only inference implemented and CPU-tested.** Telugu: aligned and features built (2026-11-05); training pending (Colab). No assignment audio from a trained model has been verified yet. Data decisions: `docs/DATA.md`.
+Status (2026-11-04): **Phases 0–3 complete for English; English training run to 50k steps on Colab (user-reported; final logs/checkpoints not yet copied locally); text-only inference implemented and CPU-tested.** Telugu: trained and submitted (2026-11-06). No assignment audio from a trained model has been verified yet. Data decisions: `docs/DATA.md`.
 
 ## Phase 0 — repo and environment inspection ✅
 - [x] Read AGENTS.md, all docs, original PDF (visually, all 3 pages)
@@ -143,6 +143,21 @@ python -m pytest tests/test_features_full.py -q          # 6 passed (English + T
 python scripts/package_features.py telugu                # dist/telugu_features.tar, 502.0 MB, sha256 7c0d3e9a…f8080e
 ```
 
+### 2026-11-06 — Phase 5b: Telugu training, inference, submission
+- Colab GPU (--amp), 50k steps in one run, median 0.177 s/step (~2.5 h). Val total plateau from ~8–10k (min 1.984 @ 18k; 20k 2.007, 30k 1.986, 50k 1.992). Val vs trivial baselines: pitch 0.58 vs 1.06, energy 0.21 vs 1.09, duration 0.062 vs 0.131.
+- Inference at 20k/30k/50k; user preferred 20k ("30k seems odd"); 20k judged "very fast" → measured = speaker's own rate (training median 14.9 phones/s). Added `--pace` (duration control, patch: scale before rounding; identical at 1.0); user chose pace 1.0.
+- T4 comma pause was voiced at every checkpoint (RMS above speech) though all training pauses are silent → Telugu `inference.split_at_punctuation` (phrase-level synthesis joined by silence of the model-predicted pause length). T1 ఔషధాల heard as "ushadhalu": `au` rare (148 train tokens, word-initial ఔ once) → documented.
+- Telugu plot titles had empty boxes (DejaVu lacks Telugu) → Nirmala UI / Noto Sans Telugu fallback.
+- Submitted: `project/Telugu/checkpoints/20000.pth.tar` (LFS, sha256 16e8c1e8…60524c) + stats/speakers/config; `project/Results/Telugu/`; report Telugu sections; README.
+- English: user listening test — original recording and ground-truth mel → vocoder are clean, only model-synthesised audio has the glitch → over-smoothed predicted mels. BigVGAN-v2 (experiments branch) better on copy-synthesis 40/40 per language but did not remove the glitch. Submission keeps English 20k HiFi-GAN.
+```
+python project/Telugu/inference.py --ckpt output/Telugu/ckpt/milestones/<step>.pth.tar --out_dir output/Telugu/inference/step<step>
+python project/Telugu/inference.py --out_dir project/Results/Telugu      # identical to the user-approved 20k pace 1.0 files
+python project/English/inference.py --out_dir <tmp>                     # byte-identical to submitted English wavs
+python scripts/build_report.py                                           # 13 pages
+python -m pytest tests -q --deselect tests/test_features_full.py         # 66 passed
+```
+
 ## Current blockers / open issues
 - Telugu alignment relies on an MFA model trained on the 5 h + 1 h + reserve corpus itself (no pretrained Telugu model) and a rule-based G2P; alignment quality is not checked against manual labels.
 - English val is all tier-0 (clean, ≤ 11 s) while train has 254 tier-1/2 utterances (11–15 s or digits); documented asymmetry.
@@ -151,4 +166,4 @@ python scripts/package_features.py telugu                # dist/telugu_features.
 - Svarah speaker proxy may merge up to two speaker pairs (115 vs. 117).
 
 ## Next action (single task)
-Telugu training: user uploads `dist/telugu_features.tar` to `MyDrive/fs2ra/`, runs `notebooks/train_colab.ipynb` with `LANG = "Telugu"` on L4 (`--amp`) → then inference → Results/Telugu, checkpoint via LFS, Telugu sections of the report.
+Submission complete on `main` (both languages). Optional: English quality experiments on branch `experiments` (vocoder fine-tuning on teacher-forced mels, decoder changes) without touching the submission.
