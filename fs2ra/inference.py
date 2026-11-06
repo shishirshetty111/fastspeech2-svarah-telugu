@@ -240,11 +240,28 @@ def plot_variance(kind, sid, raw, phones, frames, values, hop_s, path):
 VOCODERS = ("hifigan", "bigvgan")
 
 
+def load_hifigan_generator(path, device):
+    """A HiFi-GAN V1 generator checkpoint ({"generator": state_dict}, e.g. a fine-tuned
+    jik876 g_XXXXXXXX) in the architecture of upstream's bundled hifigan/config.json.
+    Tensors only (weights_only=True)."""
+    import hifigan  # upstream package
+    from utils.model import HIFIGAN_DIR
+
+    with open(os.path.join(HIFIGAN_DIR, "config.json")) as f:
+        h = hifigan.AttrDict(json.load(f))
+    gen = hifigan.Generator(h)
+    gen.load_state_dict(torch.load(path, map_location="cpu", weights_only=True)["generator"])
+    gen.eval()
+    gen.remove_weight_norm()
+    return gen.to(device)
+
+
 def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=None, pace=1.0, vocoder=None):
     """sentences: [{"id", "text"}] raw text. Returns the per-sentence summary list.
     pace: FastSpeech 2 duration control (upstream d_control): every predicted phone
     duration is multiplied by it before rounding; >1 = slower speech, 1.0 = as predicted.
-    vocoder: "hifigan" (upstream universal HiFi-GAN, default) or "bigvgan" (fs2ra.vocoder_bigvgan);
+    vocoder: "hifigan" (upstream universal HiFi-GAN, default), "bigvgan" (fs2ra.vocoder_bigvgan),
+    or the path of a fine-tuned HiFi-GAN generator (g_XXXXXXXX);
     default from the config's inference.vocoder."""
     from utils.model import vocoder_infer  # upstream
 
@@ -252,8 +269,10 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
     cfg, configs, model, hifigan, speakers, stats, step = load_model(ckpt_path, project_cfg, device)
     preprocess_config, model_config, _ = configs
     vocoder_name = vocoder or project_cfg.get("inference", {}).get("vocoder", "hifigan")
-    if vocoder_name not in VOCODERS:
-        raise ValueError("vocoder must be one of %s" % (VOCODERS,))
+    if vocoder_name not in VOCODERS and not os.path.isfile(vocoder_name):
+        raise ValueError("vocoder must be one of %s or a fine-tuned HiFi-GAN g_* file" % (VOCODERS,))
+    if os.path.isfile(vocoder_name):  # fine-tuned HiFi-GAN generator (jik876 g_XXXXXXXX)
+        hifigan = load_hifigan_generator(vocoder_name, device)
     if vocoder_name == "bigvgan":
         from fs2ra.vocoder_bigvgan import bigvgan_infer, get_bigvgan
 
