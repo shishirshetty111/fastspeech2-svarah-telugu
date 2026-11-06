@@ -5,6 +5,7 @@ upstream pretrained LJSpeech acoustic checkpoint used for the Phase 1 baseline.
 Usage (repo root):
     python scripts/setup_upstream.py                    # upstream + patch + HiFi-GAN
     python scripts/setup_upstream.py --pretrained_ljspeech   # also the 900k baseline ckpt
+    python scripts/setup_upstream.py --bigvgan          # also BigVGAN-v2 code + weights (optional vocoder)
 """
 import argparse
 import hashlib
@@ -84,10 +85,31 @@ def download_pretrained_ljspeech():
     print("Pretrained LJSpeech checkpoint verified:", ckpt)
 
 
+def setup_bigvgan():
+    """NVIDIA BigVGAN code at the pinned commit + the fmax-8k 22 kHz weights (HF cache)."""
+    sys.path.insert(0, REPO_ROOT)
+    from fs2ra.vocoder_bigvgan import (BIGVGAN_COMMIT, BIGVGAN_DIR, BIGVGAN_REPO, BIGVGAN_REVISION,
+                                       BIGVGAN_URL)
+
+    if not os.path.isdir(os.path.join(BIGVGAN_DIR, ".git")):
+        run(["git", "clone", BIGVGAN_URL, BIGVGAN_DIR])
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=BIGVGAN_DIR, capture_output=True, text=True,
+                          check=True).stdout.strip()
+    if head != BIGVGAN_COMMIT:
+        run(["git", "checkout", BIGVGAN_COMMIT], cwd=BIGVGAN_DIR)
+    from huggingface_hub import hf_hub_download
+
+    for name in ("config.json", "bigvgan_generator.pt"):
+        print("BigVGAN", name, "->", hf_hub_download(BIGVGAN_REPO, name, revision=BIGVGAN_REVISION))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--pretrained_ljspeech", action="store_true")
+    parser.add_argument("--bigvgan", action="store_true")
     args = parser.parse_args()
     setup_upstream()
+    if args.bigvgan:
+        setup_bigvgan()
     if args.pretrained_ljspeech:
         download_pretrained_ljspeech()
