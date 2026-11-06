@@ -165,7 +165,7 @@ python -m pytest tests -q --deselect tests/test_features_full.py         # 66 pa
 ```
 python scripts/speaker_search.py --ckpt project/English/checkpoints/20000.pth.tar   # output/English/speaker_search.json
 python project/English/inference.py --out_dir project/Results/English
-python scripts/build_report.py                                                     # 15 pages
+python scripts/build_report.py                                                     # 10 pages (report rewritten to follow the PDF brief, plain English)
 ```
 
 ## Current blockers / open issues
