@@ -238,6 +238,7 @@ def plot_variance(kind, sid, raw, phones, frames, values, hop_s, path):
 
 
 VOCODERS = ("hifigan", "bigvgan")
+PAD_SECONDS = 0.2  # silence added before and after each saved waveform
 
 
 def load_hifigan_generator(path, device):
@@ -349,6 +350,11 @@ def synthesize(project_cfg, ckpt_path, sentences, out_dir, speaker=None, device=
 
         wav_path = os.path.join(out_dir, "test_generated_audios", s["id"] + ".wav")
         os.makedirs(os.path.dirname(wav_path), exist_ok=True)
+        # 0.2 s of silence before and after the speech: the model starts speaking at the first
+        # frame (training audio is trimmed of leading/trailing silence), and some players and
+        # audio devices drop the first few hundred milliseconds of a file.
+        pad = np.zeros(int(PAD_SECONDS * sr), dtype=wav.dtype)
+        wav = np.concatenate([pad, wav, pad])
         wavfile.write(wav_path, sr, wav)
         for kind, values in (("duration", frames), ("pitch", pitch_hz), ("energy", energy)):
             plot_variance(kind, s["id"], s["text"], phones, frames, values, hop / sr,

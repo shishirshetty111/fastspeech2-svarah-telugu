@@ -425,7 +425,7 @@
     18.56399917602539,
     9.060999870300293
    ],
-   "seconds": 6.513,
+   "seconds": 6.913,
    "wav": "test_generated_audios/E1.wav"
   },
   {
@@ -707,7 +707,7 @@
     28.323999404907227,
     8.718000411987305
    ],
-   "seconds": 4.423,
+   "seconds": 4.823,
    "wav": "test_generated_audios/E2a.wav"
   },
   {
@@ -1005,7 +1005,7 @@
     30.59000015258789,
     11.281000137329102
    ],
-   "seconds": 4.272,
+   "seconds": 4.672,
    "wav": "test_generated_audios/E2b.wav"
   },
   {
@@ -1217,7 +1217,7 @@
     39.49700164794922,
     26.510000228881836
    ],
-   "seconds": 3.274,
+   "seconds": 3.674,
    "wav": "test_generated_audios/E3.wav"
   },
   {
@@ -1666,7 +1666,7 @@
     32.97999954223633,
     21.229999542236328
    ],
-   "seconds": 6.815,
+   "seconds": 7.215,
    "wav": "test_generated_audios/E4.wav"
   }
  ]

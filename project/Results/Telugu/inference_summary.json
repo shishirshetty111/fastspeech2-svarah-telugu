@@ -4,6 +4,7 @@
  "speaker": "te_male",
  "pace": 1.0,
  "split_at_punctuation": true,
+ "vocoder": "hifigan",
  "device": "cpu",
  "sentences": [
   {
@@ -316,7 +317,7 @@
     26.15399932861328,
     2.63700008392334
    ],
-   "seconds": 4.516,
+   "seconds": 4.916,
    "wav": "test_generated_audios/T1.wav"
   },
   {
@@ -489,7 +490,7 @@
     18.695999145507812,
     9.107999801635742
    ],
-   "seconds": 2.067,
+   "seconds": 2.467,
    "wav": "test_generated_audios/T2a.wav"
   },
   {
@@ -686,7 +687,7 @@
     22.736000061035156,
     7.303999900817871
    ],
-   "seconds": 2.264,
+   "seconds": 2.664,
    "wav": "test_generated_audios/T2b.wav"
   },
   {
@@ -859,7 +860,7 @@
     20.194000244140625,
     5.336999893188477
    ],
-   "seconds": 2.113,
+   "seconds": 2.513,
    "wav": "test_generated_audios/T3.wav"
   },
   {
@@ -1449,7 +1450,7 @@
     23.834999084472656,
     6.730000019073486
    ],
-   "seconds": 7.396,
+   "seconds": 7.796,
    "wav": "test_generated_audios/T4.wav"
   }
  ]
